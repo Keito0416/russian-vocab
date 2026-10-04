@@ -353,7 +353,6 @@
       <button class="mini" id="expbtn">書き出し</button>
       <button class="mini" id="tipq">補足も検索：オフ</button>
       <button class="mini" id="sndbtn">効果音：オン</button>
-      <button class="mini" id="diagbtn">読み上げが鳴らないとき</button>
     </div>
     <div class="subbar hidden" id="sheetbar">
       <button class="mini" id="side">隠す面：日本語</button>
@@ -1562,13 +1561,15 @@ document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.
 sndLabel();
 
 /* 効果音：音は端末の中で作る（音声ファイルは読み込まない）。
-   1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 波形]。並べた順に鳴らす */
+   1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 波形]。並べた順に鳴らす。
+   波形が 'noise' のときは、サッという息のような音を、高さの帯を動かしながら鳴らす（紙をめくる音に使う） */
 const SFX={
-  tick:[[1046,1046,.022,.035]],                                   // 設定のボタン・横バーの1目盛り
+  tick:[[1046,1046,.022,.035]],                                   // メニューや設定のボタン
   chip:[[587,740,.05,.05]],                                       // 品詞を切り替える
   mode:[[440,440,.04,.05],[660,660,.06,.05]],                     // 一覧／赤シート／テスト
   open:[[494,659,.06,.05]], close:[[659,494,.06,.045]],           // 分類を開く・閉じる
-  flip:[[392,784,.08,.07,'triangle']], unflip:[[784,392,.07,.05,'triangle']],   // 赤シートをめくる・戻す
+  flip:[[1500,5200,.09,.3,'noise'],[240,170,.03,.06]],            // 赤シートをめくる：紙がこすれる音のあと、軽く当たる音
+  unflip:[[4600,1400,.08,.24,'noise']],                           // 戻す
   reveal:[[523,523,.04,.05],[784,784,.07,.05]],                   // 答えを見る
   late:[[392,392,.09,.06],[277,277,.16,.06]],                     // 時間切れ
   start:[[523,523,.07,.07],[659,659,.07,.07],[784,784,.13,.07]],  // テスト開始
@@ -1583,30 +1584,53 @@ const SFX={
   rankB:[[523,523,.1,.07],[659,659,.2,.07]],
   rankC:[[440,440,.22,.06]]
 };
-let AC=null;
+let AC=null, NOISE=null;
 // 画面を一度でも触ったあとでないと、ブラウザは音も振動も出させない
 const touched=()=>!navigator.userActivation||navigator.userActivation.hasBeenActive;
-function sfx(name){
-  const seq=SFX[name];
+/* seq（1音の並び）を、今から順に鳴らす */
+function play(seq){
   if(!PREFS.sound||!seq||!touched()) return;
   try{
     AC=AC||new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state==='suspended') AC.resume();
     let t=AC.currentTime+0.005;
     seq.forEach(([f0,f1,d,v,w])=>{
-      const o=AC.createOscillator(), g=AC.createGain();
-      o.type=w||'sine';
-      o.frequency.setValueAtTime(f0,t);
-      if(f1!==f0) o.frequency.exponentialRampToValueAtTime(f1,t+d);
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.exponentialRampToValueAtTime(v,t+0.008);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.03);
-      o.connect(g); g.connect(AC.destination);
-      o.start(t); o.stop(t+d+0.05);
+      const g=AC.createGain();
+      let s;
+      if(w==='noise'){
+        // 0.3秒ぶんのザーという音を1回だけ作って使い回す
+        if(!NOISE){
+          NOISE=AC.createBuffer(1,Math.floor(AC.sampleRate*0.3),AC.sampleRate);
+          const a=NOISE.getChannelData(0);
+          for(let i=0;i<a.length;i++) a[i]=Math.random()*2-1;
+        }
+        s=AC.createBufferSource(); s.buffer=NOISE;
+        const bp=AC.createBiquadFilter();
+        bp.type='bandpass'; bp.Q.value=0.8;
+        bp.frequency.setValueAtTime(f0,t);
+        bp.frequency.exponentialRampToValueAtTime(f1,t+d);
+        s.connect(bp); bp.connect(g);
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(v,t+d*0.3);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+      }else{
+        s=AC.createOscillator(); s.type=w||'sine';
+        s.frequency.setValueAtTime(f0,t);
+        if(f1!==f0) s.frequency.exponentialRampToValueAtTime(f1,t+d);
+        s.connect(g);
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(v,t+0.008);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.03);
+      }
+      g.connect(AC.destination);
+      s.start(t); s.stop(t+d+0.05);
       t+=d*0.8;
     });
   }catch(_){}
 }
+function sfx(name){ play(SFX[name]); }
+/* 横バー用：高さ f（Hz）の短い音。目盛りが上がるほど高い音にする */
+function note(f){ play([[f,f,.03,.045]]); }
 /* 軽い振動（Android のみ）。効果音と同じ切り替えに従う */
 function buzz(p){ try{ if(PREFS.sound&&navigator.vibrate&&touched()) navigator.vibrate(p); }catch(_){} }
 function cheer(combo){ sfx(combo>=5?'ok5':combo>=3?'ok3':'ok1'); buzz(combo>=3?[12,40,12]:12); }
@@ -1799,9 +1823,11 @@ function renderSetup(){
   pick('scope',v=>{qScope=v;});
   pick('dir',v=>{qDir=v;});
   // 横バーは動かすたびに1目盛りぶん音を鳴らす。制限時間は「今日の10問」にも使うので、端末に覚えておく
-  lim.oninput=()=>{ const v=+lim.value; if(v!==PREFS.limit){ PREFS.limit=v; sfx('tick'); refresh(); } };
+  const LIMNOTE=[392,523,587,659,698,784,880,988,1047,1175,1319];     // 0（なし）〜10秒：ドレミの順に上がる
+  lim.oninput=()=>{ const v=+lim.value; if(v!==PREFS.limit){ PREFS.limit=v; note(LIMNOTE[v]||880); refresh(); } };
   lim.onchange=()=>store.set(PKEY,PREFS);
-  len.oninput=()=>{ const v=+len.value; if(v!==qLen){ qLen=v; sfx('tick'); refresh(); } };
+  // 問題数は、左端から右端までで2オクターブ上がる
+  len.oninput=()=>{ const v=+len.value; if(v!==qLen){ qLen=v; note(392*Math.pow(2,(v-1)/Math.max(1,len.max-1)*2)); refresh(); } };
   el('lenall').onclick=()=>{ if(qLen){ qLenLast=qLen; qLen=0; } else qLen=qLenLast; refresh(); };   // 「全部」をやめたら、元の問題数に戻す
   const cs=el('clearsel');
   if(cs) cs.onclick=()=>{SEL.clear();selLabel();renderSetup();};
@@ -2021,40 +2047,6 @@ if(window.speechSynthesis){
   speechSynthesis.onvoiceschanged=checkVoices;
   [200,700,1500].forEach(t=>setTimeout(checkVoices,t));
 }
-
-/* ================= 読み上げ診断 ================= */
-function runDiag(anchor){
-  const box=document.createElement('div');
-  box.className='note';
-  const has=!!window.speechSynthesis;
-  const vs=has?(speechSynthesis.getVoices()||[]):[];
-  const v=has?voiceFor(PAGELANG):null;
-  const L=[];
-  L.push('① 読み上げ機能：'+(has?'あり':'<b>なし</b>（このブラウザは非対応）'));
-  L.push('② 端末の音声の数：'+vs.length+(vs.length?'':'　<b>0なら音声データが未インストール</b>'));
-  if(vs.length) L.push('③ 入っている言語：'+[...new Set(vs.map(x=>x.lang))].sort().join(', '));
-  L.push('④ '+PAGELANG+' の音声：'+(v?v.name+'（'+v.lang+'）':'<b>見つからない</b>'));
-  L.push('⑤ iframe の中：'+(window.top!==window.self?'<b>はい</b>（アプリ内表示だと鳴らないことがある）':'いいえ'));
-  L.push('⑥ 音量：端末がマナーモードだと鳴らない場合がある。メディア音量も確認');
-  box.innerHTML='<h4>読み上げ診断</h4>'+L.map(x=>'<div class="src">'+x+'</div>').join('')+
-    '<div class="src" id="diagres">⑦ テスト発話：実行中…</div>';
-  const n=anchor.closest('.note'); if(n&&n.after) n.after(box); else out.prepend(box);
-  if(!has){document.getElementById('diagres').textContent='⑦ テスト発話：実行できない';return;}
-  const fired=[];
-  const show=()=>{const r=document.getElementById('diagres'); if(r) r.textContent='⑦ テスト発話：'+fired.join(' → ');};
-  const u=new SpeechSynthesisUtterance(PAGELANG.indexOf('ru')===0?'проверка звука':'sound check');
-  u.lang=PAGELANG; if(v) u.voice=v;
-  u.onstart=()=>{fired.push('start');show();};
-  u.onend=()=>{fired.push('end');show();};
-  u.onerror=ev=>{fired.push('error: '+(ev&&ev.error||'不明'));show();};
-  try{speechSynthesis.cancel();}catch(_){}
-  setTimeout(()=>speechSynthesis.speak(u),80);
-  setTimeout(()=>{if(!fired.length){const r=document.getElementById('diagres'); if(r) r.textContent='⑦ テスト発話：イベントが一つも起きなかった（ブラウザが要求を無視している）';}},2600);
-}
-document.getElementById('diagbtn').onclick=e=>{
-  const old=document.getElementById('diagres'); if(old) old.parentNode.remove();
-  runDiag(e.currentTarget); window.scrollTo({top:0});
-};
 
 /* ================= header collapse ================= */
 let ticking=false;
