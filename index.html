@@ -1591,7 +1591,7 @@ function stOf(k){
 function legendHtml(){
   const w=Object.keys(WEAK).length, z=Object.keys(ZUKAN).some(inZukan);
   if(!w&&!z) return '';
-  return '<div class="legend">'+(w?'<b>●</b> 苦手（多いほど、よく間違えている）':'')+(w&&z?'　':'')+(z?'<b>✓</b> 図鑑に載った':'')+'</div>';
+  return '<div class="legend">'+(w?'<b>●</b> 苦手':'')+(w&&z?'　':'')+(z?'<b>✓</b> 図鑑':'')+'</div>';
 }
 /* 押し間違いを防ぐ2回押し：1回目はボタンを確認の表示に変えて false、数秒のうちにもう一度押されたら true を返す */
 function twice(b,msg){
@@ -1610,10 +1610,10 @@ function showReset(msg){
   box.className='note'; box.id='resetbox';
   box.innerHTML='<h4>記録の初期化</h4><div class="body">'+
     '<p>'+(msg?'<b>'+msg+'</b>　':'')+'消したものは元に戻せません。「消す」は2回押すと実行します。</p>'+
-    '<div class="rs"><span>苦手な語と、間違えた回数（苦手 '+Object.keys(WEAK).length+'語）</span><button class="mini" data-r="weak">消す</button></div>'+
-    '<div class="rs"><span>図鑑（載った '+got+'語、あと1回 '+half+'語）</span><button class="mini" data-r="zukan">消す</button></div>'+
+    '<div class="rs"><span>苦手と間違えた回数（'+Object.keys(WEAK).length+'語）</span><button class="mini" data-r="weak">消す</button></div>'+
+    '<div class="rs"><span>図鑑（'+got+'語・あと1回 '+half+'語）</span><button class="mini" data-r="zukan">消す</button></div>'+
     '<div class="rs"><span>判定と連続日数（'+Object.keys(DAILY).length+'日ぶん）</span><button class="mini" data-r="daily">消す</button></div>'+
-    '<div class="rs"><span>すべて（上の3つと、途中のテスト、制限時間や効果音の設定）</span><button class="mini" data-r="all">すべて消す</button></div>'+
+    '<div class="rs"><span>すべて（上の3つ・途中のテスト・設定）</span><button class="mini" data-r="all">すべて消す</button></div>'+
     '<div class="expbtns"><button class="mini" id="closereset">閉じる</button></div></div>';
   out.prepend(box);
   const wipe=o=>Object.keys(o).forEach(k=>delete o[k]);
@@ -1745,7 +1745,7 @@ function recordHtml(){
   const base=new Date(); base.setHours(12,0,0,0);
   const days=[];
   for(let i=13;i>=0;i--){ const x=new Date(base); x.setDate(base.getDate()-i); days.push(x); }
-  if(!days.some(x=>DAILY[dkey(x)])) return '<div class="rec-info">まだ記録がありません。「今日の10問」を終えると、判定がここに並びます。</div>';
+  if(!days.some(x=>DAILY[dkey(x)])) return '<div class="rec-info">まだ記録がありません</div>';
   const md=x=>(x.getMonth()+1)+'/'+x.getDate();
   const bars=days.map((x,i)=>{
     const r=DAILY[dkey(x)], cls='d'+(i===13?' today':'');
@@ -1755,7 +1755,7 @@ function recordHtml(){
       '<i style="height:'+Math.max(4,Math.round(r.raw/(r.n*100)*78))+'%"></i></button>';
   }).join('');
   return '<div class="rec">'+bars+'</div><div class="rec-x"><span>'+md(days[0])+'</span><span>今日</span></div>'+
-    '<div class="rec-info">棒を押すと、その日の内訳が出ます。</div>';
+    '<div class="rec-info">棒を押すと内訳</div>';
 }
 
 /* 図鑑：別々の日に2回、制限時間内に正解した語だけが載る。品詞ごとに何語埋まったかを出す */
@@ -1767,7 +1767,7 @@ function zukanHtml(){
     got+=n;
     return '<div>'+esc(p.name)+'</div><div class="bar"><i style="width:'+(n/tot*100)+'%"></i></div><div class="num">'+n+' / '+tot+'</div>';
   }).join('');
-  return '<p>和 → 露のテストで、別々の日に2回、制限時間内に正解した語が載ります。同じ日に何回正解しても1回ぶんです。<br>'+
+  return '<p>和 → 露で制限時間内に正解した日が2日になった語が載ります。<br>'+
     TOTAL.toLocaleString('ja-JP')+'語のうち <b>'+got+'</b> 語（あと1回で載る語 '+half+'）</p><div class="zk">'+rows+'</div>';
 }
 
@@ -1874,13 +1874,13 @@ function renderSetup(){
   out.innerHTML=
     (saved?'<div class="q-setup">'+
       '<h3>途中のテスト</h3>'+
-      '<p>'+(saved.q.kind==='daily'?'今日の10問':'テスト')+'：'+saved.q.items.length+'問中 '+saved.q.i+'問まで済み。新しく始めると、この続きは消えます。</p>'+
+      '<p>'+(saved.q.kind==='daily'?'今日の10問':'テスト')+'：'+saved.q.items.length+'問中 '+saved.q.i+'問まで済み。新しく始めると消えます。</p>'+
       '<button class="go" id="resume" style="margin-top:4px">続きから</button>'+
     '</div>':'')+
     '<div class="q-setup">'+
       '<h3>今日の10問</h3>'+
-      '<p>和 → 露・制限 <span id="dlim"></span>秒。苦手な語と、まだ図鑑にない語から出します。</p>'+
-      '<p>'+(done?'今日の判定は <b>'+esc(done.r)+'</b>。もう1セットは練習で、記録には残りません。':'終えると、今日の判定（S〜C）が出ます。')+'<br>'+streakText()+'</p>'+
+      '<p>和 → 露・制限 <span id="dlim"></span>秒。苦手な語と図鑑にない語から出題。</p>'+
+      '<p>'+(done?'今日の判定は <b>'+esc(done.r)+'</b>。もう1セットは練習（記録に残りません）':'終えると今日の判定（S〜C）が出ます。')+'<br>'+streakText()+'</p>'+
       '<button class="go" id="daily" style="margin-top:4px">'+(done?'もう1セット':'始める')+'</button>'+
     '</div>'+
     '<div class="q-setup">'+

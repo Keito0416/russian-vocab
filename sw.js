@@ -1,7 +1,7 @@
 /* ロシア語単語帳：電波がなくても開けるように、中身をスマホに保存しておく仕組み。
    電波があれば新しい版を取りに行き、なければ保存してある版を出す。
    中身を直して送るたびに、下の VERSION の数字を1つ上げる（古い保存を片付けるため）。 */
-const VERSION='v3';
+const VERSION='v4';
 const CACHE='rv-'+VERSION;
 const FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
 
