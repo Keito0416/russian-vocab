@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ロシア語語彙</title>
+<!-- アプリ化（ホーム画面に置く・電波なしで開く）のための指定。中身は manifest.webmanifest と sw.js -->
+<meta name="theme-color" content="#F5F4EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141417" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>if('serviceWorker' in navigator) addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});</script>
+<style>
+  :root{
+    --paper:#F5F4EF; --card:#FFFEFA; --ink:#191A1D; --ink2:#4C525A;
+    --dim:#8A8F97; --rule:#E2E0D8; --hair:#EDEBE3;
+    --red:#AF2219; --mask:#B0231C; --ok:#2C7A55; --hl:#F2E08C;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#141417; --card:#1C1D21; --ink:#EBE9E2; --ink2:#A5AAB2;
+      --dim:#6E737B; --rule:#2C2E34; --hair:#232529;
+      --red:#E36258; --mask:#8C2822; --ok:#4FAE81; --hl:#5A5020;
+    }
+  }
+  /* 色の約束：赤（--red, --mask）は「隠す・答え」だけに使う。選択中・強調は墨色（--ink）、目印は灰色（--dim） */
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic","Segoe UI",sans-serif;
+    font-size:16px;line-height:1.5;padding-bottom:calc(88px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px}
+  .hidden{display:none !important}
+
+  /* ---------- header ---------- */
+  header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--rule);overflow:hidden}
+  .masthead{
+    display:flex;align-items:baseline;gap:9px;padding:13px 0 9px;
+    transition:margin-top .18s ease,opacity .18s ease;
+  }
+  body.scrolled .masthead{margin-top:-40px;opacity:0;pointer-events:none}
+  .masthead h1{font-family:var(--serif);font-size:18px;font-weight:400;margin:0;letter-spacing:.01em}
+  .masthead .n{font-family:var(--serif);font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .searchrow{display:flex;gap:6px;margin-bottom:8px}
+  .search{position:relative;flex:1;min-width:0}
+  .search input{
+    width:100%;min-height:44px;padding:10px 42px 10px 12px;
+    border:1px solid var(--rule);border-radius:3px;background:var(--card);color:var(--ink);
+    font-family:var(--serif);font-size:16px;outline:none;transition:border-color .12s;
+  }
+  .search input:focus{border-color:var(--ink2)}
+  .search input::placeholder{font-family:inherit;color:var(--dim);font-size:13.5px}
+  .clear{position:absolute;right:2px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--dim);font-size:20px;width:40px;height:40px;cursor:pointer;line-height:1;display:none}
+  .toolsbtn{
+    flex:0 0 auto;min-width:58px;min-height:44px;padding:0 12px;
+    border:1px solid var(--rule);background:var(--card);color:var(--ink2);
+    border-radius:3px;font-size:13px;font-family:inherit;cursor:pointer;
+    transition:background .12s,color .12s,border-color .12s;
+  }
+  .toolsbtn[aria-expanded="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;display:inline-flex;align-items:center;min-height:40px;
+    border:1px solid var(--rule);background:var(--card);color:var(--ink2);
+    padding:0 14px;border-radius:999px;font-size:13px;font-family:inherit;cursor:pointer;
+    transition:background .12s,color .12s,border-color .12s;
+  }
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .chip .c{font-variant-numeric:tabular-nums;opacity:.55;margin-left:5px;font-size:13px}
+  .subbar{display:flex;flex-wrap:wrap;gap:6px;padding-bottom:8px}
+  .mini{
+    flex:1 1 30%;min-height:40px;border:1px solid var(--rule);background:var(--card);color:var(--ink2);
+    padding:5px 6px;border-radius:3px;font-size:13px;line-height:1.3;font-family:inherit;cursor:pointer;
+  }
+  .mini:active{background:var(--rule)}
+  /* 画面下の切り替えバー（親指が届く位置） */
+  .modes{
+    position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;
+    background:var(--paper);border-top:1px solid var(--rule);
+    padding:6px 12px calc(6px + env(safe-area-inset-bottom));
+  }
+  .mode{
+    flex:1;max-width:232px;min-height:44px;border:1px solid var(--rule);border-left-width:0;
+    background:var(--card);color:var(--ink2);font-size:14px;font-family:inherit;cursor:pointer;
+    transition:background .12s,color .12s;
+  }
+  .mode:first-child{border-left-width:1px;border-radius:3px 0 0 3px}
+  .mode:last-child{border-radius:0 3px 3px 0}
+  .mode[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+  /* ---------- sections ---------- */
+  .pos-title{
+    display:flex;align-items:center;gap:9px;margin:30px 0 2px;
+    font-size:13px;letter-spacing:.11em;color:var(--dim);
+  }
+  .pos-title::before{content:"";width:6px;height:6px;background:var(--dim);flex:0 0 6px}
+  .pos-title::after{content:"";flex:1;height:1px;background:var(--rule)}
+  details.grp{border-bottom:1px solid var(--rule)}
+  details.grp>summary{
+    list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+    padding:12px 2px;font-size:14px;font-weight:500;
+  }
+  details.grp>summary::-webkit-details-marker{display:none}
+  details.grp>summary::before{content:"+";font-family:var(--serif);color:var(--dim);font-size:15px;width:9px;flex:0 0 9px;text-align:center}
+  details.grp[open]>summary::before{content:"–"}
+  details.grp>summary .gname{flex:1}
+  details.grp>summary .cnt{font-family:var(--serif);font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;font-weight:400}
+
+  /* ---------- entries : 一覧＝索引レイアウト ---------- */
+  ul.list{list-style:none;margin:0;padding:0 0 10px}
+  ul.list li{
+    display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) 40px;
+    gap:0 10px;align-items:baseline;padding:0 0 0 20px;
+  }
+  ul.list li+li{border-top:1px solid var(--hair)}
+  .hd{min-width:0;padding:10px 0}
+  .ru{font-family:var(--serif);font-size:15px;line-height:1.35}
+  .ru .sl{color:var(--dim);padding:0 1px}
+  .ja{color:var(--ink2);font-size:13px;line-height:1.45;padding:10px 0}
+  mark{background:var(--hl);color:inherit;padding:0 1px;border-radius:2px}
+  .tip{
+    grid-column:1 / -1;font-size:13px;line-height:1.7;color:var(--ink2);
+    border-left:2px solid var(--rule);padding:1px 0 1px 9px;margin:0 0 9px;
+  }
+  .tip b{font-family:var(--serif);font-weight:400;color:var(--ink)}
+  .tip .warn{color:var(--ink);font-weight:600}
+
+  /* ---------- red sheet : カードレイアウト ---------- */
+  body.sheet ul.list{padding:5px 0 12px;display:flex;flex-direction:column;gap:6px}
+  body.sheet ul.list li{
+    display:grid;grid-template-columns:minmax(0,1fr) 132px;
+    align-items:center;gap:10px;
+    background:var(--card);border:1px solid var(--rule);border-radius:6px;
+    padding:13px 14px;cursor:pointer;
+    min-height:70px;                 /* めくっても高さが変わらないように確保 */
+  }
+  body.sheet .hd{padding:0}          /* 長い見出し語は自分の列の中で折り返す */
+  body.sheet .ru{font-size:17px;line-height:1.3;word-break:break-word}
+  body.sheet .ja{width:100%;font-size:13px;text-align:right;padding:0}
+  body.sheet.hide-ja li:not(.rev) .ja,
+  body.sheet.hide-ru li:not(.rev) .ru{
+    background:var(--mask);border-radius:3px;color:transparent;font-size:0;
+    padding:3px 8px;user-select:none;-webkit-user-select:none;
+    display:inline-block;vertical-align:middle;white-space:nowrap;overflow:hidden;
+  }
+  body.sheet.mask-solid.hide-ja li:not(.rev) .ja,
+  body.sheet.mask-initial.hide-ja li:not(.rev) .ja{width:100%;max-width:100%;min-height:26px}
+  body.sheet.mask-solid.hide-ru li:not(.rev) .ru,
+  body.sheet.mask-initial.hide-ru li:not(.rev) .ru{width:132px;max-width:132px;min-height:26px}
+  body.sheet.mask-count.hide-ja li:not(.rev) .ja{max-width:100%;overflow:hidden}
+  body.sheet.mask-initial.hide-ja li:not(.rev) .ja::before,
+  body.sheet.mask-initial.hide-ru li:not(.rev) .ru::before{content:attr(data-ini);color:#fff;font-size:14px}
+  body.sheet.mask-count.hide-ja li:not(.rev) .ja::before,
+  body.sheet.mask-count.hide-ru li:not(.rev) .ru::before{content:attr(data-mask);color:rgba(255,255,255,.5);font-size:11px;letter-spacing:1px}
+  body.sheet li:not(.rev) mark{background:transparent;color:transparent}
+  body.sheet .tip{display:none}
+  body.sheet li.rev .ja{color:var(--ink)}
+
+  /* ---------- 書き出し ---------- */
+  #exptxt{
+    width:100%;border:1px solid var(--rule);border-radius:3px;background:var(--paper);
+    color:var(--ink);font-family:var(--serif);font-size:13px;line-height:1.7;
+    padding:9px 11px;resize:vertical;
+  }
+  .expfmt{display:flex;gap:6px;margin-bottom:8px}
+  .expfmt .mini{flex:1}
+  .expfmt .mini[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .exphint{margin:9px 0 0;font-size:13px;line-height:1.7;color:var(--dim)}
+  .exphint b{color:var(--ink)}
+  .expbtns{display:flex;gap:6px;margin-top:8px}
+  .expbtns .mini{flex:1}
+
+  /* ---------- 選択 ---------- */
+  ul.list li.sel{box-shadow:inset 3px 0 0 var(--ink);background:var(--card)}
+  body.selecting ul.list li{cursor:pointer;position:relative}
+  body.selecting ul.list li::after{
+    content:"";position:absolute;right:12px;top:20px;transform:translateY(-50%);
+    width:15px;height:15px;border:1px solid var(--dim);border-radius:2px;
+  }
+  body.selecting ul.list li.sel::after{background:var(--ink);border-color:var(--ink)}
+  body.sheet.selecting ul.list li{padding-right:40px}
+  body.sheet.selecting ul.list li::after{top:50%}
+  .gsel{display:none}
+  body.selecting details.grp>summary{padding:4px 2px}
+  body.selecting details.grp>summary .gsel{
+    display:inline-flex;align-items:center;min-height:40px;
+    border:1px solid var(--rule);background:var(--card);color:var(--ink2);
+    padding:0 14px;border-radius:999px;font-size:13px;font-family:inherit;
+    white-space:nowrap;cursor:pointer;
+  }
+  body.selecting details.grp>summary .gsel:active{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+  /* ---------- 読み上げと動画リンク ---------- */
+  [data-say]{cursor:pointer}
+  [data-say]:active{opacity:.55}
+  /* 動画は行の右端に離して置く（語のタップと押し間違えないように）。赤シート・テスト・選択中は出さない */
+  .vid{
+    align-self:stretch;display:flex;align-items:center;justify-content:center;min-height:40px;
+    color:var(--dim);font-size:11px;line-height:1;text-decoration:none;
+  }
+  .vid:active{color:var(--ink)}
+  body.sheet .vid,body.quiz .vid,body.selecting .vid{display:none}
+  span.vid{display:inline-flex;min-height:0;padding:0 3px}
+
+  /* ---------- notes ---------- */
+  .note{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:0;margin:10px 0;overflow:hidden}
+  .note>summary,.note h4{
+    margin:0;padding:12px 15px;font-size:13.5px;letter-spacing:.04em;color:var(--ink);
+    font-weight:600;display:flex;align-items:center;gap:9px;cursor:pointer;list-style:none;
+  }
+  .note>summary::-webkit-details-marker{display:none}
+  .note>summary::before{
+    content:"+";font-family:var(--serif);color:var(--dim);font-size:15px;
+    width:9px;flex:0 0 9px;text-align:center;line-height:1;
+  }
+  .note[open]>summary::before{content:"–"}
+  .note[open]>summary{border-bottom:1px solid var(--rule)}
+  .note h4{border-bottom:1px solid var(--rule)}
+
+  .note .body{padding:13px 15px;font-size:13px;line-height:1.9}
+  .note .body>p{margin:0 0 10px}
+  .note .body>p:last-child{margin-bottom:0}
+  .note .eg{
+    margin:11px 0;padding:10px 13px;background:var(--paper);
+    border-left:2px solid var(--dim);font-size:13px;line-height:1.85;
+  }
+  .note .eg b{font-family:var(--serif);font-weight:400;color:var(--ink)}
+  .note ul{margin:0;padding-left:16px}
+  .note li{margin-bottom:5px}
+  .note li:last-child{margin-bottom:0}
+  .note b{font-family:var(--serif);font-weight:400;color:var(--ink)}
+  .note a{color:var(--ink);text-decoration:none;border-bottom:1px solid currentColor;opacity:.9;word-break:break-word}
+  .note .src{display:block;margin-bottom:9px;line-height:1.65}
+  .note .src:last-child{margin-bottom:0}
+
+  /* ---------- quiz ---------- */
+  .q-setup{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:17px;margin-top:20px}
+  .q-setup h3{margin:0 0 4px;font-size:15px;font-weight:600}
+  .q-setup p{margin:0 0 12px;font-size:13px;color:var(--ink2)}
+  .q-setup p b{font-family:var(--serif);font-weight:400;color:var(--ink);font-size:15px}
+  .q-label{font-size:13px;letter-spacing:.08em;color:var(--dim);margin:14px 0 6px}
+  .opts{display:flex;gap:6px}
+  .opt{
+    flex:1;min-height:44px;border:1px solid var(--rule);background:var(--paper);color:var(--ink2);
+    padding:6px 3px;border-radius:3px;font-size:13.5px;line-height:1.3;font-family:inherit;cursor:pointer;transition:background .12s,color .12s;
+  }
+  .opt[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .go{width:100%;margin-top:18px;border:0;background:var(--ink);color:var(--paper);padding:13px;border-radius:3px;font-size:15px;font-family:inherit;cursor:pointer}
+  .go:disabled{background:var(--rule);color:var(--dim);cursor:default}
+  .go.sub{background:none;border:1px solid var(--rule);color:var(--ink2);margin-top:8px}
+  .q-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:20px 0 7px;font-size:13px;color:var(--dim)}
+  .q-top b{font-family:var(--serif);font-weight:400;color:var(--ink);font-variant-numeric:tabular-nums}
+  .q-prog{height:2px;background:var(--rule);margin-bottom:18px}
+  .q-prog.t{margin-bottom:6px}
+  .q-prog i{display:block;height:100%;background:var(--ink);transition:width .22s ease}
+  .q-card{
+    background:var(--card);border:1px solid var(--rule);border-radius:4px;
+    padding:38px 20px;text-align:center;min-height:200px;
+    display:flex;flex-direction:column;justify-content:center;gap:15px;
+  }
+  .q-cat{font-size:13px;letter-spacing:.08em;color:var(--dim);order:3}
+  .q-prompt{font-family:var(--serif);font-size:27px;line-height:1.3;word-break:break-word}
+  .q-prompt.ja-side{font-family:inherit;font-size:22px}
+  .q-ans{border-top:1px solid var(--hair);padding-top:15px;font-size:19px;color:var(--red)}
+  .q-ans.ru-side{font-family:var(--serif)}
+  .q-btns{display:flex;gap:7px;margin-top:11px}
+  .q-btns button{flex:1;border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:14px;border-radius:3px;font-size:15px;font-family:inherit;cursor:pointer}
+  .q-btns .ok{border-color:var(--ok);color:var(--ok)}
+  .q-btns .ng{border-color:var(--red);color:var(--red)}
+  .q-btns .reveal{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .q-hint{text-align:center;font-size:13px;color:var(--dim);margin-top:10px}
+  .score{font-family:var(--serif);font-size:46px;text-align:center;margin:24px 0 2px;font-variant-numeric:tabular-nums}
+  .score small{font-size:16px;color:var(--dim)}
+  .score-sub{text-align:center;font-size:13px;color:var(--ink2);margin-bottom:6px}
+  .wrong-h{font-size:13px;letter-spacing:.08em;color:var(--red);border-bottom:1px solid var(--rule);padding-bottom:6px;margin-top:22px}
+  .again{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
+  .again button{flex:1 1 40%;min-height:44px;border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:10px 5px;border-radius:3px;font-size:13.5px;font-family:inherit;cursor:pointer}
+  .again .primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+  /* ---------- テストの中だけの演出：制限時間・得点・判定・記録・図鑑 ---------- */
+  .q-timer{height:4px;background:var(--rule);border-radius:2px;margin-bottom:14px;overflow:hidden}
+  .q-timer i{display:block;height:100%;background:var(--ink2);transform-origin:left center}
+  @keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.18);opacity:1}100%{transform:scale(1)}}
+  .q-combo{font-family:var(--serif);font-size:15px;color:var(--ink);animation:pop .28s ease}
+  .q-gain{font-style:normal;font-family:var(--serif);color:var(--ok);margin-left:6px;display:inline-block;animation:pop .28s ease}
+  .q-x2{align-self:center;font-size:13px;background:var(--hl);color:var(--ink);padding:3px 12px;border-radius:999px}
+  .rank{font-family:var(--serif);font-size:88px;line-height:1;text-align:center;margin:6px 0 10px;animation:pop .4s ease}
+  .rank-h{text-align:center;font-size:13px;letter-spacing:.08em;color:var(--dim);margin-top:24px}
+  /* 日ごとの記録：棒の高さ＝その日の点（2倍ぶんを除く）、棒の上の字＝判定 */
+  .rec{display:flex;align-items:flex-end;gap:3px;height:104px;margin-top:10px;border-bottom:1px solid var(--rule)}
+  .rec .d{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;border:0;background:none;padding:0;font-family:inherit;cursor:pointer}
+  .rec .d b{font-family:var(--serif);font-weight:400;font-size:13px;line-height:1.5;color:var(--ink2)}
+  .rec .d i{display:block;width:100%;max-width:26px;background:var(--dim);border-radius:4px 4px 0 0}
+  .rec .d.today i{background:var(--ink)}
+  .rec .d.none{cursor:default}
+  .rec .d[aria-pressed="true"] b{color:var(--ink);font-weight:600}
+  .rec-x{display:flex;justify-content:space-between;font-size:13px;color:var(--dim);margin-top:4px}
+  .rec-info{min-height:21px;font-size:13px;color:var(--ink2);margin-top:6px}
+  .zk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 10px;align-items:center;font-size:13px}
+  .zk .bar{margin:0}
+  .zk .num{font-family:var(--serif);font-variant-numeric:tabular-nums;text-align:right;color:var(--ink2)}
+
+  /* ---------- footer ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 18px}
+  th,td{padding:8px 4px;text-align:left;border-bottom:1px solid var(--hair)}
+  th{font-size:13px;letter-spacing:.06em;color:var(--dim);font-weight:600}
+  td.num{font-family:var(--serif);font-variant-numeric:tabular-nums;text-align:right}
+  .bar{height:3px;background:var(--rule);border-radius:2px;margin-top:4px}
+  .bar i{display:block;height:100%;background:var(--ink2);border-radius:2px}
+  .empty{padding:44px 0;text-align:center;color:var(--dim);font-size:13.5px}
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+    .q-combo,.q-gain,.rank{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="masthead">
+      <h1>Русская лексика</h1>
+      <span class="n" id="total"></span>
+    </div>
+    <div class="searchrow">
+      <div class="search">
+        <input id="q" type="search" placeholder="ロシア語・日本語どちらでも検索" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="clear" id="clr" aria-label="検索を消す">×</button>
+      </div>
+      <button class="toolsbtn" id="toolsbtn" aria-expanded="false">操作</button>
+    </div>
+    <div id="tools" class="hidden">
+    <div class="subbar" id="spdbar">
+      <button class="mini" id="spd">読み上げ：標準</button>
+      <button class="mini" id="selbtn">選択：オフ</button>
+      <button class="mini" id="expbtn">書き出し</button>
+      <button class="mini" id="tipq">補足も検索：オフ</button>
+      <button class="mini" id="sndbtn">効果音：オン</button>
+    </div>
+    <div class="subbar hidden" id="sheetbar">
+      <button class="mini" id="side">隠す面：日本語</button>
+      <button class="mini" id="mask">隠し方：ベタ</button>
+      <button class="mini" id="shuf">分類の中で混ぜる</button>
+      <button class="mini" id="shufall">全体を混ぜる</button>
+      <button class="mini" id="revall">全部めくる</button>
+      <button class="mini" id="hideall">全部戻す</button>
+    </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</header>
+
+<main class="wrap" id="out"></main>
+
+<section class="wrap" id="status">
+  <div class="pos-title">現在地</div>
+  <table>
+    <thead><tr><th>品詞</th><th>済</th><th>B2目安</th><th style="width:70px">到達</th></tr></thead>
+    <tbody id="progress"></tbody>
+  </table>
+  <div class="note">
+    <h4>レベルは語数では決まらない</h4>
+    同じ <b>говорить / сказать</b> を知っていても——
+    <ul>
+      <li>現在・過去・未来が作れる → A1–A2</li>
+      <li>場面に応じて体を選べる → B1–</li>
+      <li>命令形・仮定法・不定形で体を使い分けられる → B2–</li>
+      <li>形動詞・副動詞（говорящий, сказав）を読める → B2–C1</li>
+    </ul>
+    新語を200足すより、既存の200を4段階目まで上げるほうが速い。
+  </div>
+  <div class="note">
+    <h4>次にやること</h4>
+    <ul>
+      <li><b>動詞の接頭辞</b> — 語根 × 接頭辞で掛け算的に増える</li>
+      <li><b>分野別名詞</b> — 観光は着手済み。次は政治外交（条約・交渉・制裁・領事）</li>
+      <li><b>接続表現の例文化</b> — 前置詞タイプと相関タイプのみ</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="modes" id="modes" aria-label="表示の切り替え">
+  <button class="mode" data-m="list" aria-pressed="true">一覧</button>
+  <button class="mode" data-m="sheet" aria-pressed="false">赤シート</button>
+  <button class="mode" data-m="quiz" aria-pressed="false">テスト</button>
+</nav>
+
+<script>
+const D=[
+{id:"adj",name:"形容詞",groups:[
+["大きさ・形",[["большой","大きい"],["маленький","小さい"],["огромный","巨大な"],["крупный","粒が大きい・大規模な・主要な"],["мелкий","細かい・浅い・些細な"],["широкий","広い"],["узкий","狭い"],["длинный","長い"],["короткий","短い"],["высокий","高い・（地位・音が）高い"],["низкий","低い"],["глубокий","深い・深遠な・更けた"]]],
+["評価",[["хороший","良い"],["плохой","悪い"],["отличный","優秀な"],["прекрасный","すばらしい"],["замечательный","見事な"],["чудесный","素敵な"],["ужасный","ひどい"],["страшный","恐ろしい・ひどい・すごい"],["лучший","最良の"],["худший","最悪の"],["важный","重要な"],["главный","主要な"],["нужный","必要な"],["полезный","役に立つ・健康によい"]]],
+["色",[["белый","白"],["чёрный","黒"],["красный","赤"],["синий","青（濃）"],["голубой","水色"],["зелёный","緑"],["жёлтый","黄"],["серый","灰"],["коричневый","茶"],["розовый","ピンク"],["оранжевый","オレンジ"],["фиолетовый","紫"],["светлый","明るい・淡い・晴れやかな"],["тёмный","暗い・濃い・怪しい"],["яркий","鮮やかな・明るい・際立った"]]],
+["時間・新旧",[["новый","新しい"],["старый","古い・年老いた"],["молодой","若い"],["современный","現代の"],["древний","古代の"],["ранний","早い"],["поздний","遅い"],["быстрый","速い"],["медленный","のろい"],["частый","頻繁な"],["редкий","まれな"],["долгий","長時間の"],["первый","最初の"],["последний","最後の"],["следующий","次の"],["прошлый","過去の"],["будущий","未来の"],["настоящий","本物の・真の・現在の"]]],
+["物の性質・状態（基礎）",[["чистый","きれいな・純粋な・混じりけのない"],["грязный","汚い"],["сухой","乾いた・そっけない・辛口の"],["мокрый","濡れた"],["твёрдый","固い・確固たる・硬音の"],["мягкий","柔らかい・穏やかな・軟音の"],["тяжёлый","重い・つらい・重大な"],["лёгкий","軽い・易しい・軽度の"],["острый","鋭い・辛い・深刻な"],["круглый","丸い・まるまるの"],["прямой","まっすぐな・直接の・率直な"],["полный","満ちた・完全な・太った"],["пустой","空の・中身のない・無意味な"],["целый","まるごとの・丸一日の・無傷の"],["свободный","自由な・空いている・ゆったりした"],["занятый","ふさがった・忙しい"],["открытый","開いた"],["закрытый","閉じた"],["готовый","準備ができた・～する用意がある"]]],
+["性格（基礎）",[["добрый","親切な"],["злой","意地悪な"],["умный","賢い"],["глупый","愚かな"],["весёлый","陽気な"],["грустный","悲しい"],["серьёзный","まじめな・重大な・本格的な"],["смешной","笑える・こっけいな・ばかげた"],["строгий","厳しい"],["спокойный","穏やかな"],["нервный","神経質な"],["скромный","謙虚な・質素な・ささやかな"],["гордый","誇り高い・高慢な"],["ленивый","怠惰な"],["трудолюбивый","勤勉な"],["честный","正直な"],["вежливый","礼儀正しい"],["грубый","粗い・無礼な・大まかな"],["смелый","勇敢な"],["щедрый","気前のよい"],["жадный","けちな"]]],
+["外見・体（基礎）",[["красивый","美しい"],["некрасивый","見た目がよくない・見苦しい"],["симпатичный","感じのよい"],["толстый","太った"],["худой","やせた・（口語）悪い・破れた"],["сильный","力が強い・強烈な・激しい"],["слабый","弱い・薄い・不得意な"],["здоровый","健康な・（口語）大きい"],["больной","病気の・痛む・患者"],["усталый","疲れた"],["голодный","空腹の"],["сытый","満腹の"],["живой","生きている・生き生きした・活発な"],["мёртвый","死んだ"]]],
+["感情・印象（基礎）",[["счастливый","幸せな"],["довольный","満足した"],["влюблённый","恋している"],["одинокий","孤独な"],["интересный","興味深い"],["скучный","退屈な"],["приятный","心地よい"],["неприятный","不快な"],["удивительный","驚くべき"]]],
+["天気・自然",[["горячий","熱い・熱烈な・白熱した"],["жаркий","暑い（気候）"],["тёплый","暖かい"],["холодный","冷たい・寒い"],["прохладный","涼しい"],["солнечный","晴れた"],["дождливый","雨の"],["снежный","雪の"],["ветреный","風の強い"],["облачный","曇りの"],["свежий","新鮮な・涼しい・最新の"],["природный","自然の"]]],
+["味・食べ物",[["вкусный","おいしい"],["сладкий","甘い"],["солёный","しょっぱい"],["кислый","すっぱい"],["горький","苦い"],["жирный","脂っこい"],["сырой","生の・湿った・未加工の"],["варёный","ゆでた"],["жареный","焼いた・揚げた"]]],
+["難易・認識",[["трудный","難しい"],["сложный","複雑な"],["простой","単純な・易しい・素朴な"],["возможный","可能な"],["невозможный","不可能な"],["понятный","わかりやすい"],["известный","有名な・知られている"],["знакомый","見覚えのある・知人"],["незнакомый","未知の"],["уверенный","確信した"]]],
+["位置・空間",[["близкий","近い"],["далёкий","遠い"],["верхний","上の"],["нижний","下の"],["передний","前の"],["задний","後ろの"],["правый","右の"],["левый","左の"],["средний","中間の・平均の"],["местный","地元の"],["центральный","中心の"],["соседний","隣の"]]],
+["社会・抽象",[["русский","ロシアの"],["японский","日本の"],["английский","英語の"],["иностранный","外国の"],["национальный","国民の"],["государственный","国家の"],["общественный","社会の・公共の"],["частный","個別の・私的な・民間の"],["личный","個人の"],["общий","共通の・全体の・大まかな"],["разный","さまざまな"],["различный","異なる"],["одинаковый","同一の"],["похожий","似ている"],["другой","別の"],["особый","特別な"],["специальный","専門の"],["обычный","ふつうの"],["странный","奇妙な"],["дорогой","高価な・大切な・親愛なる"],["дешёвый","安い"],["бесплатный","無料の"],["богатый","豊かな"],["бедный","貧しい"]]],
+["分野（基礎）",[["рабочий","労働の"],["деловой","ビジネスの"],["экономический","経済の"],["политический","政治の"],["культурный","文化の"],["исторический","歴史の"],["научный","学術の"],["военный","軍の"],["международный","国際の"],["религиозный","宗教の"],["литературный","文学の"]]],
+["性格・態度（中級）",[["терпеливый","忍耐強い"],["нетерпеливый","せっかちな"],["внимательный","注意深い"],["осторожный","慎重な"],["решительный","決断力のある"],["настойчивый","粘り強い"],["упрямый","頑固な"],["капризный","わがままな"],["обидчивый","傷つきやすい"],["ревнивый","嫉妬深い"],["хитрый","ずる賢い"],["наглый","図々しい"],["застенчивый","内気な"],["общительный","社交的な"],["замкнутый","打ち解けない"],["добросовестный","良心的な"],["ответственный","責任感のある"],["легкомысленный","軽率な"],["равнодушный","無関心な"],["талантливый","才能のある"]]],
+["感情・心理状態（中級）",[["радостный","喜ばしい"],["печальный","もの悲しい"],["несчастный","不幸な"],["сердитый","怒っている"],["раздражённый","いらだった"],["испуганный","おびえた"],["удивлённый","驚いた"],["растерянный","当惑した"],["взволнованный","動揺した"],["благодарный","感謝している"],["виноватый","申し訳ない"],["тревожный","不安な"],["мрачный","暗い・陰鬱な・険しい"],["угрюмый","陰気な・むっつりした・不愛想な"],["отчаянный","必死の"],["нежный","柔らかく優しい・繊細な・淡い"]]],
+["外見・身体（中級）",[["стройный","すらりとした"],["лысый","はげた"],["кудрявый","巻き毛の・縮れた"],["бледный","青白い"],["загорелый","日焼けした"],["седой","白髪の"],["слепой","目が見えない・盲目的な・行き止まりの"],["глухой","耳が聞こえない・こもった・人里離れた"],["немой","口のきけない"],["голый","裸の"],["босой","裸足の"],["взрослый","成人の"],["пожилой","年配の"],["беременная","妊娠した"]]],
+["物の性質・状態（中級）",[["гладкий","なめらかな"],["шершавый","ざらざらした"],["тупой","刃が鈍い・鈍感な・（口語）ばかな"],["гибкий","曲げやすい・柔軟な"],["хрупкий","壊れやすい・華奢な"],["прочный","丈夫な"],["крепкий","しっかりした・丈夫な・濃い"],["плотный","詰まった・厚手の・しっかりした"],["тонкий","薄い・細い・繊細な"],["жидкий","液状の・薄い・まばらな"],["густой","密な・濃い・ふさふさした"],["прозрачный","透明な"],["блестящий","輝く・見事な・華々しい"],["тусклый","くすんだ"],["рваный","破れた"],["сломанный","壊れた"],["испорченный","傷んだ"],["подержанный","中古の"]]],
+["材質",[["деревянный","木製"],["железный","鉄"],["стеклянный","ガラス"],["каменный","石"],["бумажный","紙"],["кожаный","革"],["шерстяной","羊毛"],["золотой","金"],["серебряный","銀"],["пластиковый","プラスチック"]]],
+["時間・周期",[["вечный","永遠の"],["временный","一時的な"],["постоянный","恒常的な"],["ежедневный","毎日の"],["еженедельный","毎週の"],["ежемесячный","毎月の"],["ежегодный","毎年の"],["утренний","朝の"],["дневной","昼の"],["вечерний","夕方の"],["ночной","夜の"],["зимний","冬の"],["летний","夏の"],["весенний","春の"],["осенний","秋の"],["недавний","最近の"],["внезапный","突然の"],["срочный","緊急の"]]],
+["評価・有用性",[["великолепный","壮麗な"],["превосходный","卓越した"],["идеальный","理想的な"],["совершенный","完璧な"],["достойный","ふさわしい"],["подходящий","適した"],["удобный","便利な"],["неудобный","不便な"],["надёжный","信頼できる"],["опасный","危険な"],["безопасный","安全な"],["вредный","有害な"],["ценный","貴重な"],["необходимый","不可欠な"],["обязательный","義務的な"],["достаточный","十分な"]]],
+["真偽・確実性",[["правильный","正しい"],["неправильный","誤った"],["верный","正確な・忠実な・確実な"],["ложный","偽の"],["точный","精密な"],["приблизительный","おおよその"],["ясный","明白な・晴れた・澄んだ"],["очевидный","自明の"],["сомнительный","疑わしい"],["вероятный","ありそうな"],["реальный","現実の"],["искусственный","人工の"],["естественный","自然な"],["случайный","偶然の・行きずりの"]]],
+["数量・順序",[["многочисленный","多数の"],["единственный","唯一の"],["единый","統一された"],["двойной","二重の"],["максимальный","最大の"],["минимальный","最小の"],["дополнительный","追加の"],["основной","基本の"],["второстепенный","二次的な"],["предыдущий","前の"],["очередной","順番の・次の"],["лишний","余分な"]]],
+["社会・行政・法",[["законный","合法の"],["незаконный","違法の"],["юридический","法律の"],["официальный","公式の"],["неофициальный","非公式の"],["гражданский","市民の・民事の"],["уголовный","刑事の"],["административный","行政の"],["федеральный","連邦の"],["региональный","地域の"],["городской","都市の"],["сельский","農村の"],["районный","地区の"],["областной","州の"],["зарубежный","海外の"],["отечественный","国産の・祖国の"],["родной","生まれつき結びついた・肉親の・母国の"],["дипломатический","外交の"],["консульский","領事の"],["правительственный","政府の"]]],
+["産業・学問・技術",[["технический","技術の"],["промышленный","産業の"],["сельскохозяйственный","農業の"],["финансовый","財政の"],["банковский","銀行の"],["коммерческий","商業の"],["торговый","貿易の"],["транспортный","交通の"],["медицинский","医療の"],["образовательный","教育の"],["школьный","学校の"],["университетский","大学の"],["языковой","言語の"],["лингвистический","言語学の"],["математический","数学の"],["физический","物理の・身体の"],["химический","化学の"],["биологический","生物の"],["компьютерный","コンピュータの"],["цифровой","デジタルの"],["электронный","電子の"],["электрический","電気の"]]],
+["旅行・自然（分野）",[["туристический","観光の"],["экскурсионный","見学の"],["гостиничный","ホテルの"],["морской","海の"],["речной","川の"],["горный","山の"],["лесной","森の"],["островной","島の"],["железнодорожный","鉄道の"],["воздушный","空の"],["пеший","徒歩の"],["сувенирный","土産の"]]],
+["宗教・文化・食（分野）",[["православный","正教の"],["буддийский","仏教の"],["синтоистский","神道の"],["народный","民衆の・民族の"],["молочный","乳製品の"],["мясной","肉の"],["рыбный","魚の"],["овощной","野菜の"]]]
+],notes:[
+["語尾は3タイプしかない","<p>形容詞は数千あるが、変化のしかたは3種類で尽きる。辞書形の最後の3文字を見れば、どれに属するかがその場で分かる。</p><div class=\"eg\"><b>硬変化 -ый</b>　новый, красивый, интересный（大多数）<br><b>語尾強勢 -ой</b>　большой, плохой, другой, молодой<br><b>軟変化 -ий</b>　синий, последний, средний, ранний</div><p>硬変化と語尾強勢は、変化のしかたがまったく同じでアクセントの位置だけが違う。実質的に覚え分けが必要なのは<b>軟変化だけ</b>で、しかも数十語しかない。上のリストなら синий・последний・средний・передний・задний・верхний・нижний・соседний・ранний・поздний がそれにあたる。この10語を押さえてしまえば、残りは全部同じ扱いでよい。</p>"],
+
+["綴りの規則が「例外」の正体","<p>русский が -ый でないのはなぜか。маленький も хороший もそうだ。これは例外ではなく、ロシア語全体を貫く2つの正書法の規則による。</p><div class=\"eg\"><b>規則1</b>　語幹が к г х ж ч ш щ で終わると、ы が書けず <b>и</b> になる<br>　　　　русск<b>ий</b>, маленьк<b>ий</b>, хорош<b>ий</b><br><b>規則2</b>　ж ч ш щ ц のあとの<b>無強勢</b>の о は <b>е</b> になる<br>　　　　хорош<b>ее</b>, свеж<b>его</b>（ただし強勢があれば о のまま：больш<b>ой</b>）</div><p>この2つは形容詞だけの話ではない。名詞の複数形も、動詞の変化も、同じ規則に従う。<span class=\"warn\">「例外が多い言語だ」と感じたときは、たいていこの規則を知らないだけ</span>で、覚えるべき本当の例外はずっと少ない。</p>"],
+
+["長語尾と短語尾は役割が違う","<p>умный と умён は、丁寧さの違いではない。<b>文の中で置ける場所が違う</b>。</p><div class=\"eg\">Он <b>умный</b> человек.　○（名詞を修飾）<br>Он <b>умный</b>.　○（述語にも使える）<br>Он <b>умён</b>.　○（述語専用）<br>Он <b>умён</b> человек.　×</div><p>意味にも差が出る。長語尾は<b>恒常的な性質</b>、短語尾は<b>その場の状態や特定の条件下での評価</b>を表しやすい。Она красивая（美人だ）に対し、Она красива сегодня（今日はきれいだ）。この差は微妙で、まずは「短語尾＝述語」とだけ覚えて構わない。</p><p>作り方は、男性が語尾を落とした形、女性 -а、中性 -о、複数 -ы／-и。男性形で<span class=\"warn\">出没母音が入ることが多い</span>（умный → ум<b>ё</b>н、трудный → труд<b>е</b>н）。</p><p>逆に<b>短語尾しかない語</b>もある。рад（うれしい）、должен（〜すべきだ）、нужен（必要だ）、готов（用意ができた）。これらは長語尾で述語に使えないので、先に覚えたほうがいい。</p>"],
+
+["比較級は変化しない、最上級は変化する","<p>比較級の作り方は2通り。</p><div class=\"eg\"><b>規則</b>　語幹＋-ее　　новее, интереснее, красивее<br><b>不規則</b>　лучше, хуже, больше, меньше, выше, ниже, дороже, дешевле, старше, младше</div><p>使用頻度の高い語ほど不規則になるのは、どの言語でも同じ。上の10語は暗記するしかないが、逆にこれだけ覚えれば日常の大半は足りる。</p><p>比較の相手を示す方法も2通りある。<b>чем＋主格</b>（Он старше, <b>чем я</b>）と、<b>生格だけ</b>（Он старше <b>меня</b>）。後者のほうが短く、会話ではこちらが優勢。</p><p>最上級は <b>самый＋長語尾</b>（самый красивый）。<span class=\"warn\">比較級は語形変化しないが、самый は名詞に合わせて変化する</span>（самая красивая, самое красивое）。ここを取り違えやすい。</p>"],
+
+["「より木製な」は存在しない","<p>形容詞には2種類ある。この区別を知っておくと、覚える手間が半分になる。</p><p><b>性質形容詞</b>（большой, красивый, трудный）は程度がある。だから比較級が作れ、短語尾があり、очень が付く。</p><p><b>関係形容詞</b>（деревянный, медицинский, зимний, японский）は「〜に属する・〜でできた」を表すだけで、程度がない。だから<span class=\"warn\">比較級も短語尾も очень も存在しない</span>。「より木製な机」が日本語でも変なのと同じ理屈。</p><div class=\"eg\">очень を付けてみる → 不自然なら関係形容詞<br>очень красивый ○　／　очень деревянный ×</div><p>このリストの中級層は、材質・分野・時間の語が多いため、およそ半分が関係形容詞。<b>変化表を覚える必要がその分減る</b>ので、Anki に入れるならタグで分けておくと後で楽になる。</p><p>もう一点、<b>-ический</b> と <b>-ичный</b> の区別。前者は分野そのもの、後者は性質を表す。экономический кризис（経済危機）に対し экономичный автомобиль（燃費のいい車）。ペアがある語では意味が完全に別物になる。</p>"],
+
+["形容詞のまま名詞になる語","<p>формой は形容詞のままで、意味は名詞という語がある。格変化も形容詞のまま行う。</p><div class=\"eg\">взрослый　大人　／　больной　患者<br>рабочий　労働者　／　учёный　学者<br>мастерская　工房　／　столовая　食堂</div><p>文中でいきなり出てくると「名詞が抜けている」ように見えるが、そうではない。もともと <b>взрослый человек</b> のような形から名詞が省略されて定着したもの。сравнить: 日本語の「若いの」「偉いさん」に近い成り立ち。</p><p>беременная（妊娠した）のように、<span class=\"warn\">女性形しか実用されない語</span>もある。</p>"]
+]},
+
+{id:"verb",name:"動詞",groups:[
+["存在・姿勢",[["быть","ある・いる"],["становиться / стать","なる"],["находиться","位置している（不完のみ）"],["жить / прожить","住む・生きる"],["оставаться / остаться","残る"],["сидеть","座っている（状態）"],["садиться / сесть","座る（動作）"],["стоять","立っている（状態）"],["вставать / встать","立ち上がる・起きる"],["лежать","横たわっている（状態）"],["ложиться / лечь","横になる（動作）"],["висеть","掛かっている（不完のみ）"],["спать / поспать","眠る"],["просыпаться / проснуться","目覚める"],["существовать","存在する（不完のみ）"],["останавливаться / остановиться","止まる・立ち寄る"]]],
+["移動",[["идти / ходить","歩いて行く（定・不定）・降る・経つ・似合う"],["ехать / ездить","乗り物で行く（定・不定）"],["приходить / прийти","来る"],["приезжать / приехать","到着する"],["уходить / уйти","立ち去る"],["уезжать / уехать","出発する"],["входить / войти","入る"],["выходить / выйти","出る"],["подходить / подойти","近づく"],["переходить / перейти","渡る"],["возвращаться / вернуться","戻る"],["бежать / бегать","走る（定・不定）"],["лететь / летать","飛ぶ（定・不定）"],["плыть / плавать","泳ぐ（定・不定）"],["подниматься / подняться","上がる・登る"],["спускаться / спуститься","降りる"],["двигаться / двинуться","動く"],["падать / упасть","落ちる・転ぶ"],["гулять / погулять","散歩する"],["торопиться / поторопиться","急ぐ"]]],
+["体の動き",[["наклоняться / наклониться","かがむ"],["поворачиваться / повернуться","振り向く"],["прыгать / прыгнуть","跳ぶ"],["приседать / присесть","しゃがむ"],["махать / помахать","手を振る"],["обнимать / обнять","抱きしめる"],["целовать / поцеловать","キスする"],["указывать / указать","指し示す"],["протягивать / протянуть","差し出す"],["трогать / тронуть","触れる"],["дышать","呼吸する（不完のみ）"],["танцевать / потанцевать","踊る"]]],
+["運ぶ・置く",[["нести / носить","運ぶ・身につける（定・不定）"],["вести / водить","導く・運転する（定・不定）"],["везти / возить","乗せて運ぶ（定・不定）"],["приносить / принести","持ってくる"],["отправлять / отправить","送る"],["передавать / передать","渡す・パスする"],["передвигать / передвинуть","位置を動かす"],["доставать / достать","取り出す・入手する"],["класть / положить","置く"],["ставить / поставить","立てて置く"],["вешать / повесить","掛ける"],["вставлять / вставить","差し込む"],["вынимать / вынуть","取り出す"],["вытаскивать / вытащить","引き抜く"],["поднимать / поднять","持ち上げる・値を上げる・提起する"],["опускать / опустить","下ろす"],["ронять / уронить","落とす"],["доставлять / доставить","届ける"]]],
+["手で扱う",[["брать / взять","手に取る・引き受ける・借りる"],["давать / дать","与える"],["держать","握って保つ・維持する・飼う（不完のみ）"],["хватать / схватить","つかむ"],["отпускать / отпустить","放す"],["тянуть / потянуть","引く"],["толкать / толкнуть","押す"],["нажимать / нажать","押す"],["давить / надавить","押さえつける"],["сжимать / сжать","握りしめる"],["крутить / покрутить","回す"],["поворачивать / повернуть","回す・曲がる"],["трясти / потрясти","揺する"],["тереть / потереть","こする"],["переворачивать / перевернуть","ひっくり返す"],["сгибать / согнуть","曲げる"],["стучать / постучать","叩く・ノックする"],["жать / пожать","握る・締めつける"]]],
+["投げる・打つ",[["бросать / бросить","投げる・やめる"],["ловить / поймать","捕まえる"],["ударять / ударить","打つ"],["забивать / забить","得点を決める"],["отбивать / отбить","打ち返す"],["кидать / кинуть","投げる（口語）"],["перебрасывать / перебросить","越えて投げる"],["забрасывать / забросить","投げ入れる"],["метать / метнуть","投てきする"],["попадать / попасть","命中する・たどり着く"],["промахиваться / промахнуться","外す"],["бить / побить","打つ・叩く"]]],
+["スポーツ・勝負",[["играть / поиграть","遊ぶ・競技をする"],["тренироваться / потренироваться","練習する"],["кататься / покататься","滑る・乗り回す"],["соревноваться","競う（不完のみ）"],["выигрывать / выиграть","勝つ"],["проигрывать / проиграть","負ける"],["побеждать / победить","打ち負かす"],["подавать / подать","出す・サーブする"],["догонять / догнать","追いつく"],["разминаться / размяться","準備運動をする"],["отжиматься / отжаться","腕立てをする"],["растягиваться / растянуться","ストレッチする"],["нырять / нырнуть","潜る"],["болеть за","応援する"],["финишировать","ゴールする（両体同形）"]]],
+["作る・壊す",[["делать / сделать","する・作る"],["строить / построить","建てる"],["чинить / починить","修理する"],["ломать / сломать","壊す"],["разбивать / разбить","割る"],["рвать / порвать","破る・ちぎる"],["резать / разрезать","切る"],["шить / сшить","縫う"],["клеить / склеить","貼る・接着する"],["красить / покрасить","塗る"],["прибивать / прибить","釘で打つ"],["сверлить / просверлить","穴をあける"],["пилить / распилить","のこぎりで切る"],["рубить / нарубить","割る・切り倒す"],["копать / выкопать","掘る"],["собирать / собрать","集める・組み立てる"],["разбирать / разобрать","分解する・整理する"],["соединять / соединить","つなぐ"],["делить / разделить","分ける"],["прикреплять / прикрепить","取り付ける"],["рисовать / нарисовать","描く"]]],
+["道具・設置・手入れ",[["качать / покачать","揺らす・汲む"],["смазывать / смазать","油をさす"],["затягивать / затянуть","締める"],["откручивать / открутить","ねじを外す"],["заменять / заменить","交換する"],["налаживать / наладить","調整する"],["сажать / посадить","植える・座らせる"],["поливать / полить","水をやる"],["устанавливать / установить","設置する"],["составлять / составить","構成する・作成する"],["поставлять / поставить","供給する"]]],
+["包む・整える",[["завязывать / завязать","結ぶ"],["развязывать / развязать","ほどく"],["застёгивать / застегнуть","留める"],["заворачивать / завернуть","包む"],["упаковывать / упаковать","梱包する"],["распаковывать / распаковать","開梱する"],["накрывать / накрыть","覆う・配膳する"],["наполнять / наполнить","満たす"],["складывать / сложить","たたむ・積む"],["раскладывать / разложить","並べる"],["убирать / убрать","片付ける"],["сортировать / отсортировать","仕分ける"]]],
+["料理・飲食",[["есть / съесть","食べる"],["пить / выпить","飲む"],["готовить / приготовить","料理する"],["завтракать / позавтракать","朝食をとる"],["обедать / пообедать","昼食をとる"],["ужинать / поужинать","夕食をとる"],["варить / сварить","煮る・茹でる"],["жарить / пожарить","焼く・揚げる"],["печь / испечь","オーブンで焼く"],["кипятить / вскипятить","沸かす"],["смешивать / смешать","混ぜる"],["солить / посолить","塩をする"],["нарезать","切り分ける（両体）"],["наливать / налить","注ぐ"],["греть / согреть","温める"],["разогревать / разогреть","温め直す"],["замораживать / заморозить","冷凍する"],["размораживать / разморозить","解凍する"],["остывать / остыть","冷める"],["мариновать / замариновать","漬ける"],["подгорать / подгореть","焦げる"],["кормить / накормить","食べさせる"],["выливать / вылить","流し捨てる"],["проливать / пролить","こぼす"],["лить / полить","注ぐ・流す"],["глотать / проглотить","飲み込む"],["жевать / пожевать","噛む"]]],
+["身支度・掃除",[["умываться / умыться","顔を洗う"],["чистить / почистить","磨く・掃除する"],["причёсываться / причесаться","髪をとかす"],["бриться / побриться","ひげを剃る"],["надевать / надеть","身につける"],["снимать / снять","脱ぐ・外す・撮る"],["одеваться / одеться","服を着る"],["раздеваться / раздеться","脱ぐ"],["мыть / вымыть","洗う"],["стирать / постирать","洗濯する"],["гладить / погладить","なでる・アイロン"],["вытирать / вытереть","拭く"],["подметать / подмести","掃く"],["сушить / высушить","乾かす"],["мочить / намочить","濡らす"],["полоскать / прополоскать","すすぐ"],["выносить / вынести","運び出す"],["запирать / запереть","鍵をかける"],["вытирать пыль","ほこりを払う"]]],
+["見る・気づく",[["видеть / увидеть","見える"],["смотреть / посмотреть","見る・世話をする"],["слышать / услышать","聞こえる"],["слушать / послушать","聞く"],["замечать / заметить","気づく"],["показывать / показать","見せる"],["прятать / спрятать","隠す"],["искать / поискать","探す"],["находить / найти","見つける・～と思う"],["проверять / проверить","確認する"],["сравнивать / сравнить","比較する"],["выглядеть","～に見える（不完のみ）"],["изображать / изобразить","描き出す"],["отмечать / отметить","印をつける"]]],
+["考える・判断",[["думать / подумать","考える"],["знать","知っている（不完のみ）"],["понимать / понять","理解する"],["помнить","覚えている（不完のみ）"],["забывать / забыть","忘れる"],["вспоминать / вспомнить","思い出す"],["считать / посчитать","数える・みなす"],["решать / решить","決める・解く"],["верить / поверить","信じる"],["сомневаться","疑う（不完のみ）"],["представлять / представить","想像する・紹介する"],["узнавать / узнать","知る・見分ける"],["казаться / показаться","～のようだ"],["напоминать / напомнить","似ている・思い出させる"],["выбирать / выбрать","選ぶ"],["значить","意味する（不完のみ）"],["признавать / признать","認める"],["оказываться / оказаться","～と判明する"],["убеждать / убедить","説得する"]]],
+["学ぶ・関心",[["изучать / изучить","研究する"],["учить / выучить","覚える"],["учиться / научиться","学ぶ"],["заниматься","従事する（不完のみ）"],["интересоваться","興味を持つ（不完のみ）"],["привыкать / привыкнуть","慣れる"],["увлекаться / увлечься","のめり込む"],["справляться / справиться","こなす・切り抜ける"],["читать / прочитать","読む"],["писать / написать","書く"],["записывать / записать","書き留める"],["достигать / достичь","到達する・達成する"],["касаться / коснуться","触れる・関わる"]]],
+["話す・伝える",[["говорить / сказать","言う"],["рассказывать / рассказать","語る"],["объяснять / объяснить","説明する"],["повторять / повторить","繰り返す・復習する"],["называть / назвать","名づける"],["спрашивать / спросить","尋ねる"],["отвечать / ответить","答える・責任を負う"],["обсуждать / обсудить","議論する"],["разговаривать","会話する（不完のみ）"],["общаться","交流する（不完のみ）"],["сообщать / сообщить","知らせる"],["предлагать / предложить","提案する"],["советовать / посоветовать","助言する"],["просить / попросить","頼む"],["описывать / описать","描写する"],["переводить / перевести","翻訳する・移す"],["обращаться / обратиться","呼びかける・扱う"],["предупреждать / предупредить","前もって知らせる"],["заставлять / заставить","無理にさせる"]]],
+["あいさつ・人と会う",[["звать / позвать","呼ぶ"],["звонить / позвонить","電話する"],["благодарить / поблагодарить","感謝する"],["извиняться / извиниться","謝る"],["здороваться / поздороваться","挨拶する"],["прощаться / попрощаться","別れを告げる"],["поздравлять / поздравить","祝う"],["приглашать / пригласить","招待する"],["ждать / подождать","待つ"],["встречать / встретить","出会う"],["встречаться / встретиться","会う"],["провожать / проводить","見送る"],["кричать / крикнуть","叫ぶ"],["шептать / прошептать","ささやく"],["молчать / помолчать","黙る"],["петь / спеть","歌う"],["врать / соврать","嘘をつく"]]],
+["感情",[["любить / полюбить","愛する"],["нравиться / понравиться","気に入る"],["хотеть / захотеть","ほしい"],["хотеться / захотеться","～したい（無人称）"],["желать / пожелать","望む"],["радоваться / обрадоваться","喜ぶ"],["удивляться / удивиться","驚く"],["бояться","恐れる（不完のみ）"],["беспокоиться","心配する（不完のみ）"],["волноваться / взволноваться","動揺する"],["сердиться / рассердиться","怒る"],["обижаться / обидеться","気を悪くする"],["скучать","退屈する・恋しがる（不完のみ）"],["смеяться / засмеяться","笑う"],["плакать / заплакать","泣く"],["улыбаться / улыбнуться","微笑む"],["надоедать / надоесть","うんざりさせる"],["сниться / присниться","夢に出てくる"]]],
+["意志・計画",[["мочь / смочь","できる"],["уметь / суметь","～できる（技能）"],["пробовать / попробовать","試す・味わう"],["пытаться / попытаться","試みる"],["собираться / собраться","～するつもりだ"],["мечтать / помечтать","夢見る"],["планировать / запланировать","計画する"],["надеяться","望む（不完のみ）"],["решаться / решиться","思い切る"],["стремиться","目指す（不完のみ）"],["предпочитать / предпочесть","好む"],["отказываться / отказаться","断る・やめる"],["рисковать / рискнуть","思い切ってやる"],["готовиться / подготовиться","準備する"]]],
+["仕事・組織",[["работать / поработать","働く"],["помогать / помочь","助ける"],["мешать / помешать","邪魔する"],["участвовать","参加する（不完のみ）"],["организовывать / организовать","組織する"],["управлять","管理する（不完のみ）"],["руководить","指導する（不完のみ）"],["выполнять / выполнить","遂行する"],["использовать","使用する（両体同形）"],["пользоваться / воспользоваться","利用する"],["опаздывать / опоздать","遅れる"],["успевать / успеть","間に合う"],["отдыхать / отдохнуть","休む"],["служить / послужить","勤務する・役立つ"],["защищать / защитить","守る"],["контролировать / проконтролировать","管理する・監視する"],["патрулировать","巡回する（不完のみ）"],["сопровождать / сопроводить","同行する"]]],
+["売買・金銭",[["покупать / купить","買う"],["продавать / продать","売る"],["платить / заплатить","払う"],["стоить","値段がする・値する（不完のみ）"],["тратить / потратить","費やす"],["получать / получить","受け取る"],["терять / потерять","失う"],["заказывать / заказать","注文する"],["торговать","商う・取引する（不完のみ）"],["принимать / принять","受け取る・服用する"],["отдавать / отдать","返す"],["взвешивать / взвесить","重さを量る"],["измерять / измерить","測る"],["подсчитывать / подсчитать","数え上げる"],["подписывать / подписать","署名する"],["занимать / занять","占める・借りる"]]],
+["変化・出来事",[["менять / изменить","変える"],["меняться / измениться","変わる"],["происходить / произойти","起こる"],["случаться / случиться","生じる"],["появляться / появиться","現れる"],["исчезать / исчезнуть","消える"],["расти / вырасти","成長する"],["увеличиваться / увеличиться","増える"],["уменьшаться / уменьшиться","減る"],["улучшаться / улучшиться","改善する"],["ухудшаться / ухудшиться","悪化する"],["кончаться / кончиться","終わる"],["начинаться / начаться","始まる"],["продолжаться / продолжиться","続く"],["замерзать / замёрзнуть","凍る"],["начинать / начать","始める"],["кончать / кончить","終える"],["продолжать / продолжить","続ける"],["открывать / открыть","開ける"],["закрывать / закрыть","閉める"],["включать / включить","つける"],["выключать / выключить","消す"],["останавливать / остановить","止める"],["превращаться / превратиться","変わる・化する"],["гореть / сгореть","燃える"],["тушить / потушить","火を消す"],["тонуть / утонуть","沈む・溺れる"]]],
+["関係・所属",[["владеть","所有する・使いこなす（不完のみ）"],["получаться / получиться","うまくいく"],["удаваться / удаться","うまくいく"],["зависеть","次第である（不完のみ）"],["состоять","構成される（不完のみ）"],["отличаться / отличиться","異なる"],["совпадать / совпасть","一致する"],["содержать","含む（不完のみ）"],["принадлежать","属する（不完のみ）"],["соответствовать","対応する（不完のみ）"],["оказывать / оказать","及ぼす・与える"],["хватает / хватит","足りる（無人称）"],["относиться / отнестись","関係する・接する"],["являться","～である（不完のみ）"]]],
+["生と死・健康",[["болеть / заболеть","病気になる"],["лечить / вылечить","治療する"],["уставать / устать","疲れる"],["чувствовать / почувствовать","感じる"],["курить / покурить","たばこを吸う"],["рождаться / родиться","生まれる"],["умирать / умереть","死ぬ"],["убивать / убить","殺す"],["спасать / спасти","救う"],["жениться","結婚する（男・両体）"],["разводиться / развестись","離婚する"],["худеть / похудеть","痩せる"],["полнеть / пополнеть","太る"],["мёрзнуть / замёрзнуть","凍える"],["кашлять / кашлянуть","咳をする"],["чихать / чихнуть","くしゃみをする"],["зевать / зевнуть","あくびをする"],["потеть / вспотеть","汗をかく"]]]
+],notes:[
+["変化型は2つ、あとは不規則","<p>ロシア語の動詞は、現在形の変化が2種類しかない。</p><div class=\"eg\"><b>第1変化</b>　работать → работа<b>ю</b>, работа<b>ешь</b>, работа<b>ет</b>, работа<b>ем</b>, работа<b>ете</b>, работа<b>ют</b><br><b>第2変化</b>　говорить → говор<b>ю</b>, говор<b>ишь</b>, говор<b>ит</b>, говор<b>им</b>, говор<b>ите</b>, говор<b>ят</b></div><p>問題は、<span class=\"warn\">辞書形からどちらか判別できない</span>ことにある。-ить で終わる語の多くは第2変化だが、пить・бить・жить は第1変化。逆に -еть でも смотреть・видеть・сидеть は第2変化。</p><p>だから辞書を引くときは、意味と一緒に<b>一人称単数と二人称単数</b>を必ず見る。この2つが分かれば、残り4つは自動的に決まる。カードを作るならこの2形を表に入れておくと、あとで格段に楽になる。</p><p>語尾まで不規則なのは есть（食べる）と дать の2つだけ。хотеть と бежать は第1変化と第2変化が混ざる混合型（хочу, хочешь … хотим, хотят／бегу, бежишь … бегут）。идти・ехать は語幹が変わるだけで（иду, идёшь／еду, едешь）、語尾は第1変化の規則どおり。быть は現在形をふつう使わず、未来形 буду, будешь は第1変化どおり。数は少ないので丸暗記で足りる。</p>"],
+
+["子音交替は「どこで起きるか」が肝","<p>писать が пишу になるように、変化の途中で子音が入れ替わる現象がある。厄介なのは、<b>変化型によって起きる範囲が違う</b>ことだ。</p><div class=\"eg\"><b>第2変化</b>　一人称単数<b>だけ</b>交替<br>　просить → про<b>ш</b>у, но про<b>с</b>ишь, про<b>с</b>ит…<br><b>第1変化の一部</b>　<b>全人称</b>で交替<br>　писать → пи<b>ш</b>у, пи<b>ш</b>ешь, пи<b>ш</b>ет…</div><p>交替のしかた自体には規則性がある。д→ж、т→ч、с→ш、з→ж、ст→щ、к→ч、г→ж、х→ш。唇音 б п в ф м のあとには <b>л</b> が挿入される（любить → лю<b>бл</b>ю、готовить → гото<b>вл</b>ю）。</p><p>例外は мочь・печь のように -чь で終わる動詞。<b>я と они では交替せず</b>、元の г・к のまま（мо<b>г</b>у, мо<b>ж</b>ешь, мо<b>ж</b>ет … мо<b>г</b>ут）。</p><p>つまり「見たことのない形が出てきた」のではなく、<span class=\"warn\">語幹の最後の子音が別の子音に置き換わっただけ</span>。逆に読むときは、ж や ш を見たら д・з・с・г に戻して辞書を引くと当たる。</p>"],
+
+["格支配を知らないと文が作れない","<p>動詞ごとに、目的語に要求する格が決まっている。これは意味とは別の情報で、<span class=\"warn\">単語を知っていても支配を知らないと一文も書けない</span>。</p><div class=\"eg\"><b>＋造格</b>　заниматься, пользоваться, управлять, руководить, интересоваться, стать<br><b>＋生格</b>　бояться, ждать（不特定のもの）, достигать<br><b>＋与格</b>　помогать, мешать, звонить, верить, советовать<br><b>前置詞つき</b>　думать <b>о</b>＋前置格／готовиться <b>к</b>＋与格／зависеть <b>от</b>＋生格</div><p>日本語の助詞と一対一で対応しないのが難しさの原因。「〜を手伝う」は помогать<b>＋与格</b>（〜に助けを与える、という発想）、「〜を待つ」は ждать<b>＋生格</b>（不特定の対象を待つ）。</p><p>対策は単純で、<b>辞書を引くときに意味よりも支配を先にメモする</b>こと。カードの裏面に「＋造格」と書いておくだけで、作文の精度が変わる。</p>"],
+
+["-ся の4つの顔","<p>-ся が付いた動詞は、大きく4つの働きに分かれる。</p><div class=\"eg\"><b>再帰</b>　мыться（自分を洗う）<br><b>相互</b>　встречаться（互いに会う）<br><b>受動</b>　строиться（建てられる）<br><b>自動詞化</b>　начинаться（始まる）⇔ начинать（始める）</div><p>日本語話者が最も間違えるのは4番目。他動詞と自動詞のペアになっているもので、<b>начинать / начинаться</b>、<b>кончать / кончаться</b>、<b>изменять / изменяться</b>、<b>увеличивать / увеличиваться</b> がその代表。</p><p>見分け方は単純で、「<b>〜を</b>始める」なら -ся なし、「<b>〜が</b>始まる」なら -ся あり。日本語の他動詞・自動詞の対応（上げる／上がる、開ける／開く）とほぼ同じ発想で考えられる。</p><p>もうひとつ実用的な規則として、<span class=\"warn\">-ся 動詞は対格の目的語を取れない</span>。取りたくなったら -ся を外す必要がある、という合図になる。</p>"],
+
+["体と接頭辞 — 語彙が増える本当の仕組み","<p>体のペアは3通りの作られ方がある。</p><div class=\"eg\"><b>① 接頭辞をつける</b>　делать → <b>с</b>делать、писать → <b>на</b>писать<br><b>② 語幹を変える</b>　решать → решить、отвечать → ответить<br><b>③ 別の語根</b>　говорить → сказать、брать → взять</div><p>①で注意が要るのは、<b>接頭辞が意味を変えてしまう場合がある</b>こと。писать に на- が付くと単に完了体になるが、под- が付くと подписать（署名する）という<b>別の動詞</b>になる。そしてその新しい動詞にも、また体のペアができる（подписывать / подписать）。</p><p>だから B2 以上の動詞語彙は「新しい語根を千個覚える」のではなく、<span class=\"warn\">200前後の語根に接頭辞を掛け算した結果</span>として増えていく。писать 一語から6〜7語が生えると考えれば、増やし方の方針が変わってくるはずだ。</p><p>移動動詞だけは三層構造になる。идти／ходить の定・不定の対立は<b>無接頭辞のときだけ</b>で、приходить／прийти のように接頭辞が付いた瞬間、ふつうの不完了体・完了体のペアに変わる。</p>"],
+
+["不完了体しかない動詞","<p>状態を表す動詞には、そもそも完了体がないものがある。無理に作ろうとしても存在しない。</p><div class=\"eg\">знать, помнить, находиться, заниматься, бояться, надеяться, участвовать, разговаривать, общаться, сомневаться, держать, стоить, дышать, скучать, беспокоиться, управлять, руководить</div><p>共通しているのは、いずれも<b>始まりと終わりの区切りを持たない</b>という点。「知っている」「覚えている」「位置している」に完了の瞬間はない。逆に узнать（知るに至る）のような、区切りを持つ別語で表すことになる。</p><p>作文でこれらを完了体にしようとして詰まったら、<span class=\"warn\">動詞そのものを取り替える必要がある</span>という合図だと考えるとよい。</p>"],
+
+["写真や絵を説明する型","<p>「これは何をしていますか」に答えるとき、いきなり動詞から始めると詰まる。<b>場所 → 人 → 動作</b>の順に置く型を持っておくと、語が出てこなくても文が立つ。</p><div class='eg'><b>На фотографии</b> …　写真には…<br><b>Слева / справа / в центре</b> …　左に／右に／中央に<br><b>Мужчина в синей куртке</b> …　青い上着の男性が…<br>… <b>стоит и держит</b> …　立って…を持っている</div><p>使う動詞は<span class='warn'>不完了体の現在形</span>に限られる。進行中の動作を写した一枚なので、完了体は入らない。стоит, сидит, лежит, держит, несёт, смотрит, улыбается がほぼ全部をまかなう。</p><p>断定できないときの逃げ道も用意しておく。<b>Кажется, что он…</b>（～のように見える）、<b>Похоже, он…</b>（どうやら～らしい）、<b>Наверное, это…</b>（たぶんこれは～）。<span class='warn'>間違えるより、推量の形にして言い切るほうが会話は続く</span>。</p>"],
+
+["「やってみたい」の3段階","<p>願望は強さで言い分ける。同じ「したい」でも、面接や雑談で伝わり方が変わる。</p><div class='eg'><b>хочу ＋不定形</b>　したい（素直な願望）<br><b>хотел бы ＋不定形</b>　できればしたい（控えめ・丁寧）<br><b>собираюсь ＋不定形</b>　するつもりだ（予定が立っている）<br><b>мечтаю ＋不定形</b>　ずっと夢に見ている</div><p>「やってみたい」と言いたいときは <b>хочу попробовать</b>＋不定形 が最も近い。Я хочу <b>попробовать</b> кататься на сноуборде（スノーボードをやってみたい）。попробовать を挟むだけで「未経験だが挑戦したい」が出る。</p><p>過去の経験を言うなら <b>Я никогда не пробовал</b>（一度もやったことがない）。<span class='warn'>男性は пробовал、女性は пробовала</span>。この2つを前後に置けば、「やったことはないがやってみたい」という一番使う内容がそのまま言える。</p>"]
+]},
+
+{id:"conj",name:"接続・談話",groups:[
+["並列・付加",[["и","そして"],["а","一方（対比）"],["также","～もまた"],["тоже","～も"],["кроме того","その上"],["к тому же","しかも"],["причём","しかも・その際"],["вдобавок","加えて"],["не только... но и...","～だけでなく～も"],["как... так и...","～も～も"],["и... и...","～も～も"],["ни... ни...","～も～も…ない"]]],
+["対立・逆接",[["но","しかし"],["однако","しかしながら"],["зато","その代わり"],["тем не менее","それにもかかわらず"],["всё же","それでも"],["всё-таки","やはり"],["хотя","～だけれども"],["несмотря на то что","～にもかかわらず（節）"],["несмотря на ＋対格","～にもかかわらず（名詞）"],["вопреки ＋与格","～に反して"],["напротив","逆に"],["наоборот","反対に"],["в отличие от ＋生格","～と違って"],["с одной стороны... с другой стороны","一方では～他方では"],["между тем","その間・ところが"],["как ни странно","奇妙なことに"]]],
+["原因・理由",[["потому что","なぜなら"],["так как","～なので"],["поскольку","～である以上"],["ибо","なぜなら（文語）"],["из-за ＋生格","～のせいで"],["благодаря ＋与格","～のおかげで"],["в связи с ＋造格","～に関連して"],["в результате ＋生格","～の結果"],["по причине ＋生格","～の理由で"],["дело в том, что","実は～なのだ"],["ведь","だって"],["раз","～なんだから（口語の理由）"],["тем более что","なおさら～だから"],["исходя из ＋生格","～に基づいて"]]],
+["結果・帰結",[["поэтому","だから"],["следовательно","したがって"],["таким образом","このように"],["значит","つまり"],["итак","そういうわけで"],["в итоге","結局"],["в конце концов","結局のところ"],["так что","だから"],["вследствие этого","その結果"],["отсюда следует, что","ここから～が導かれる"]]],
+["目的",[["чтобы","～するために"],["для того чтобы","～するために（強調）"],["с целью ＋生格","～を目的として"],["ради ＋生格","～のために"],["затем чтобы","～するために"],["во избежание ＋生格","～を避けるために"]]],
+["条件・仮定",[["если","もし"],["если бы","もし～なら（非現実）"],["в случае если","～の場合には"],["при условии что","～という条件で"],["в противном случае","さもなければ"],["иначе","さもないと"],["допустим","仮に"],["предположим","仮定しよう"],["при ＋前置格","～の際には"]]],
+["時間",[["когда","～のとき"],["пока","～する間"],["пока не","～するまで"],["после того как","～した後で"],["до того как","～する前に"],["прежде чем","～する前に"],["в то время как","～する一方で"],["с тех пор как","～して以来"],["как только","～するとすぐに"],["сначала","まず"],["затем","次に"],["потом","その後"],["наконец","ついに"],["одновременно","同時に"],["тем временем","その間に"]]],
+["例示・具体化",[["например","例えば"],["к примеру","例えば"],["в частности","とりわけ"],["а именно","すなわち"],["то есть","つまり"],["скажем","言ってみれば"],["такие как","～のような"],["в том числе","～を含めて"],["в основном","主に"],["прежде всего","何よりまず"]]],
+["意見・態度",[["по-моему","私の考えでは"],["на мой взгляд","私の見方では"],["по моему мнению","私の意見では"],["по мнению ＋生格","～の意見では"],["как известно","周知のように"],["как говорится","言われるように"],["насколько я знаю","私の知る限り"],["судя по ＋与格","～から判断すると"],["кажется","～のようだ"],["очевидно","明らかに"],["безусловно","疑いなく"],["разумеется","もちろん"]]],
+["主題転換・限定",[["что касается ＋生格","～に関して言えば"],["относительно ＋生格","～については"],["насчёт ＋生格","～について"],["кстати","ところで"],["между прочим","ついでながら"],["в отношении ＋生格","～に関して"],["речь идёт о ＋前置格","～のことである"],["если говорить о ＋前置格","～について言えば"],["с точки зрения ＋生格","～の観点から"],["в плане ＋生格","～の面では"]]],
+["まとめ・結論",[["в заключение","結論として"],["подводя итог","総括すると"],["короче говоря","手短に言えば"],["одним словом","一言で言えば"],["в целом","全体として"],["в общем","概して"],["следует отметить, что","～という点は指摘すべきだ"]]],
+["論述を組み立てる",[["следует подчеркнуть, что","～を強調すべきである"],["необходимо отметить, что","～に留意する必要がある"],["стоит обратить внимание на ＋対格","～に注目する価値がある"],["как уже отмечалось","すでに述べたように"],["как было сказано выше","上述のとおり"],["о чём говорилось ранее","先に述べたところの"],["в этой связи","これに関連して"],["в данном случае","この場合には"],["в этом смысле","この意味において"],["с этой точки зрения","この観点から"],["на основании ＋生格","～に基づいて"],["согласно ＋与格","～によれば"],["в соответствии с ＋造格","～に従って"],["в рамках ＋生格","～の枠内で"],["в ходе ＋生格","～の過程で"],["по сравнению с ＋造格","～と比較して"]]],
+["譲歩・留保",[["хотя бы","せめて"],["пусть","たとえ～でも"],["даже если","たとえ～でも"],["как бы то ни было","いずれにせよ"],["в любом случае","いずれにしても"],["так или иначе","いずれにせよ"],["до некоторой степени","ある程度まで"],["в известной мере","ある程度"],["отчасти","部分的には"],["не столько... сколько...","～というよりむしろ"],["скорее","むしろ"],["правда","もっとも（挿入）"],["конечно, но","もちろん、しかし"],["при всём том","それでもなお"]]],
+["根拠・出典",[["как показывает практика","実際が示すとおり"],["как свидетельствует опыт","経験が物語るように"],["статистика показывает, что","統計は～を示す"],["по данным ＋生格","～のデータによれば"],["по словам ＋生格","～の言葉によれば"],["по сообщению ＋生格","～の報道によれば"],["как утверждает ＋主格","～が主張するには"],["ссылаясь на ＋対格","～を引用して"],["на самом деле","実のところ"],["в действительности","現実には"]]],
+["推量・確信度",[["вероятно","おそらく"],["по-видимому","見たところ"],["скорее всего","おそらく"],["может быть","もしかすると"],["возможно","可能性としては"],["не исключено, что","～も排除されない"],["похоже, что","～のようだ"],["судя по всему","どうやら"],["вряд ли","まずないだろう"],["едва ли","ほとんど～ない"],["несомненно","疑いなく"],["бесспорно","争う余地なく"],["наверняка","きっと"],["как правило","概して"]]],
+["強調",[["именно","まさに"],["как раз","ちょうど"],["особенно","特に"],["в особенности","とりわけ"],["главным образом","主として"],["более того","それどころか"],["тем более","なおさら"],["в самом деле","実際"],["действительно","確かに"],["даже","さえ"],["хоть бы","せめて～でも"]]],
+["言い換え・修正",[["иными словами","別の言い方をすれば"],["другими словами","言い換えれば"],["точнее говоря","より正確には"],["вернее","むしろ正確には"],["если быть точным","正確を期すなら"],["проще говоря","平たく言えば"],["грубо говоря","大まかに言えば"],["так сказать","いわば"],["условно говоря","便宜的に言えば"],["я имею в виду","私が言いたいのは"]]],
+["列挙・順序",[["во-первых","第一に"],["во-вторых","第二に"],["в-третьих","第三に"],["далее","次に"],["наряду с ＋造格","～と並んで"],["вместе с тем","同時に・その一方で"],["помимо ＋生格","～のほかに"],["за исключением ＋生格","～を除いて"],["включая ＋対格","～を含めて"],["и так далее","など"],["и тому подобное","そのたぐい"]]],
+["口語のつなぎ",[["ну","まあ"],["вот","ほら・つまり"],["слушай","ねえ"],["знаешь","ね"],["понимаешь","わかるでしょ"],["так вот","そういうわけで"],["в общем-то","まあ実際"],["честно говоря","正直言うと"],["если честно","正直なところ"],["по правде говоря","実を言うと"],["кстати говоря","ついでに言うと"],["да ладно","まさか・いいよ"]]],
+["反応・相槌",[["неужели","まさか（本当に？）"],["разве","～なのか（意外）"],["ещё бы","当然だ"],["вот именно","まさにそれ"],["согласен","同感だ"],["не совсем","そうでもない"],["пожалуй","たぶん・まあね"],["как сказать","何と言うか"],["трудно сказать","何とも言えない"],["в том-то и дело","まさにそこが問題"]]]
+],notes:[
+["接続表現は4タイプに分けて覚える","<p>230語をばらばらに暗記すると必ず崩れる。<b>文法上の振る舞い</b>で4つに分けると、覚える負荷が一気に下がる。</p><div class=\"eg\"><b>① 前置詞タイプ</b>（格を要求する）<br>　благодаря＋与格／из-за＋生格／несмотря на＋対格／в связи с＋造格<br><b>② 接続詞タイプ</b>（節をつなぐ）<br>　потому что／так как／хотя／если／когда／пока<br><b>③ 挿入語タイプ</b>（文の構造に参加しない）<br>　конечно／по-моему／вероятно／кажется／во-первых<br><b>④ 相関タイプ</b>（二か所で対になる）<br>　не только… но и…／как… так и…／с одной стороны… с другой стороны</div><p>覚えるときの労力も、このタイプごとに違ってよい。①は<b>必ず名詞込みで</b>（благодаря тебе、из-за дождя）。④は<b>必ずセットで音読</b>して、後半を落とす事故を防ぐ。③はコンマで囲むだけなので<span class=\"warn\">意味だけ覚えれば足りる</span>。</p><p>カードに例文を付けるなら①と④に絞る。<b>несмотря на дождь, мы пошли гулять</b> の一文で、格支配・コンマ位置・語順が同時に入る。</p>"],
+
+["а と но を取り違えないために","<p>日本語の「が」が両方に対応してしまうため、日本語話者が最もよく間違える。</p><div class=\"eg\">Я читаю, <b>а</b> он пишет.　私は読み、彼は書く（並置の対比）<br>Я читаю, <b>но</b> не понимаю.　読むが理解できない（逆接）</div><p><b>а</b> は前後が矛盾していなくてよい。二つの事柄を並べて対照させるだけ。<b>но</b> は前を打ち消す方向に働く。「AなのにB」と言い換えられるなら но、「Aで、一方B」なら а と考えると、ほぼ外さない。</p><p>однако は но の硬い版だが、<span class=\"warn\">文中に置くと挿入語扱いになりコンマで囲む</span>（Он, однако, не пришёл）。文頭なら通常の接続詞。同じ語で品詞が変わるので、位置で判断する。</p><p>потому что にも位置の制約がある。<span class=\"warn\">文頭には置けない</span>。理由を先に言いたいときは так как か поскольку を使う。ただし「Почему? — Потому что…」のように、答えの冒頭では単独で使える。</p>"],
+
+["動詞の形を縛る2つの構文","<p>接続表現の中には、後ろの動詞の形まで決めてしまうものがある。この2つは作文で必ず出るので、形ごと覚える。</p><div class=\"eg\"><b>чтобы</b>　主語が同じ → <b>不定形</b><br>　Я пришёл, чтобы <b>поговорить</b>.<br>　主語が違う → <b>過去形</b><br>　Я пришёл, чтобы ты <b>поговорил</b>.<br>　<span class=\"warn\">現在形・未来形は入らない</span></div><div class=\"eg\"><b>если бы</b>　両方の節とも <b>過去形＋бы</b><br>　Если бы я <b>знал</b>, я <b>бы</b> сказал.<br>　（知っていたら言ったのに＝実際は知らなかった）</div><p>если（現実の条件）と если бы（非現実の仮定）は形がまったく違う。前者は現在形のまま（Если рубль слабеет, машина дорожает）。<b>бы があれば事実に反する話</b>、と読み分ける。</p><p>вряд ли と едва ли も形の縛りがある。すでに否定の意味を含むので、<span class=\"warn\">後ろに не を付けない</span>。Вряд ли он придёт（彼は来ないだろう）。</p>"],
+
+["挿入語とコンマ","<p>③の挿入語タイプは、文の構造に参加しない代わりに<b>コンマで囲む</b>という決まりがある。作文で最も落としやすい点。</p><div class=\"eg\"><b>Конечно</b>, я согласен.<br>Он, <b>по-моему</b>, ошибается.<br><b>Во-первых</b>, это дорого.</div><p>ややこしいのは、同じ語が挿入語にも述語にもなる場合。</p><div class=\"eg\"><b>Кажется</b>, он ушёл.　（挿入語 → コンマ）<br>Мне <b>кажется</b>, что он ушёл.　（動詞 → 不要）<br><b>Возможно</b>, он прав.　（挿入語 → コンマ）<br>Это <b>возможно</b>.　（述語 → 不要）</div><p>по-моему・по-видимому・во-первых は<span class=\"warn\">ハイフンが必須</span>。細かいが、試験の作文では確実に減点される。</p><p>迷ったときに引ける辞書がある。Грамота.ру の句読点ハンドブックは、コンマの要否が問題になる語句をアルファベット順に並べた逆引き辞典で、однако の後にコンマは要るか、といった疑問がそのまま項目になっている。</p>"],
+
+["文体の層を混ぜない","<p>接続表現には、はっきりした文体の層がある。<span class=\"warn\">同じ発話に別の層を混ぜると強い違和感が出る</span>。</p><div class=\"eg\"><b>硬い文語</b>　ибо／вследствие этого／во избежание／следует подчеркнуть<br><b>中立</b>　поэтому／однако／например／в частности<br><b>口語</b>　ведь／раз／короче говоря／ну／вот／да ладно</div><p>外務省の文書なら口語層はゼロ、現地でのガイドなら硬い文語層はゼロ、というくらいの意識でちょうどいい。デッキに入れるならタグで層を分けておくと、あとで使い分けが楽になる。</p><p>口述試験では別の実用性もある。<b>трудно сказать</b>（何とも言えない）や <b>как сказать</b>（何と言うか）は、答えに詰まったときに時間を稼ぎながら自然に聞こえる数少ない表現。反射で出るようにしておくと、沈黙より確実に印象がいい。</p><p>пожалуй は要注意で、全面的な同意ではなく<b>留保混じりの承認</b>。強く同意したいときは согласен か конечно を使う。</p>"],
+
+["参考サイト","<p><span class=\"src\"><a href=\"https://gramota.ru/biblioteka/spravochniki/spravochnik-po-punktuatsii\" target=\"_blank\" rel=\"noopener\">Грамота.ру 句読点ハンドブック</a>　コンマの要否を語句から逆引きできる</span><span class=\"src\"><a href=\"https://gramota.ru/biblioteka/spravochniki/spravochnik-po-punktuatsii/prilozhenie-2-vvodnye-slova-i-sochetaniya\" target=\"_blank\" rel=\"noopener\">同・付録2 導入語一覧</a>　挿入語のコンマ規則をまとめたページ</span><span class=\"src\"><a href=\"https://www.coelang.tufs.ac.jp/mt/ru/gmod/steplist.html\" target=\"_blank\" rel=\"noopener\">東京外国語大学 言語モジュール</a>　格変化・体・移動動詞を日本語で通読できる</span><span class=\"src\"><a href=\"https://fanfunrussia.hatenablog.com/entry/russian-preposition\" target=\"_blank\" rel=\"noopener\">ロシア語独学者のノート 前置詞一覧</a>　要求する格ごとに分類。①タイプの確認に</span></p>"]
+]},
+
+{id:"noun",name:"名詞",groups:[
+["人・家族",[["человек","人"],["люди","人々"],["мужчина","男性"],["женщина","女性"],["ребёнок","子供"],["дети","子供たち"],["мальчик","男の子"],["девочка","女の子"],["парень","若者・彼氏"],["девушка","若い女性・彼女"],["семья","家族"],["родители","両親"],["отец","父"],["мать","母"],["сын","息子"],["дочь","娘"],["брат","兄弟"],["сестра","姉妹"]]],
+["人間関係・役割",[["друг","友人"],["подруга","女友達"],["знакомый","知人"],["сосед","隣人"],["коллега","同僚"],["начальник","上司"],["сотрудник","職員"],["клиент","客"],["гость","客・ゲスト"],["хозяин","主人"],["специалист","専門家"],["учитель","教師"],["студент","学生"],["врач","医師"]]],
+["時間",[["время","時・時代・時制"],["год","年"],["месяц","月"],["неделя","週"],["день","日・昼"],["сутки","一昼夜"],["час","時・時間（単位）"],["минута","分"],["секунда","秒"],["утро","朝"],["вечер","夕方"],["ночь","夜"],["дата","日付"],["срок","期限"],["момент","瞬間"],["период","期間"],["эпоха","時代"],["век","世紀"],["раз","回"]]],
+["場所・空間",[["место","場所・席・地位"],["страна","国"],["город","町"],["деревня","村"],["район","地区"],["область","州"],["улица","通り"],["площадь","広場"],["дорога","道"],["путь","道・道のり・方法"],["здание","建物"],["дом","家"],["квартира","アパート"],["комната","部屋"],["этаж","階"],["сторона","側・方面・立場"],["центр","中心"],["край","端・へり・地方"],["граница","国境"],["территория","領域"]]],
+["自然",[["природа","自然"],["земля","土地・地球"],["небо","空"],["солнце","太陽"],["луна","月"],["звезда","星"],["воздух","空気"],["вода","水"],["огонь","火"],["море","海"],["река","川"],["озеро","湖"],["гора","山"],["лес","森"],["поле","野原・畑・分野"],["остров","島"]]],
+["天候・季節",[["погода","天気"],["дождь","雨"],["снег","雪"],["ветер","風"],["облако","雲"],["жара","暑さ"],["холод","寒さ"],["весна","春"],["лето","夏"],["осень","秋"],["зима","冬"]]],
+["身体",[["тело","体"],["голова","頭"],["лицо","顔・人物・人称"],["глаз","目"],["ухо","耳"],["нос","鼻"],["рот","口"],["зуб","歯"],["рука","手・腕"],["нога","足・脚"],["палец","指"],["спина","背中"],["сердце","心臓"],["кровь","血"]]],
+["思考・精神",[["мысль","考え"],["идея","着想"],["мнение","意見"],["вопрос","質問・問題"],["ответ","答え"],["проблема","問題"],["решение","解決・決定"],["причина","原因"],["результат","結果"],["цель","目的"],["смысл","意味"],["внимание","注意"],["память","記憶"],["опыт","経験・実験"]]],
+["感情・状態",[["чувство","感情"],["любовь","愛"],["радость","喜び"],["счастье","幸福"],["горе","悲しみ"],["страх","恐怖"],["надежда","希望"],["интерес","興味"],["удивление","驚き"],["настроение","気分"],["характер","性格"],["душа","魂・心"]]],
+["言語・情報",[["язык","言語・舌"],["слово","言葉"],["речь","話・発言・演説"],["разговор","会話"],["письмо","手紙"],["книга","本"],["текст","テキスト"],["статья","記事"],["газета","新聞"],["журнал","雑誌"],["новость","ニュース"],["информация","情報"],["пример","例"],["факт","事実"],["название","名称"]]],
+["生活・日常",[["жизнь","生活・人生"],["работа","仕事"],["дело","事柄・用事・仕事"],["деньги","お金"],["цена","値段・価値"],["магазин","店"],["еда","食べ物"],["хлеб","パン"],["мясо","肉"],["рыба","魚"],["овощи","野菜"],["фрукты","果物"],["чай","茶"],["кофе","コーヒー"],["одежда","衣服"],["обувь","履物"],["вещь","物・事柄・持ち物"],["сумка","鞄"],["ключ","鍵・手がかり・泉"],["телефон","電話"]]],
+["移動・交通",[["машина","車"],["поезд","列車"],["самолёт","飛行機"],["автобус","バス"],["метро","地下鉄"],["вокзал","駅（長距離）"],["станция","駅・停留所"],["аэропорт","空港"],["билет","切符"],["поездка","旅行"],["путешествие","旅"],["багаж","荷物"]]],
+["社会・組織",[["общество","社会・協会・付き合い"],["государство","国家"],["народ","民族・国民"],["власть","権力・当局"],["закон","法律"],["право","権利・法"],["история","歴史・話・出来事"],["культура","文化"],["образование","教育・形成"],["наука","学問"],["искусство","芸術"],["религия","宗教"],["экономика","経済"],["политика","政治"]]]
+],notes:[
+["性の判定と、-ь という難所","<p>名詞の性は、語尾でほぼ機械的に決まる。</p><div class=\"eg\"><b>男性</b>　子音で終わる（стол, дом, город）<br><b>女性</b>　-а / -я（вода, земля）<br><b>中性</b>　-о / -е（окно, море）</div><p>例外は少ない。папа・дедушка・мужчина は形が女性型でも<b>男性</b>（意味が優先される）。имя・время・（-мя で終わる10語ほど）は<b>中性の特殊変化</b>。</p><p>本当の難所は <b>-ь</b> で終わる語で、これは男女が混在していて<span class=\"warn\">語尾からは判別できない</span>。一つずつ覚えるしかない。</p><div class=\"eg\"><b>女性</b>　площадь, ночь, жизнь, вещь, речь, память, мать, дочь, обувь, кровать, тетрадь<br><b>男性</b>　день, путь, словарь, учитель, огонь, дождь</div><p>目安として、<b>-ость</b>／<b>-есть</b> で終わる抽象名詞は例外なく女性（новость, скорость, часть）。この一群だけでも -ь 語の相当数を占めるので、先に押さえると効率がいい。</p>"],
+
+["数が偏っている名詞","<p>単数か複数のどちらかしか使わない名詞がある。数量表現で事故が起きやすいので、まとめて覚えてしまう。</p><div class=\"eg\"><b>複数形のみ</b>　деньги（金）, люди（人々）, дети（子供たち）, родители（両親）, сутки（一昼夜）, часы（時計）, очки（眼鏡）, ворота（門）, похороны（葬儀）, переговоры（交渉）, наличные（現金）, овощи, фрукты</div><p>これらは「1つ」と言えないので、数えるときは <b>двое суток</b> のように集合数詞を使うか、別の言い方に逃げる。動詞も常に複数で受ける（Деньги <b>лежат</b> на столе）。</p><p><b>不変化名詞</b>もある。кофе, метро, пальто, такси, кино, меню, радио。外来語で、格変化も複数形も作らない。<span class=\"warn\">前置詞が付いても形が変わらない</span>ので、格は周りの語から判断することになる。кофе は伝統的に男性だが、口語では中性も許容されている。</p>"],
+
+["アクセントが動く名詞","<p>ロシア語のアクセントには規則がなく、しかも<b>語形変化で移動する</b>。無強勢の о は [a] に近い音になるため、位置を間違えると発音そのものが崩れ、聞き取ってもらえない。</p><div class=\"eg\"><b>単数対格でだけ語頭に移る型</b><br>　гора → г<b>о</b>ру　／　рука → р<b>у</b>ку<br>　нога → н<b>о</b>гу　／　вода → в<b>о</b>ду　／　зима → з<b>и</b>му<br><b>複数主格が -а になる型</b><br>　дом → дом<b>а</b>　／　город → город<b>а</b>　／　лес → лес<b>а</b><br>　（生格 -ов は通常どおり：домов, городов）</div><p>гора の全体像を見ると、単数は語尾側に強勢があるのに対格 гору だけが語頭に移り、複数は主格・対格が語頭側、それ以外（горам, горами, горах）が語尾側に戻る、という往復をする。рука・нога も同じ型。</p><p>表記ではアクセントを示さないので、<span class=\"warn\">耳で確かめるしかない</span>。各語の「動画」から YouGlish を開けば、実際の発話が10本以上続けて聞ける。基本語ほど動きが激しいので、最初に押さえておくと後が楽になる。</p>"],
+
+["複数生格 — 語尾がなくなる型","<p>複数生格は、他の格と作り方の発想が違う。<b>語尾を足すのではなく、語尾を取る</b>グループがある。</p><div class=\"eg\"><b>中性・女性は語尾なし</b><br>　место → мест　／　слово → слов　／　дело → дел<br>　книга → книг　／　минута → минут<br><b>出没母音が入る</b><br>　письмо → пис<b>е</b>м　／　окно → ок<b>о</b>н<br>　сестра → сест<b>ё</b>р　／　девушка → девуш<b>е</b>к<br><b>男性は -ов / -ев</b><br>　стол → столов　／　месяц → месяцев</div><p>子音が3つ以上続くと発音しにくいため、間に母音が挿入される。これが<b>出没母音</b>で、規則というより発音上の必然。писем の е は、пис-м では発音できないから入っている、と考えると腑に落ちる。</p><p>数詞のあとで必ず使う格なので、避けて通れない。<span class=\"warn\">5以上の数字＋名詞は、すべてこの形</span>になる（пять книг, десять минут, много мест）。</p>"]
+]},
+
+{id:"jp",name:"観光・日本事象",groups:[
+["神社・神道",[["синтоизм","神道"],["святилище","神社"],["тории","鳥居"],["божество","神・神格"],["священник","神職・神主"],["жрица","巫女"],["главный павильон","本殿"],["молитвенный зал","拝殿"],["священное дерево","御神木"],["собаки-стражи","狛犬"],["соломенная верёвка","注連縄"],["омовение","手水"],["очищение","お祓い・清め"],["обряд","神事"],["ритуал","儀式"],["подношение","供え物"],["ящик для пожертвований","賽銭箱"],["амулет","お守り"],["оберег","魔除け"],["табличка с пожеланием","絵馬"],["предсказание","おみくじ"],["паломничество","巡礼"],["паломник","参拝者"],["переносное святилище","神輿"],["процессия","行列・渡御"],["хлопок в ладоши","柏手"]]],
+["寺院・仏教",[["буддизм","仏教"],["буддийский храм","寺院"],["монастырь","僧院"],["монах","僧侶"],["монахиня","尼僧"],["настоятель","住職"],["Будда","仏陀"],["статуя Будды","仏像"],["бодхисаттва","菩薩"],["пагода","塔"],["главный зал","本堂"],["храмовые ворота","山門"],["храмовый колокол","梵鐘"],["благовония","線香"],["курильница","香炉"],["чётки","数珠"],["сутра","経典"],["проповедь","説法"],["дзадзэн","座禅"],["дзэн","禅"],["просветление","悟り"],["перерождение","輪廻"],["школа буддизма","宗派"],["поминовение","供養"],["могила","墓"],["кладбище","墓地"]]],
+["城郭・武家",[["замок","城"],["главная башня","天守閣"],["крепостная стена","石垣"],["ров","堀"],["земляной вал","土塁"],["крепостные ворота","城門"],["бойница","狭間"],["резиденция","御殿"],["усадьба","屋敷"],["самурай","侍"],["воин","武士"],["сёгун","将軍"],["сёгунат","幕府"],["князь","大名"],["княжество","藩"],["вассал","家臣"],["ниндзя","忍者"],["меч","刀"],["ножны","鞘"],["доспехи","甲冑"],["шлем","兜"],["лук","弓"],["копьё","槍"],["фамильный герб","家紋"],["сражение","合戦"],["оборона замка","籠城"]]],
+["庭園・伝統建築",[["сад","庭園"],["сухой сад","枯山水"],["пруд","池"],["водопад","滝"],["каменный фонарь","石灯籠"],["беседка","東屋"],["живая изгородь","生垣"],["мох","苔"],["гравий","白砂"],["бамбуковая роща","竹林"],["чайный домик","茶室"],["веранда","縁側"],["раздвижная перегородка","障子・襖"],["татами","畳"],["ниша","床の間"],["свиток","掛け軸"],["ширма","屏風"],["соломенная крыша","茅葺き屋根"],["черепица","瓦"],["балка","梁"],["опора","柱"],["внутренний двор","中庭"],["гостиница в японском стиле","旅館"],["гостевой дом","民宿"],["футон","布団"],["прихожая","玄関"]]],
+["年中行事・祭り",[["праздник","祭り"],["Новый год","正月"],["канун Нового года","大晦日"],["первое посещение храма","初詣"],["новогодняя открытка","年賀状"],["новогодние блюда","おせち"],["денежный подарок","お年玉"],["любование цветами","花見"],["сакура","桜"],["цветение","開花"],["любование луной","月見"],["фейерверк","花火"],["поминовение предков","お盆"],["народный танец","盆踊り"],["Праздник кукол","ひな祭り"],["кукла","人形"],["День детей","こどもの日"],["карповый флаг","鯉のぼり"],["Праздник звёзд","七夕"],["равноденствие","彼岸"],["изгнание демонов","節分"],["храмовая ярмарка","縁日"],["уличный ларёк","屋台"],["бумажный фонарь","提灯"],["барабан","太鼓"],["флейта","笛"]]],
+["食・郷土料理",[["японская кухня","和食"],["региональная кухня","郷土料理"],["местное блюдо","名物"],["сезонность","旬"],["варёный рис","ご飯"],["рисовый шарик","おにぎり"],["бульон","だし"],["мисо","味噌"],["соевый соус","醤油"],["васаби","わさび"],["водоросли","海藻・海苔"],["лапша","麺"],["гречневая лапша","そば"],["пшеничная лапша","うどん"],["сырая рыба","刺身"],["суши","寿司"],["темпура","天ぷら"],["шашлычки","焼き鳥"],["соевый творог","豆腐"],["ферментированные бобы","納豆"],["маринованные овощи","漬物"],["традиционные сладости","和菓子"],["рисовая лепёшка","餅"],["зелёный чай","緑茶"],["порошковый чай","抹茶"],["чайная церемония","茶道"],["рисовое вино","日本酒"],["палочки для еды","箸"]]],
+["伝統芸能・武道",[["театр Но","能"],["Кабуки","歌舞伎"],["кукольный театр","文楽"],["актёр","役者"],["маска","面"],["грим","隈取り"],["сцена","舞台"],["представление","公演"],["юмористический рассказ","落語"],["сумо","相撲"],["борец сумо","力士"],["арена","土俵"],["турнир","場所（相撲）"],["боевые искусства","武道"],["дзюдо","柔道"],["кэндо","剣道"],["каратэ","空手"],["стрельба из лука","弓道"],["каллиграфия","書道"],["икебана","華道"],["кимоно","着物"],["пояс","帯"],["деревянные сандалии","下駄"],["веер","扇子"],["гейша","芸者"],["ученица гейши","舞妓"],["трёхструнный инструмент","三味線"],["цитра","琴"]]],
+["美術・工芸",[["гравюра","浮世絵"],["ксилография","木版画"],["живопись тушью","水墨画"],["тушь","墨"],["кисть","筆"],["японская бумага","和紙"],["керамика","陶器"],["фарфор","磁器"],["обжиг","焼成"],["глазурь","釉薬"],["лак","漆"],["лаковые изделия","漆器"],["ткань","織物"],["окрашивание","染色"],["вышивка","刺繍"],["складывание бумаги","折り紙"],["резьба","彫刻"],["скульптура","彫像"],["ремесло","工芸"],["ремесленник","職人"],["мастерская","工房"],["узор","文様"],["сусальное золото","金箔"],["выставка","展示"]]],
+["歴史・時代",[["летопись","年代記"],["древность","古代"],["средневековье","中世"],["новое время","近世"],["император","天皇"],["императорский двор","朝廷"],["аристократия","貴族"],["древняя столица","古都"],["перенос столицы","遷都"],["эпоха воюющих провинций","戦国時代"],["объединение страны","天下統一"],["политика изоляции","鎖国"],["открытие страны","開国"],["Реставрация Мэйдзи","明治維新"],["модернизация","近代化"],["миф","神話"],["легенда","伝説"],["предание","言い伝え"],["курган","古墳"],["руины","遺跡"],["раскопки","発掘"],["реконструкция","復元"],["реставрация","修復"],["наследие","遺産"]]],
+["文化財・自然景観",[["объект всемирного наследия","世界遺産"],["национальное сокровище","国宝"],["важное культурное достояние","重要文化財"],["нематериальное наследие","無形文化財"],["заповедник","保護区"],["национальный парк","国立公園"],["горячий источник","温泉"],["общественная купальня","銭湯"],["купальня под открытым небом","露天風呂"],["вулкан","火山"],["кратер","火口"],["извержение","噴火"],["землетрясение","地震"],["цунами","津波"],["тайфун","台風"],["вершина","山頂"],["перевал","峠"],["ущелье","渓谷"],["побережье","海岸"],["залив","湾"],["мыс","岬"],["полуостров","半島"],["архипелаг","列島"],["рисовое поле","田"],["террасные поля","棚田"],["смотровая площадка","展望台"]]],
+["ガイド実務",[["гид","ガイド"],["экскурсовод","案内人"],["экскурсия","見学"],["маршрут","行程"],["группа","団体"],["турист","観光客"],["посетитель","来訪者"],["достопримечательность","名所"],["вход","入口"],["выход","出口"],["входная плата","入場料"],["билетная касса","券売所"],["расписание","時刻表"],["пересадка","乗り換え"],["скоростной поезд","新幹線"],["проездной","乗車券・パス"],["камера хранения","コインロッカー"],["бронирование","予約"],["размещение","宿泊"],["ночёвка","一泊"],["обмен валюты","両替"],["сувенирная лавка","土産物店"],["фотосъёмка","撮影"],["очередь","待ち列"],["правила поведения","マナー"],["предупреждение","注意書き"]]],
+["地理・社会・習慣",[["префектура","県"],["регион","地方"],["посёлок","町"],["район","区"],["население","人口"],["местный житель","地元の人"],["диалект","方言"],["обычай","風習"],["этикет","作法"],["поклон","お辞儀"],["визитная карточка","名刺"],["иероглиф","漢字"],["слоговая азбука","かな"],["вежливая речь","敬語"]]]
+],notes:[
+["храм か святилище か","<p>ガイドで最初に詰まるのがここ。ロシア語の <b>храм</b> は宗教施設一般を指し、教会・神殿・寺のどれにもなる。日本の神社と寺を言い分けるには補いが要る。</p><div class='eg'><b>神社</b>　святилище ／ синтоистское святилище ／ синтоистский храм<br><b>寺</b>　буддийский храм ／ монастырь（僧が住む場合）<br><b>教会</b>　церковь</div><p>実務では、最初の一回だけ長く言って（Это синтоистское святилище）、以降は святилище で受けるのが自然。<span class='warn'>храм だけで押し通すと、聞き手は寺と神社の区別がつかない</span>。</p><p>付属する語も変わる。神社には тории・жрица・подношение、寺には монах・пагода・благовония が結びつく。名詞を覚えるときに、この組み合わせごと入れておくと言い分けが崩れない。</p>"],
+
+["変化する語と、しない語","<p>日本語由来の語は、ロシア語に入ったときの語尾で扱いが分かれる。<b>-о / -э / -и で終わるものは不変化</b>、<b>-а で終わるものは女性名詞として変化する</b>。ниндзя だけは -я で終わるのに不変化（男性名詞）。</p><div class='eg'><b>不変化</b>　кимоно, татами, сумо, дзюдо, каратэ, оригами, тории, суши, сакэ, ниндзя<br><b>変化する（女性）</b>　сакура, гейша, икебана, манга<br><b>変化する（男性）</b>　самурай, сёгун, дзэн</div><p>不変化の語は前置詞が付いても形が変わらないので、<span class='warn'>格は周りの語で示すしかない</span>。в кимоно は「着物を着て」とも「着物の中に」とも読めるため、動詞や文脈で補う必要がある。</p><p>逆に変化する語は、格を間違えると目立つ。цветение сакур<b>ы</b>（生格）、под сакур<b>ой</b>（造格）。基本語ほど口に出す回数が多いので、先に固めておくと安全。</p>"],
+
+["名詞だけでは説明にならない","<p>通訳案内士の口述では、語を知っているかより<b>説明できるか</b>が問われる。日本固有の物には対応するロシア語がないことが多く、名詞を出したあとに一文で定義する型が要る。</p><div class='eg'><b>これは〜です</b>　Это традиционн<b>ый</b> японск<b>ий</b> …<br><b>〜に使われる</b>　… котор<b>ый</b> используется для …<br><b>〜でできている</b>　… сделан<b>ный</b> из …<br><b>〜の時に</b>　… во время …</div><p>たとえば絵馬なら、Это деревянная табличка, на которой пишут желание и оставляют в святилище。<span class='warn'>名詞ひとつでは伝わらないが、この型に流し込めば必ず伝わる</span>。</p><p>使う関係代名詞は который がほとんどで、必要なのは<b>先行詞に合わせて性・数を変える</b>ことだけ。形動詞（используемый, сделанный）が出れば B2 以上に聞こえるが、который で言い切っても減点にはならない。</p>"]
+]},
+
+{id:"biz",name:"貿易・自動車",groups:[
+["会社・組織・仕事",[["компания","会社"],["фирма","商社・会社"],["предприятие","企業"],["головной офис","本社"],["филиал","支店"],["отдел","部署"],["торговая компания","商社"],["оптовая торговля","卸売"],["розничная торговля","小売"],["поставщик","仕入先"],["покупатель","買い手"],["заказчик","発注者"],["партнёр","取引先"],["конкурент","競合"],["рынок","市場"],["отрасль","業界"],["должность","役職"],["обязанности","職務"],["руководитель","責任者"],["подчинённый","部下"],["смена","勤務シフト"],["зарплата","給与"],["командировка","出張"],["совещание","打ち合わせ"]]],
+["自動車・部品",[["автомобиль","自動車"],["легковой автомобиль","乗用車"],["грузовик","トラック"],["подержанная машина","中古車"],["запчасть","部品"],["деталь","パーツ"],["оригинальная деталь","純正部品"],["восстановленная деталь","リビルト部品"],["разборка","解体・部品取り"],["двигатель","エンジン"],["кузов","車体"],["шина","タイヤ"],["аккумулятор","バッテリー"],["моторное масло","エンジンオイル"],["тормоз","ブレーキ"],["фара","ヘッドライト"],["краска","塗料"],["инструмент","工具"],["оборудование","機材"],["ремонт","修理"],["техобслуживание","整備"],["пробег","走行距離"],["год выпуска","年式"],["марка","メーカー"],["модель","車種"],["правый руль","右ハンドル"]]],
+["貿易・取引",[["торговля","貿易"],["экспорт","輸出"],["импорт","輸入"],["сделка","取引"],["договор","契約"],["контракт","契約書"],["условия","条件"],["заказ","注文"],["заявка","申込・依頼"],["запрос","問い合わせ"],["предложение","提案・オファー"],["смета","見積"],["цена за единицу","単価"],["количество","数量"],["скидка","値引き"],["наличие на складе","在庫"],["срок поставки","納期"],["поставка","納入"],["отгрузка","出荷"],["партия","一口・ロット"],["образец","サンプル"],["качество","品質"],["претензия","クレーム"],["возврат","返品"],["переговоры","交渉"],["соглашение","合意"],["международная торговля","国際貿易"]]],
+["港湾・輸送・通関",[["порт","港"],["причал","ふ頭"],["судно","船舶"],["паром","フェリー"],["контейнер","コンテナ"],["груз","貨物"],["погрузка","積み込み"],["выгрузка","積み降ろし"],["перевозка","輸送"],["доставка","配送"],["склад","倉庫"],["таможня","税関"],["таможенное оформление","通関"],["декларация","申告書"],["пошлина","関税"],["досмотр","検査"],["разрешение","許可"],["запрет","禁止"],["ограничение","規制"],["санкции","制裁"],["экспедитор","フォワーダー（輸送の手配業者）"],["страховка","保険"],["вес","重量"],["объём","容積"],["гавань","港・入江"],["моряк","船員"]]],
+["電話・メール",[["переписка","やりとり"],["сообщение","メッセージ"],["вложение","添付"],["получатель","宛先"],["отправитель","差出人"],["тема письма","件名"],["подпись","署名"],["уточнение","確認"],["напоминание","催促"],["подтверждение","受諾・確認"],["задержка","遅延"],["недоразумение","行き違い"],["извинение","お詫び"],["просьба","依頼"],["срочность","緊急"],["связь","連絡"],["собеседник","話し相手"],["акцент","なまり"],["скорость речи","話す速さ"],["повтор","言い直し"],["телефонный звонок","電話"],["голосовое сообщение","音声メッセージ"],["не расслышал","聞き取れなかった"]]],
+["書類・お金",[["документ","書類"],["счёт","請求書・口座"],["инвойс","インボイス"],["накладная","送り状"],["акт","受渡書"],["копия","写し"],["оригинал","原本"],["печать","社印"],["оплата","支払い"],["предоплата","前払い"],["перевод","送金"],["банковский счёт","銀行口座"],["валюта","通貨"],["обменный курс","為替レート"],["наличные","現金"],["налог","税"],["стоимость","費用"],["расход","支出"],["доход","収入"],["прибыль","利益"],["убыток","損失"],["отчёт","報告書"]]],
+["面接で自分を語る",[["собеседование","面接"],["резюме","履歴書"],["мотивация","志望動機"],["навык","技能"],["достижение","実績"],["стажировка","研修"],["стаж","勤続年数"],["уровень языка","語学レベル"],["разговорная практика","会話練習"],["подготовительный факультет","予備学部"],["стажёр","研修生"],["переезд","転居"],["адаптация","順応"],["ответственность","責任感"],["внимательность","几帳面さ"],["терпение","忍耐"],["самостоятельность","主体性"],["командная работа","チームワーク"],["цель на будущее","将来の目標"],["причина ухода","退職理由"],["сильная сторона","長所"],["слабая сторона","短所"]]],
+["極東の港湾・地理",[["Дальний Восток","極東"],["Владивосток","ウラジオストク"],["Находка","ナホトカ"],["Ванино","ワニノ"],["Советская Гавань","ソヴィエツカヤガワニ"],["Петропавловск-Камчатский","ペトロパブロフスク"],["Холмск","ホルムスク"],["Корсаков","コルサコフ"],["Южно-Сахалинск","ユジノサハリンスク"],["Сахалин","サハリン"],["Курильские острова","千島列島"],["Охотское море","オホーツク海"],["Японское море","日本海"],["Приморский край","沿海地方"],["Хабаровский край","ハバロフスク地方"],["Транссибирская магистраль","シベリア鉄道"],["ледокол","砕氷船"],["незамерзающий порт","不凍港"]]],
+["取扱品目",[["лес","木材"],["пиломатериалы","製材品"],["морепродукты","水産物"],["морская капуста","昆布"],["нефть","石油"],["газ","天然ガス"],["уголь","石炭"],["металлолом","金属スクラップ"],["строительная техника","建設機械"],["спецтехника","特殊車両"]]]
+],notes:[
+["面接のロシア語で本当に要るのは3つ","<p>1.5次のロシア語パートで問われるのは語彙量ではなく、<b>止まらずに話し切れるか</b>。用意すべき塊は3つに絞れる。</p><div class='eg'><b>① 自己紹介</b>　名前・年齢・出身・今の仕事<br><b>② 留学の説明</b>　どこで・どのくらい・何を<br><b>③ 志望動機</b>　なぜロシア語・なぜ貿易・なぜここ</div><p>②で使う語は決まっている。<b>подготовительный факультет</b>（予備学部）、<b>около года</b>（1年ほど）。<span class='warn'>本科と予備学部を混同した言い方をすると、経歴の説明そのものが不正確になる</span>ので、この語だけは正確に。</p><p>③は貿易の語が要る。торговля・экспорт・запчасти・порт の4語が出てくれば、業務を理解していることは伝わる。逆に言えば、この4語を外すと「ロシア語ができるだけの人」に見える。</p>"],
+
+["聞き取れなかったときの一言","<p>実務で電話対応をする以上、面接官は<b>聞き返し方</b>を見ている。黙るのが最も印象が悪く、聞き返すこと自体は減点にならない。</p><div class='eg'><b>повторите, пожалуйста</b>　もう一度お願いします<br><b>помедленнее, пожалуйста</b>　もう少しゆっくり<br><b>правильно ли я понял, что…</b>　～という理解で合っていますか<br><b>как это будет по-русски?</b>　これはロシア語で何と言いますか</div><p>3つめが最も価値が高い。<span class='warn'>聞き返しではなく確認になっている</span>ので、業務の姿勢として評価される。貿易実務は数量と納期の取り違えが損害に直結するため、確認する癖はそのまま職能として見られる。</p><p>речь идёт о…（話は～のことですね）も同じ働きをする。接続・談話のタブに入っているので、あわせて口に出しておくとよい。</p>"]
+]},
+
+{id:"cmd",name:"指示・命令",groups:[
+["見る・聞く・待つ",[["смотри","見て"],["слушай","聞いて"],["подожди","待って"],["повтори","もう一度"],["скажи","言って"],["покажи","見せて"],["спроси","聞いてみて"],["помоги","手伝って"]]],
+["体を動かす",[["иди сюда","こっちに来て"],["стой","止まって"],["сядь","座って"],["встань","立って"],["ложись","横になって"],["повернись","振り向いて"],["наклонись","かがんで"],["подойди","近づいて"],["отойди","離れて"],["прыгай","跳んで"],["беги","走って"],["не двигайся","動かないで"]]],
+["物を扱う",[["держи","持って・はいどうぞ"],["возьми","取って"],["дай","ちょうだい"],["отпусти","放して"],["положи","置いて"],["убери","片付けて"],["подними","持ち上げて"],["опусти","下ろして"],["брось","投げて"],["лови","受け取って"],["нажми","押して"],["потяни","引いて"],["толкни","押しやって"],["открой","開けて"],["закрой","閉めて"],["включи","つけて"],["выключи","消して"]]],
+["調子を指示する",[["попробуй","やってみて"],["продолжай","続けて"],["перестань","やめて"],["быстрее","もっと速く"],["медленнее","もっとゆっくり"],["тише","静かに"],["осторожно","気をつけて"],["давай","さあ・やろう"]]]
+],notes:[
+["命令形の作り方","<p>規則は一つだけ。<b>三人称複数（они の形）から語尾を取って、残った語幹の終わり方で決める</b>。</p><div class='eg'><b>母音で終わる → -й</b><br>　читают → чита<b>й</b>　／　слушают → слуша<b>й</b><br><b>子音で終わり、一人称単数のアクセントが語尾 → -и</b><br>　говорят → говор<b>и</b>　／　пишут → пиш<b>и</b><br><b>子音で終わり、アクセントが語幹 → -ь</b><br>　ответят → ответ<b>ь</b>　／　будут → буд<b>ь</b></div><p><span class='warn'>вы に対しては -те を足すだけ</span>。Смотри → Смотрите、Прыгай → Прыгайте。取引先や初対面には必ず -те を付ける。</p><p>-ся 動詞は、母音の後なら -сь、子音の後なら -ся。Повернись（振り向いて）、Садись（座って）。</p><p>覚えにくい不規則は数語しかない。<b>дать → дай</b>、<b>есть → ешь</b>、<b>пить → пей</b>、<b>ехать → поезжай</b>、<b>лечь → ляг</b>。このうち поезжай だけは形が大きく変わるので注意。</p>"],
+
+["一回だけか、続けてか","<p>命令形でも体の選択が要る。ここを外すと、意味は通じても不自然に響く。</p><div class='eg'><b>完了体</b>　その場で一回やってほしい<br>　Открой окно.（窓を開けて）<br>　Брось мяч.（ボールを投げて）<br><b>不完了体</b>　続けて・繰り返して・どうぞご自由に<br>　Бросай!（投げ続けて）<br>　Открывай!（どんどん開けて）</div><p>もう一つ実用的な差がある。<b>不完了体の命令は「どうぞ」という促し</b>になる。Садись!（どうぞ座って）は Сядь!（座れ）より柔らかい。人を招き入れるときは Входи / Входите。</p><p>そして<span class='warn'>否定の命令は必ず不完了体</span>。Не открывай（開けないで）であって、Не открой とは言わない。禁止を言うたびに体を切り替える必要がある、と覚えておく。</p><p>共同の提案は <b>давай ＋不完了体不定形</b>（давай играть＝遊ぼう）か、<b>давай ＋一人称複数</b>（давай сыграем＝一勝負しよう）。вы 相手なら давайте。</p>"]
+]}
+];
+
+/* ===== 語のニュアンス注記（全品詞） ===== */
+const TIPS={
+"острый":"コア：先端が尖っている。①鋭い（<b>острый нож</b>）②辛い（<b>острый соус</b>）③鋭敏な（<b>острый ум, слух</b>）④深刻な（<b>острый вопрос, кризис</b>）⑤急性の（<b>острая боль</b>）",
+"полный":"コア：中が満ちている。①いっぱいの（<b>полный стакан</b>）②完全な（<b>полный список</b>）③太った（人について。婉曲表現）④まったくの（<b>полная тишина</b>）",
+"прямой":"コア：曲がっていない。①まっすぐな（<b>прямая линия</b>）②直通の（<b>прямой рейс</b>）③直接の（<b>прямая связь</b>）④率直な（<b>прямой ответ</b>）⑤生中継の（<b>прямой эфир</b>）",
+"целый":"コア：欠けていない。①まるまる・～ぶん全部（<b>целый день</b>＝丸一日）②無傷の（<b>всё цело</b>＝すべて無事だ）③全体の（<b>целое число</b>＝整数）",
+"свободный":"コアは<b>束縛がない</b>。свободный человек→свободное место（空席）→свободная одежда（ゆるい服）→свободное время（暇な時間）。",
+"лёгкий":"コア：重さがない。①軽い（<b>лёгкая сумка</b>）②簡単な（<b>лёгкий вопрос</b>）③あっさりした（<b>лёгкий завтрак</b>）④軽率な（<b>лёгкое отношение</b>）⑤軽い（程度が小さい：<b>лёгкая простуда</b>）",
+"тяжёлый":"コア：重い。①物理的に重い（<b>тяжёлый чемодан</b>）②つらい・きつい（<b>тяжёлая работа, тяжёлый день</b>）③重篤な（<b>тяжёлая болезнь</b>）④気詰まりな（<b>тяжёлое молчание</b>）",
+"живой":"コア：生命がある。①生きている（対 мёртвый）②生き生きした（<b>живой разговор</b>）③活発な（<b>живой ребёнок</b>）④生（なま）の・実際の（<b>живая музыка</b>＝生演奏）",
+"сырой":"コア：火が通っていない・水分がある。①生の（<b>сырое мясо</b>）②生煮えの③湿った（<b>сырая погода</b>＝じめじめした天気）④未完成の（<b>сырой материал</b>）",
+"крепкий":"コア：しっかりして崩れない。①頑丈な（<b>крепкий дом</b>）②濃い（<b>крепкий чай, кофе</b>）③強い（酒：<b>крепкие напитки</b>）④ぐっすりした（<b>крепкий сон</b>）⑤固い（<b>крепкая дружба</b>）",
+"тонкий":"コア：厚み・幅がない。①薄い（<b>тонкая бумага</b>）②細い（<b>тонкая линия</b>）③繊細な・微妙な（<b>тонкий вкус, тонкое различие</b>）④鋭敏な（<b>тонкий слух</b>）",
+"густой":"コア：密度が高い。①濃い（<b>густой суп</b>）②密生した（<b>густой лес, густые волосы</b>）③低く太い（<b>густой голос</b>）",
+"блестящий":"コア：光っている。①輝く・つやのある②見事な・素晴らしい（<b>блестящая работа, блестящий ум</b>）",
+"глухой":"コア：音が通らない。①耳が聞こえない②こもった（<b>глухой звук</b>）③人里離れた（<b>глухая деревня</b>）④行き止まりの（<b>глухой переулок</b>）",
+"слепой":"コア：見えない。①目が見えない②盲目的な（<b>слепая вера</b>）③手探りの（<b>слепой метод</b>＝ブラインドタッチ）",
+"мягкий":"コア：柔らかい。①手ざわりが柔らかい②穏やかな（<b>мягкий характер, мягкий климат</b>）③甘い・寛大な（<b>мягкое наказание</b>）④軟音の（<b>мягкий знак</b>＝ь）",
+"твёрдый":"コア：固い。①硬い②確固たる（<b>твёрдое решение</b>）③しっかりした（<b>твёрдая рука</b>）④硬音の（<b>твёрдый знак</b>＝ъ）",
+"чистый":"コア：混じり物がない。①清潔な（<b>чистая комната</b>）②純粋な（<b>чистое золото</b>）③正味の（<b>чистая прибыль</b>）④まったくの（<b>чистая случайность</b>＝まったくの偶然）",
+"страшный":"コアは<b>恐怖を起こす</b>。страшный сон→страшная жара（ひどい暑さ）。口語では強調にも（страшно интересно＝めちゃくちゃ面白い）。",
+"настоящий":"コア：まさにそれである。①本物の（<b>настоящее золото</b>）②現在の（<b>настоящее время</b>＝現在時制）③真の・立派な（<b>настоящий друг</b>）",
+"простой":"コア：入り組んでいない。①簡単な（<b>простая задача</b>）②単純な・素朴な（<b>простой человек</b>）③無地の（<b>простая ткань</b>）④ただの（<b>простой карандаш</b>＝ふつうの鉛筆）",
+"гордый":"コア：頭が高い。①誇り高い（良い意味）②高慢な（悪い意味）。<b>гордиться</b>＋造格＝～を誇りに思う",
+"скромный":"コア：出しゃばらない。①控えめな（人）②質素な（<b>скромный обед</b>）③わずかな（<b>скромные результаты</b>）",
+"грубый":"コアは<b>きめが粗い</b>。грубая ткань（ごわつく生地）→грубый ответ（無礼な返答）→грубая ошибка（初歩的な誤り）→грубо говоря（大まかに言えば）。",
+"сильный":"コア：力が大きい。①強い（<b>сильный человек</b>）②激しい（<b>сильный дождь, ветер</b>）③得意な（<b>он силён в математике</b>）④説得力のある（<b>сильный аргумент</b>）",
+"слабый":"コア：力が小さい。①弱い（体・力）②かすかな（<b>слабый свет, звук</b>）③苦手な（<b>слабое место</b>＝弱点）④薄い（<b>слабый чай</b>）",
+"худой":"コアは<b>中身が減っている</b>。худой человек→худые ботинки（穴の開いた靴）→худые новости（悪い知らせ）。",
+"больной":"コアは<b>痛みがある</b>。больной ребёнок→больной зуб（痛む歯）→больной вопрос（触れられたくない問題）。名詞で「患者」。",
+"здоровый":"コアは<b>体が丈夫</b>。здоровый образ жизни→口語で здоровый парень＝がっしりした男。",
+"горячий":"触れて熱いのが горячий。горячая вода→горячий спор（激論）→горячая линия（ホットライン）。気候の暑さは жаркий。",
+"свежий":"コア：新しくて傷んでいない。①新鮮な（食品）②涼しい・すがすがしい（<b>свежий воздух</b>）③最新の（<b>свежие новости</b>）④洗いたての（<b>свежая рубашка</b>）",
+"яркий":"コア：光や色が強い。①鮮やかな②まぶしい（<b>яркий свет</b>）③際立った・印象的な（<b>яркий пример, яркая личность</b>）",
+"светлый":"コア：明るい。①光がある②淡い色の（<b>светлые волосы</b>＝金髪）③晴れやかな（<b>светлое будущее</b>）",
+"тёмный":"コア：暗い。①光がない②濃い色の（<b>тёмное пиво</b>）③怪しい（<b>тёмное дело</b>）④無学な（<b>тёмный человек</b>）",
+"глубокий":"コア：深さがある。①深い（<b>глубокая река</b>）②深遠な（<b>глубокая мысль</b>）③夜更けの（<b>глубокая ночь</b>）④高齢の（<b>глубокая старость</b>）",
+"высокий":"コア：高さがある。①高い②背が高い（<b>высокий человек</b>）③高尚な（<b>высокие идеалы</b>）④（声が）高い",
+"крупный":"コアは<b>ひとつの単位が大きい</b>。крупный песок（粗い砂）→крупная компания（大企業）→крупный специалист（第一人者）。抽象的なものに付きやすい点で большой と違う。",
+"мелкий":"крупный の対。мелкий песок→мелкая река（浅い川）→мелкие проблемы（些細な問題）→мелкие деньги（小銭）。",
+"дорогой":"コア：価値が高い。①高価な（<b>дорогая машина</b>）②親愛なる（手紙の書き出し：<b>Дорогой Антон!</b>）③大切な（<b>дорогое воспоминание</b>）",
+"общий":"コア：みんなのもの。①共通の（<b>общий язык</b>＝共通の話題）②全体の（<b>общая сумма</b>＝合計）③一般的な・大まかな（<b>в общих чертах</b>＝おおまかに）",
+"частный":"コア：全体の一部。①私的な・民間の（<b>частная компания</b>）②個別の（<b>частный случай</b>＝個別のケース）",
+"родной":"コア：血や生まれでつながっている。①肉親の（<b>родной брат</b>＝実の兄弟）②生まれ故郷の（<b>родной город</b>）③母語の（<b>родной язык</b>）④親しみを込めた呼びかけ",
+"знакомый":"コアは<b>すでに知っている</b>。знакомое лицо（見覚えのある顔）→名詞で「知り合い」。незнакомый は「未知の」。",
+"смешной":"コア：笑いを誘う。①おかしい・面白い②滑稽な・ばかげた（<b>смешная цена</b>＝笑ってしまうほど安い値段）",
+"серьёзный":"コア：ふざけていない。①まじめな（人）②重大な（<b>серьёзная проблема, серьёзная болезнь</b>）③本格的な（<b>серьёзная музыка</b>）",
+"нежный":"コア：ふれると壊れそう。①優しい・愛情深い（<b>нежный голос</b>）②繊細な・柔らかい（<b>нежная кожа</b>）③淡い（<b>нежный цвет</b>）",
+"тупой":"コア：先が尖っていない。острый の対。①（刃が）切れない②鈍い・鈍感な（<b>тупая боль</b>＝鈍痛）③頭の回転が遅い（かなり失礼な語）",
+"гибкий":"コアは<b>折れずに曲がる</b>。гибкий материал→гибкий график（フレックスな予定）→гибкий подход。",
+"хрупкий":"コア：壊れやすい。①もろい（<b>хрупкое стекло</b>）②華奢な（<b>хрупкая девушка</b>）③不安定な（<b>хрупкий мир</b>）",
+"плотный":"コア：すきまがない。①密な・厚手の（<b>плотная ткань</b>）②びっしり詰まった（<b>плотный график</b>）③がっしりした（体格）",
+"жидкий":"コア：密度が低い。①液状の②薄い（<b>жидкий чай</b>）③まばらな（<b>жидкие волосы</b>）",
+"пустой":"полный の対。пустая комната→пустой разговор（無意味な会話）→пустые слова（口先だけの言葉）。",
+"полезный":"コアは<b>利益をもたらす</b>。полезная информация→полезная еда（体にいい食べ物）。対は вредный。",
+"угрюмый":"コア：内にこもって不機嫌。①むっつりした・陰気な（人）②陰鬱な（<b>угрюмый пейзаж</b>＝重苦しい風景）。мрачный より無愛想さが前に出る",
+"мрачный":"コア：光がなく重苦しい。①陰鬱な（<b>мрачное настроение</b>）②暗い（<b>мрачная комната</b>）③悲観的な（<b>мрачный прогноз</b>）",
+"кудрявый":"コア：くるくる巻いている。①巻き毛の（人・髪）②葉が茂って丸い（<b>кудрявая берёза</b>）③飾り立てた（<b>кудрявый стиль</b>＝装飾過多の文体）",
+"сухой":"コアは<b>水気がない</b>。сухая одежда→сухой ответ（そっけない返答）→сухое вино（辛口ワイン）→сухая статистика（無味乾燥な統計）。",
+"круглый":"コアは<b>円形</b>。круглый стол→круглый год（一年中）→круглые сутки（24時間ずっと）。時間の表現で「まるまる」の意味になるのが要注意。",
+"занятый":"コアは<b>すでに埋まっている</b>。занятое место（ふさがった席）→Я занят（今は手が離せない）→занятая линия（話し中）。",
+"готовый":"コアは<b>いつでも動ける状態</b>。готовый обед（出来合いの食事）→Я готов（準備できた）→готов помочь（喜んで手を貸す）。",
+"известный":"コアは<b>広く知られている</b>。известный артист→как известно（周知のように）→по известным причинам（周知の理由で＝あえて言わない）。",
+"верный":"コアは<b>ずれがない</b>。верный ответ（正解）→верный друг（忠実な友）→верный признак（確かな兆候）。",
+"ясный":"コア：はっきりしている。①晴れた（<b>ясное небо</b>）②明白な（<b>ясный ответ</b>）③澄んだ（<b>ясный голос</b>）。<b>Ясно?</b>＝分かった？",
+"случайный":"コアは<b>意図していない</b>。случайная встреча→случайный человек（たまたま居合わせた人）→не случайно（偶然ではない＝必然だ）。",
+"брать / взять":"コア：手に取る。①取る②借りる（<b>взять книгу в библиотеке</b>）③引き受ける（<b>взять на себя</b>）④（乗り物を）拾う（<b>взять такси</b>）⑤（試験などに）受かる。変化：брать → <b>беру, берёшь</b>／взять → <b>возьму, возьмёшь</b>。",
+"держать":"コア：手を離さない。①持っている②保つ（<b>держать в тайне</b>＝秘密にしておく）③飼う（<b>держать собаку</b>）④経営する（<b>держать магазин</b>）。変化：держать → <b>держу, держишь</b>。",
+"поднимать / поднять":"コア：上へ持っていく。①持ち上げる②上げる（<b>поднять цены</b>）③（問題を）提起する（<b>поднять вопрос</b>）④起こす（<b>поднять с постели</b>）。変化：поднять → <b>подниму, поднимешь</b>。",
+"находить / найти":"コア：探し当てる。①見つける②～だと思う（<b>я нахожу это странным</b>＝それは奇妙だと思う。やや文語）。-ся 形 <b>находиться</b>＝位置している。変化：найти → <b>найду, найдёшь</b>。",
+"отвечать / ответить":"コアは<b>相手に返す</b>。ответить на вопрос（質問に答える。на＋対格）→отвечать за проект（案件に責任を持つ。за＋対格）。前置詞で意味が変わる。",
+"стоить":"コア：それだけの価値がある。①値段がする（<b>сколько стоит?</b>）②価値がある（<b>стоит посмотреть</b>＝見る価値がある）③（無人称で）～しさえすれば",
+"идти / ходить":"コア：進んでいく。①歩いて行く②（雨・雪が）降る（<b>идёт дождь</b>）③（時が）過ぎる（<b>время идёт</b>）④上映・上演される（<b>идёт фильм</b>）⑤似合う（<b>тебе идёт</b>）⑥（機械が）動く。<span class='warn'>②〜⑤は идти だけの意味</span>で、ходить では言わない。変化：идти → <b>иду, идёшь</b>。",
+"смотреть / посмотреть":"コアは<b>視線を向ける</b>。смотреть фильм→смотреть на（～のほうを見る）→смотреть за детьми（子どもの面倒を見る。за＋造格）。変化：смотреть → <b>смотрю, смотришь</b>。",
+"дело":"コア：なされること。①こと・事柄（<b>в чём дело?</b>＝どうしたの）②用事（<b>у меня дела</b>）③仕事・事業（<b>своё дело</b>＝自分の事業）④事件・訴訟（<b>уголовное дело</b>）⑤書類一式",
+"лицо":"コア：おもて。①顔②人物（<b>должностное лицо</b>＝公職者）③（文法の）人称（<b>первое лицо</b>）④表面・正面（<b>лицом к лицу</b>＝面と向かって）",
+"время":"コア：流れる時。①時間②時期・時代（<b>во времена войны</b>）③時制（<b>настоящее время</b>）④季節（<b>время года</b>）。<span class='warn'>-мя で終わる中性名詞</span>（свободное время）。生格 времени。",
+"место":"コア：空間の一区画。①場所②席（<b>свободное место</b>）③職・ポスト（<b>рабочее место</b>）④箇所（<b>слабое место</b>＝弱点）⑤（荷物の）個数",
+"путь":"コアは<b>目的地へ至る筋道</b>。長い путь は道路そのものより<b>行程</b>を指す。по пути（途中で）→другим путём（別の方法で）→Счастливого пути!（よい旅を）。<span class='warn'>-ь だが男性名詞</span>。",
+"сторона":"コア：向き・面。①側（<b>с одной стороны</b>）②方角（<b>в какую сторону?</b>）③面・観点（<b>сильная сторона</b>＝長所）④（交渉の）当事者",
+"власть":"コア：支配する力。①権力②当局（<b>местные власти</b>。複数）③支配・影響力。<span class='warn'>-ь で終わる女性名詞</span>。",
+"право":"コア：正しさ・許し。①権利（<b>иметь право</b>）②法（<b>международное право</b>＝国際法）③免許（<b>водительские права</b>。複数）",
+"история":"コアは<b>語られる筋</b>。история Японии→Расскажи историю（話をして）→странная история（妙な出来事）。",
+"опыт":"コア：やってみて得たもの。①経験（<b>богатый опыт</b>）②実験（<b>провести опыт</b>）③試み",
+"цена":"コアは<b>釣り合う量</b>。высокая цена→любой ценой（どんな犠牲を払っても）→знать цену（価値を知っている）。",
+"ключ":"コアは<b>閉じたものを開くもの</b>。ключ от двери→ключ к разгадке（解決の糸口）→горячий ключ（温泉の湧き口）。",
+"вещь":"コア：もの。①物（<b>ценная вещь</b>）②衣類・荷物（複数 <b>вещи</b>）③事柄（<b>странная вещь</b>＝妙な話）。<span class='warn'>-ь で終わる女性名詞</span>。",
+"поле":"コアは<b>ひらけた面</b>。в поле→футбольное поле（競技場）→поле деятельности（活動分野）→магнитное поле（磁場）。",
+"общество":"コアは<b>人の集まり</b>。современное общество→акционерное общество（株式会社）→в обществе друзей（友人と一緒に）。",
+"образование":"コアは<b>形づくること</b>。высшее образование（高等教育）→образование облаков（雲の形成）。",
+"речь":"コアは<b>口から出る言葉</b>。устная речь（話し言葉）→произнести речь（演説する）→Речь идёт о…（話は～のことだ）。<span class='warn'>-ь で終わる女性名詞</span>。",
+"рука":"コア：肩から指先まで。①手②腕。<span class=\"warn\">ロシア語は手と腕を区別しない</span>。慣用：<b>из рук в руки</b>（手から手へ）、<b>под рукой</b>（手元に）",
+"нога":"コア：腿から足先まで。①足②脚。手と同じく<span class=\"warn\">区別しない</span>。慣用：<b>идти пешком</b>、<b>на ногах</b>（立ったまま／病み上がりで）",
+"язык":"コア：舌。①言語（<b>русский язык</b>）②舌（<b>показать язык</b>）③（料理の）タン④話し方・文体（<b>научный язык</b>）",
+"час":"コア：1時間という単位。①～時（<b>в семь часов</b>）②1時間（<b>два часа</b>）。複数 <b>часы</b> は「時計」という別語になる",
+"край":"コア：へり。①端・縁（<b>край стола</b>）②地方・地域（<b>родной край</b>＝故郷）③（ロシアの行政区分の）地方",
+"и":"語も節も繋ぐ。列挙は最後の一つの前だけに置く（A, B <b>и</b> C）。英語の and のつもりで毎文の頭に置くと幼く聞こえる。",
+"а":"衝突ではなく<b>並置</b>の対比。Я читаю, <b>а</b> он пишет（私は読み、彼は書く）。前後は矛盾していなくてよい。",
+"также":"「それに加えて」。同じ主体が別のことも、という追加。書き言葉寄り。",
+"тоже":"「〜も同じく」。<b>別の主体が同じことをする</b>。Он устал. — Я <b>тоже</b>. также とはここで分かれる。",
+"кроме того":"文頭でコンマ。論点をもう一つ足す、書き言葉の定番。",
+"к тому же":"кроме того の口語版。「しかもさ」という体感。",
+"причём":"前に言ったことに条件や事情を足す。「しかも・それも」。",
+"не только... но и...":"<span class=\"warn\">но и の後ろは前半と同じ品詞・同じ格で揃える。</span>Он знает не только <b>английский</b>, но и <b>русский</b>。",
+"ни... ни...":"<span class=\"warn\">述語に не が必要。</span>Я <b>не</b> знаю ни его, ни её。二重否定は否定の強調で、打ち消し合わない。",
+"но":"最も直接的な逆接。前を否定する向き。а との違いは「矛盾があるか」。",
+"однако":"но より硬い。文頭なら「しかし」、<span class=\"warn\">文中に置くと挿入語扱いでコンマ</span>（Он, однако, не пришёл）。",
+"зато":"マイナスをプラスで埋め合わせる「その代わり」。Дорого, <b>зато</b> надёжно。",
+"тем не менее":"前を一度認めた上で覆す。論述向きの硬い語。",
+"всё же":"「それでも」。тем не менее より軽く、話し言葉にも入る。",
+"всё-таки":"<span class=\"warn\">ハイフン必須。</span>всё же より口語的で、粘った末の結論という含み。",
+"хотя":"従属節を導く。文頭・文中どちらも可。口語では言い足し（「まあ、〜だけど」）にも使う。",
+"несмотря на то что":"<span class=\"warn\">標準は несмотря на то, что（то の後ろにコンマ）。</span>試験ではこの形で書くのが安全。",
+"несмотря на ＋対格":"後ろは<b>名詞のみ</b>。節を繋ぎたいときは несмотря на то что に切り替える。",
+"вопреки ＋与格":"「予想・期待に反して」。вопреки <b>ожиданиям</b> の形が頻出。生格にしない。",
+"напротив":"「それどころか逆に」。書き言葉寄り、挿入語としてコンマ。",
+"наоборот":"напротив の口語版。単独で「逆だよ」とも言える。",
+"в отличие от ＋生格":"比較の基準を明示する。<b>В отличие от Японии</b>, в России…",
+"между тем":"「ところが・その一方で」。文語。時間の「その間に」と論理の「ところが」を兼ねる。",
+"как ни странно":"挿入語。コンマで囲む。",
+"потому что":"<span class=\"warn\">文頭に置けない。</span>ただし Почему? — Потому что… のように答えの冒頭では単独で可。",
+"так как":"文頭に置ける中立の「なので」。理由を先に言いたいときの第一選択。",
+"поскольку":"так как より硬い。相手も知っている前提を根拠にするときに合う。",
+"ибо":"文語・古風。現代の話し言葉ではまず使わない。読み取れれば十分。",
+"из-за ＋生格":"<b>マイナスの原因</b>。из-за дождя（雨のせいで）。良い結果には使わない。",
+"благодаря ＋与格":"<b>プラスの原因</b>。<span class=\"warn\">与格に注意</span>（благодаря <b>тебе</b>, благодаря <b>помощи</b>）。из-за と対になる。",
+"в связи с ＋造格":"公文書・ニュースの定型。「〜に伴い」。外務省方向なら必須。",
+"в результате ＋生格":"客観的な結果の原因。報告書向き。",
+"дело в том, что":"「実はね」と事情を切り出す。会話でも論述でも使える便利な導入。",
+"ведь":"<b>相手も知っているはず</b>のことを持ち出す。「〜じゃない（か）」。訳語が出にくいが口語で頻出。",
+"conj|раз":"「〜なんだから」。口語の理由。Раз ты знаешь, скажи。",
+"тем более что":"すでにある理由に、もっと強い理由を足す。",
+"поэтому":"最も中立で頻度が高い「だから」。迷ったらこれ。",
+"следовательно":"論理的な帰結。硬く、論文・数学寄り。",
+"таким образом":"議論をまとめて次に進む。結論の合図としても使える。",
+"значит":"口語の「つまり・ということは」。<span class=\"warn\">挿入語ならコンマで囲む</span>（Значит, ты согласен）。",
+"итак":"話を切り替えて結論に入る合図。「さて、そういうわけで」。",
+"так что":"口語。<span class=\"warn\">前にコンマ</span>。поэтому より軽い。",
+"чтобы":"<span class=\"warn\">後ろは不定形か過去形のみ。</span>主語が同じ→不定形（Я пришёл, чтобы <b>поговорить</b>）／違う→過去形（…, чтобы ты <b>поговорил</b>）。現在形は入らない。",
+"для того чтобы":"чтобы の強調形。文頭に置いて目的を前に出すときに使う。",
+"ради ＋生格":"人や理想「のために」。感情のこもった目的。ради <b>детей</b>。",
+"во избежание ＋生格":"公文書専用。「〜を避けるため」。会話では使わない。",
+"если":"平叙の条件。後続節に то を置くこともある（Если…, то…）。",
+"если бы":"<span class=\"warn\">述語は過去形＋бы。</span>Если бы я <b>знал</b>, я <b>бы</b> сказал（知っていたら言ったのに）。現在形は使えない。",
+"в противном случае":"иначе の硬い版。契約書・通知文向き。",
+"иначе":"「さもないと」。口語でも書き言葉でも。",
+"как только":"「〜するやいなや」。完了体と組むことが多い。",
+"пока":"「〜する間」。<b>不完了体</b>と組む。",
+"пока не":"「〜するまで」。<span class=\"warn\">не があっても否定ではない。</span>Жди, пока <b>не</b> позвоню（電話するまで待って）。",
+"прежде чем":"主語が同じなら後ろは不定形。до того как より硬い。",
+"с тех пор как":"起点を示す「〜して以来」。",
+"наконец":"「ついに」。挿入語で「最後に（列挙）」の意味にもなり、その場合コンマ。",
+"например":"<span class=\"warn\">挿入語ならコンマで囲むが、直後に具体語が並ぶだけなら後ろにコンマ不要。</span>грамота.ру の逆引きで確認できる。",
+"в частности":"「とりわけ・具体的には」。全体の中の一部を取り出す。",
+"а именно":"「すなわち」。具体的な列挙の直前。コロンを伴うこともある。",
+"то есть":"言い換えの「つまり」。<span class=\"warn\">コンマを前に置く</span>。略記は т. е.",
+"скажем":"「たとえば言うなら」。挿入語、口語寄り。",
+"прежде всего":"「何よりまず」。優先順位を示す。列挙の第一項にも使える。",
+"по-моему":"<span class=\"warn\">ハイフン必須。</span>挿入語なのでコンマで囲む。口語的。",
+"на мой взгляд":"по-моему より丁寧で書き言葉寄り。議論の場に合う。",
+"по мнению ＋生格":"第三者の意見を引くとき。по мнению <b>экспертов</b>。",
+"как известно":"「周知のように」。相手も知っている前提を置く。",
+"насколько я знаю":"断定を避ける保険。口述試験で有効。",
+"судя по ＋与格":"「〜から判断すると」。судя по <b>всему</b> の形が頻出。",
+"кажется":"<span class=\"warn\">挿入語ならコンマ（Кажется, он ушёл）／動詞なら不要（Мне кажется, что…）。</span>作文で落としやすい。",
+"очевидно":"挿入語で「明らかに」。述語（Это очевидно）ならコンマ不要。",
+"безусловно":"強い確信。挿入語。",
+"разумеется":"「もちろん」。конечно より少し硬い。",
+"что касается ＋生格":"<b>то で受けることが多い。</b>Что касается меня, <b>то</b> я согласен。口述で話題を組み立てる主力。",
+"относительно ＋生格":"硬い「〜については」。文書向き。",
+"насчёт ＋生格":"口語の「〜について」。относительно と層が逆。",
+"кстати":"挿入語。話題を横にずらす。",
+"речь идёт о ＋前置格":"「話は〜のことだ」。論点の確認に使う定型。",
+"с точки зрения ＋生格":"「〜の観点から」。論述の骨格になる表現。",
+"следует подчеркнуть, что":"論文・報告の定型。следует ＋不定形は「〜すべきだ」の無人称。",
+"необходимо отметить, что":"上と同型。硬さは最上位で、会話には持ち込まない。",
+"как уже отмечалось":"受動的な言い回しで「既述のとおり」。論文向き。",
+"в этой связи":"「これに関連して」。в связи с этим とほぼ同義で、より硬い。",
+"на основании ＋生格":"法律・行政文書の「〜に基づき」。",
+"согласно ＋与格":"<span class=\"warn\">与格を取る。</span>согласно <b>закону</b>（× закона）。頻出の間違い。",
+"в соответствии с ＋造格":"「〜に従って」。согласно より硬く、条文向き。",
+"в рамках ＋生格":"「〜の枠内で」。会議・協定の文脈で頻出。",
+"в ходе ＋生格":"「〜の過程で」。во время より書き言葉的。",
+"по сравнению с ＋造格":"「〜と比べて」。数値の比較でよく使う。",
+"пусть":"「たとえ〜でも」の譲歩。三人称命令（〜させよ）と同形なので文脈で判断。",
+"как бы то ни было":"「いずれにせよ」。硬い定型。丸ごと覚える。",
+"так или иначе":"「どっちみち」。口語でも書き言葉でも通る便利な表現。",
+"не столько... сколько...":"「AというよりむしろB」。<span class=\"warn\">後半 сколько の側が言いたいこと。</span>",
+"скорее":"「むしろ」。скорее всего（おそらく）とは別物なので混同注意。",
+"правда":"挿入語の「もっとも〜だが」。名詞の「真実」と同形。コンマの有無で判別する。",
+"отчасти":"「部分的には」。全面同意を避けるときに便利。",
+"по данным ＋生格":"「〜のデータでは」。ニュース・報告の定型。",
+"по словам ＋生格":"「〜の話では」。伝聞の責任を相手に置く。",
+"ссылаясь на ＋対格":"副動詞なので主語は主節と同じ。「〜を引きつつ」。",
+"на самом деле":"「実は」。相手の思い込みを訂正する含みがある。",
+"вероятно":"挿入語の「おそらく」。возможно より確度が高い。",
+"по-видимому":"<span class=\"warn\">ハイフン必須。</span>「見たところ」。観察に基づく推量。",
+"скорее всего":"口語で最頻出の「たぶん」。確度は高め。",
+"возможно":"<span class=\"warn\">挿入語ならコンマ（Возможно, он прав）／述語なら不要（Это возможно）。</span>",
+"не исключено, что":"「〜の可能性も否定できない」。硬く、報道・分析向き。",
+"вряд ли":"<span class=\"warn\">後ろに не を付けない。</span>Вряд ли он придёт（来ないだろう）。二重否定にしない。",
+"едва ли":"вряд ли とほぼ同じ。やや文語。同じく не を付けない。",
+"наверняка":"「きっと」。確信が強く、口語的。",
+"как правило":"「概して・原則として」。挿入語でコンマ。",
+"именно":"直後の語を特定する。<b>Именно поэтому</b>（まさにそれゆえ）。語順で強調点が動く。",
+"как раз":"「ちょうど・折よく」。時間にも事柄にも。",
+"более того":"前より<b>強い</b>内容を足す。「それどころか」。",
+"тем более":"「なおさら」。тем более что（〜だからなおさら）と区別。",
+"даже":"強調したい語の<b>直前</b>に置く。位置が変わると意味が変わる。",
+"иными словами":"書き言葉の「言い換えれば」。другими словами より硬い。",
+"точнее говоря":"自分の発言を修正する。口述で言い直すときに自然。",
+"проще говоря":"「平たく言えば」。専門語を噛み砕く合図。",
+"грубо говоря":"「大まかに言えば」。厳密でないと予告する保険。",
+"так сказать":"「いわば」。挿入語でコンマ。多用すると軽く聞こえる。",
+"во-первых":"<span class=\"warn\">ハイフン必須＋コンマ。</span>во-вторых, в-третьих と続く。論述の骨。",
+"наряду с ＋造格":"「〜と並んで」。硬い並列。",
+"помимо ＋生格":"「〜のほかに」。кроме とほぼ同義でやや硬い。",
+"за исключением ＋生格":"「〜を除いて」。文書向き。",
+"включая ＋対格":"<span class=\"warn\">対格を取る。</span>副動詞由来だが前置詞化している。",
+"ну":"間投詞。<span class=\"warn\">書き言葉では使わない。</span>言いよどみの時間稼ぎ。",
+"вот":"「ほら・つまりね」。指示にも談話標識にもなる万能語。",
+"слушай":"「ねえ」。ты 相手のみ。вы なら слушайте。",
+"честно говоря":"「正直言うと」。挿入語。少し踏み込んだ本音の合図。",
+"да ладно":"文脈で「まさか」とも「もういいよ」とも。イントネーション頼み。",
+"неужели":"<b>驚き</b>の「まさか本当に？」。Неужели правда?",
+"разве":"<b>疑い</b>を含む問い。Разве он не знал?（知らなかったの？）неужели と使い分ける。",
+"ещё бы":"「当然だ」。強い肯定の相槌。",
+"вот именно":"「まさにそれ」。相手の発言に乗る。",
+"не совсем":"「そうでもない」。やわらかい否定。全否定を避けたいときに。",
+"пожалуй":"<span class=\"warn\">全面的な同意ではない。</span>「まあそうかもね」という留保混じり。強く同意するなら согласен / конечно。",
+"как сказать":"「何と言うか」。答えに詰まったときの時間稼ぎ。",
+"трудно сказать":"「何とも言えない」。同上。口述試験で反射的に出せると強い。",
+"в том-то и дело":"「まさにそこが問題」。議論の核心を指す。",
+"сложный":"コア：組み合わさっている。①複雑な（<b>сложная система</b>）②難しい（<b>сложный вопрос</b>）③複合の（<b>сложное слово</b>＝複合語、<b>сложное предложение</b>＝複文）",
+"горький":"コア：苦い。①味が苦い②つらい・苦々しい（<b>горькая правда</b>＝苦い真実、<b>горький опыт</b>）",
+"сладкий":"コア：甘い。①味が甘い②心地よい（<b>сладкий сон</b>）③甘ったるい（お世辞などにも：<b>сладкие слова</b>）",
+"солёный":"コア：塩味。①しょっぱい②塩漬けの（<b>солёные огурцы</b>）③きわどい（<b>солёный анекдот</b>）",
+"низкий":"コア：高さがない。①低い②卑劣な（<b>низкий поступок</b>）③（声が）低い",
+"широкий":"コア：幅がある。①広い（<b>широкая улица</b>）②幅の広い（<b>широкие плечи</b>）③寛大な（<b>широкая душа</b>）④大規模な（<b>широкие возможности</b>）",
+"узкий":"コア：幅がない。①狭い②きつい（服）③専門的な・限定された（<b>узкий специалист</b>＝狭い分野の専門家。悪い意味ではない）",
+"строгий":"コア：ゆるみがない。①厳しい（<b>строгий учитель</b>）②厳格な（<b>строгие правила</b>）③簡素で端正な（<b>строгий костюм</b>）",
+"прочный":"コア：長く保つ。①丈夫な（<b>прочный материал</b>）②永続的な（<b>прочный мир</b>＝恒久平和、<b>прочные знания</b>）",
+"решать / решить":"コア：ほどいて片をつける。①決める（<b>решить вопрос</b>）②（問題を）解く（<b>решить задачу</b>）③解決する",
+"считать / посчитать":"コア：数え上げる。①数える②計算する③～とみなす（<b>считать его другом</b>＝彼を友人と考える。造格に注意）④意見を持つ（<b>я считаю, что…</b>）",
+"переводить / перевести":"コア：向こう側へ移す。①翻訳する②移す・移動させる（<b>перевести часы</b>＝時計を直す）③送金する（<b>перевести деньги</b>）④渡らせる（<b>перевести через дорогу</b>）。変化：перевести → <b>переведу, переведёшь</b>。",
+"бросать / бросить":"コア：手放して投げる。①投げる②やめる（<b>бросить курить</b>＝禁煙する）③捨てる・見捨てる（<b>бросить семью</b>）",
+"заниматься":"コア：その事にかかりきる。<span class=\"warn\">＋造格。</span>①従事する（<b>заниматься экспортом</b>）②勉強する（<b>заниматься русским</b>）③（スポーツを）やる（<b>заниматься спортом</b>）",
+"убирать / убрать":"コア：どける。①片付ける（<b>убрать комнату</b>）②取り除く（<b>убрать лишнее</b>）③収穫する（<b>убрать урожай</b>）。変化：убрать → <b>уберу, уберёшь</b>。",
+"получать / получить":"コア：自分のところに来る。①受け取る（<b>получить письмо</b>）②得る（<b>получить образование</b>）③（結果を）出す。-ся 形 <b>получаться</b>＝うまくいく",
+"представлять / представить":"コア：目の前に差し出す。①想像する（<b>представь себе</b>＝想像してみて）②紹介する（<b>представить гостя</b>）③代表する（<b>представлять компанию</b>）④提出する",
+"служить / послужить":"コア：仕える。①勤務する（<b>служить в армии</b>）②役立つ・～の役目を果たす（<b>служить примером</b>。造格）③（教会で）礼拝を行う",
+"становиться / стать":"コア：ある状態に入る。①～になる（<b>стать врачом</b>。造格）②立つ・位置につく③始める（<b>стать делать</b>＝～しはじめる）④（無人称で）～になった（<b>стало холодно</b>）。変化：стать → <b>стану, станешь</b>。",
+"слово":"コア：ことば。①単語②発言（<b>дать слово</b>＝発言を許す／約束する）③約束（<b>сдержать слово</b>）④（文学作品の）辞",
+"память":"コア：覚えていること。①記憶（<b>хорошая память</b>）②追憶・記念（<b>в память о ком-то</b>）③（機器の）メモリ。<span class='warn'>-ь で終わる女性名詞</span>。",
+"внимание":"コア：意識を向けること。①注意（<b>обратить внимание на</b>）②配慮・気遣い（<b>спасибо за внимание</b>）",
+"решение":"コア：片がついた状態。①決定（<b>принять решение</b>＝決定を下す）②解決（<b>решение проблемы</b>）③（問題の）答え",
+"вопрос":"コア：問い。①質問（<b>задать вопрос</b>）②問題・課題（<b>решить вопрос</b>）③事柄（<b>по вопросам доставки</b>＝配送の件では）",
+"срок":"コア：区切られた時。①期限（<b>в срок</b>＝期日どおりに）②期間（<b>срок службы</b>＝耐用年数）③刑期",
+"письмо":"コア：書かれたもの。①手紙②文字・書法（<b>иероглифическое письмо</b>＝表意文字）",
+"культура":"コア：耕して育てたもの。①文化②教養（<b>человек высокой культуры</b>）③（農業の）作物",
+"jp|святилище":"コア：神を祀る場所。<span class='warn'>神社はふつう святилище</span>。храм だけだと寺院・教会も指すので、синтоистский храм と補うか святилище を使う。",
+"jp|буддийский храм":"храм 単独では教会・神殿と紛れる。<span class='warn'>буддийский を必ず付ける</span>のが安全。монастырь は僧が住む寺。",
+"jp|тории":"<span class='warn'>不変化・複数扱い</span>。тории стоят у входа。単数で「一基の鳥居」と言いたければ ворота-тории。説明：<b>Это ворота, которые стоят у входа в синтоистское святилище.</b>",
+"jp|кимоно":"<span class='warn'>不変化・中性</span>。японское кимоно、в кимоно。複数も同形。татами・сумо・каратэ も同じ扱い。説明：<b>Это традиционная одежда, которую сегодня надевают по праздникам.</b>",
+"jp|татами":"<span class='warn'>不変化</span>。数えるときは циновка татами のように普通名詞を添える。комната в шесть татами。説明：<b>Это плотный соломенный мат, которым покрывают пол в японской комнате.</b>",
+"jp|сумо":"<span class='warn'>不変化・中性</span>。японское сумо、турнир по сумо。борьба сумо とも。説明：<b>Это японская борьба, в которой нужно вытолкнуть соперника из круга.</b>",
+"jp|сакура":"<span class='warn'>変化する女性名詞</span>。цветение сакуры、под сакурой。「桜の花」は цветы сакуры。",
+"jp|самурай":"男性名詞。<span class='warn'>複数生格は самураев</span>。эпоха самураев。説明：<b>Это воин, который служил своему князю.</b>",
+"jp|гейша":"女性名詞。<span class='warn'>複数生格は гейш</span>。квартал гейш（花街）。説明：<b>Это артистка, которая развлекает гостей танцем, музыкой и беседой.</b>",
+"jp|суши":"日本語からは суси が原音に近いが、<span class='warn'>ロシアで通用するのは суши</span>。不変化。",
+"jp|дзэн":"男性名詞で<b>変化する</b>（дзэна, о дзэне）。дзэн-буддизм の形も頻出。",
+"jp|икебана":"女性名詞で変化する（искусство икебаны）。同じ意味で цветочная композиция とも言える。説明：<b>Это искусство, в котором из цветов и веток составляют композиции.</b>",
+"jp|борец сумо":"力士。рикиси は通じないことが多い。<b>борец сумо</b> か <b>сумоист</b>。",
+"jp|арена":"土俵。дохё は説明が要る。глиняная арена／круг と補うと伝わる。",
+"jp|палочки для еды":"<span class='warn'>常に複数</span>。生格 палочек。есть палочками（造格）。",
+"jp|объект всемирного наследия":"世界遺産の定訳。<b>объект Всемирного наследия ЮНЕСКО</b> が正式。внесён в список（登録されている）とセットで使う。",
+"jp|национальное сокровище":"国宝の定訳。重要文化財は важное культурное достояние。<span class='warn'>順序を取り違えない</span>（国宝のほうが上）。",
+"jp|политика изоляции":"鎖国。сакоку は通じない。<b>политика самоизоляции</b> とも。開国は открытие страны。説明：<b>Это политика, при которой страна более двухсот лет была закрыта для иностранцев.</b>",
+"jp|Реставрация Мэйдзи":"明治維新。<span class='warn'>реставрация は大文字で固有名詞扱い</span>。建物の「修復」の реставрация と同形なので文脈で区別。説明：<b>Это события 1868 года, после которых власть вернулась к императору.</b>",
+"jp|горячий источник":"温泉。онсэн より通じる。курорт с горячими источниками（温泉地）。説明：<b>Это источник с горячей минеральной водой, в котором купаются для отдыха и здоровья.</b>",
+"jp|поклон":"お辞儀。動詞は кланяться / поклониться。поклон в знак благодарности。説明：<b>Это жест, которым приветствуют, благодарят и извиняются.</b>",
+"jp|курган":"古墳。погребальный курган と補うと確実。前方後円墳は курган в форме замочной скважины。",
+"jp|паломничество":"聖地をめぐる旅を指す重い語。<span class='warn'>ふだんの「参拝」は посещение храма</span>（神社なら посещение святилища）。",
+"jp|дзадзэн":"<b>сидячая медитация</b>（座って行う瞑想）と言い添えると伝わる。<span class='warn'>медитация だけだと瞑想一般</span>で、座禅とは限らない。",
+"jp|замок":"<span class='warn'>同じ綴りで意味が2つある</span>。「城」は前の音節を強く、「錠前」は後ろの音節を強く読む。読み上げがどちらで読むかは端末しだいなので、動画で確かめる。",
+"jp|оборона замка":"城にこもって守ること。<span class='warn'>осада は攻める側の「包囲」</span>で、向きが逆。",
+"biz|экспорт":"前置詞に注意。<b>экспорт в Россию</b>（対ロ輸出）／<b>импорт из Японии</b>。輸出する側は экспортёр。",
+"biz|запчасть":"<span class='warn'>複数生格は запчастей</span>。現場ではほぼ複数形 запчасти で使う。正式には запасная часть の略。<span class='warn'>-ь で終わる女性名詞</span>。",
+"biz|подержанная машина":"中古車。書き言葉では <b>б/у автомобиль</b>（бывший в употреблении の略）。ロシアの中古車サイトはこの表記。",
+"biz|правый руль":"右ハンドル。<span class='warn'>ロシア極東では праворульные машины が主流</span>で、日本車輸出の前提そのもの。反対は левый руль。",
+"biz|смета":"見積。ただし商用のやりとりで送るのは <b>коммерческое предложение</b>（КП）のほうが普通。смета は工事の積算寄り。",
+"biz|счёт":"<span class='warn'>請求書と銀行口座が同じ語</span>。выставить счёт（請求書を出す）／открыть счёт（口座を開く）。複数は счета。",
+"biz|наличие на складе":"在庫。<b>есть в наличии</b>（在庫あり）／<b>нет в наличии</b>（在庫なし）の形で覚える。",
+"biz|срок поставки":"納期。数字とセットで来る。<b>в течение двух недель</b>（2週間以内）、<b>к концу месяца</b>（月末までに）。",
+"biz|погрузка":"積み込み。反対は выгрузка（積み降ろし）。<span class='warn'>求人票の業務内容にそのまま出る語</span>。погрузка на судно。",
+"biz|экспедитор":"輸送を手配する業者。<span class='warn'>通関業者は таможенный представитель</span> で、役割が別。",
+"biz|таможенное оформление":"通関。口語では растаможка とも言うが、書き言葉では使わない。動詞は оформить（手続きする）。",
+"biz|санкции":"<span class='warn'>常に複数</span>。под санкциями（制裁下にある）／попасть под санкции（制裁対象になる）。",
+"biz|переговоры":"<span class='warn'>常に複数</span>。вести переговоры（交渉する）。単数形は存在しない。",
+"biz|наличные":"<span class='warn'>常に複数</span>。платить наличными（現金で払う。造格）。",
+"biz|документ":"複数 документы で「必要書類一式」。оформить документы（書類を整える）。",
+"biz|собеседование":"就職の面接。<span class='warn'>интервью は報道のインタビュー</span>で、別物。пройти собеседование（面接を受ける／通る）。",
+"biz|стаж":"勤続年数・実務年数。<b>стаж работы</b> の形で。опыт работы（職務経験）と対で使う。",
+"biz|подготовительный факультет":"予備学部。留学の説明で必須。<span class='warn'>本科（основной факультет）と区別される</span>ので、言い換えないこと。",
+"biz|уровень языка":"語学レベル。мой уровень — B1 のように言う。владеть языком（言語を操る。造格）も頻出。",
+"biz|судно":"<span class='warn'>複数は суда で、アクセントが語尾に移る</span>（単数 судно は前の音節を強く読む）。複数生格 судов。судны という形はない。",
+"biz|нефть":"<span class='warn'>-ь で終わる女性名詞</span>。нефть и газ。торговать нефтью（造格）。добыча нефти（石油採掘）。",
+"biz|лес":"森の лес と同じ語。<b>貿易では木材</b>を指す。торговать лесом（造格）。加工済みなら пиломатериалы。",
+"biz|морская капуста":"<span class='warn'>昆布。海苔は нори、わかめは вакамэ で別物</span>。直訳は「海のキャベツ」。",
+"biz|Владивосток":"<b>владеть востоком</b>（東方を治める）が語源。владеть＋造格。ロシア極東最大の港。",
+"biz|незамерзающий порт":"不凍港。<span class='warn'>ウラジオストクは厳密には冬に結氷する</span>ので ледокол で航路を開ける。",
+"biz|моряк":"船員。複数生格 моряков。船の乗組員全体は экипаж。",
+"biz|Транссибирская магистраль":"略して <b>Транссиб</b>。シベリア鉄道。極東の港と欧露を結ぶ幹線で、貨物の陸送経路になる。",
+"торговать":"<span class='warn'>＋造格＝何を商うか</span>（торговать лесом）。<span class='warn'>＋с＋造格＝誰と商うか</span>（торговать с Японией）。完了体はない。変化：торговать → <b>торгую, торгуешь</b>。",
+"владеть":"<span class='warn'>＋造格。</span>①所有する（владеть компанией）②使いこなす（<b>владеть языком</b>＝言語を操る）。знать язык より能力が高い含み。",
+"учиться / научиться":"<span class='warn'>＋与格＝何を学ぶか</span>（учиться новому＝新しいことを覚える）。「～するのを学ぶ」は＋不定形（научиться водить）。",
+"замерзать / замёрзнуть":"凍る。港・川・海が主語になる（порт замерзает зимой）。人に使うと「凍えている」（я замёрз）。",
+"играть / поиграть":"<span class='warn'>スポーツ・ゲームは в＋対格</span>（играть <b>в футбол</b>）、<span class='warn'>楽器は на＋前置格</span>（играть <b>на гитаре</b>）。ここを取り違えると通じない。",
+"кататься / покататься":"<span class='warn'>на＋前置格。</span>кататься на лыжах／на коньках／на велосипеде。「乗って動く」全般で、スキーもスケートも自転車もこれ一語。",
+"уметь / суметь":"<b>身につけた技能</b>としての「できる」。мочь（その場の可能）と別。Я <b>умею</b> водить（運転できる）／Я <b>не могу</b> сегодня（今日は無理）。＋不定形。",
+"собираться / собраться":"<span class='warn'>＋不定形で「～するつもりだ」</span>。Я собираюсь поехать во Владивосток。хотеть より予定が固まっている含み。「集まる」の意味もある。変化：собраться → <b>соберусь, соберёшься</b>。",
+"пробовать / попробовать":"<span class='warn'>＋不定形＝やってみる</span>（попробовать кататься на сноуборде）。<span class='warn'>＋対格＝味見する</span>（попробовать суши）。「してみたい」の中心になる語。変化：пробовать → <b>пробую, пробуешь</b>。",
+"нести / носить":"定・不定の対。<b>нести</b>＝今まさに運んでいる、<b>носить</b>＝習慣的に運ぶ／<b>身につけている</b>（носить очки＝眼鏡をかけている）。写真描写では носить が出番。変化：нести → <b>несу, несёшь</b>。",
+"надевать / надеть":"<span class='warn'>надеть ＋対格＝何を着る</span>（надеть куртку）。одеться は「自分が服を着る」。<b>надеть что, одеть кого</b> と覚える。変化：надеть → <b>надену, наденешь</b>。",
+"снимать / снять":"コア：外して取り去る。①脱ぐ（снять куртку）②外す（снять очки）③撮影する（снять фильм）④借りる（снять квартиру）。変化：снять → <b>сниму, снимешь</b>。",
+"выглядеть":"<span class='warn'>＋造格</span>（выглядеть усталым）、または как＋主格（выглядеть как студент）。不完了体のみ。写真の説明に使える。変化：выглядеть → <b>выгляжу, выглядишь</b>。",
+"казаться / показаться":"<span class='warn'>＋造格</span>（он кажется добрым）。「～のように見える」。Кажется, что… の形なら断定を避ける言い方になる。変化：казаться → <b>кажусь, кажешься</b>。",
+"висеть":"掛かっている状態。<b>На стене висит картина</b>（壁に絵が掛かっている）。絵や写真の説明で стоять・лежать と並んで頻出。変化：висеть → <b>вишу, висишь</b>。",
+"болеть за":"<span class='warn'>за＋対格。</span>болеть за нашу команду（うちのチームを応援する）。болеть（病気になる）と同形だが、за があれば応援の意味。",
+"выигрывать / выиграть":"<span class='warn'>誰に勝つかは у＋生格</span>（выиграть у Японии）。何を勝ち取るかは対格（выиграть матч）。проиграть も同じ形を取る。",
+"гладить / погладить":"①なでる（гладить кота）②アイロンをかける（гладить рубашку）。同じ語で別の動作になるので、目的語で判断する。",
+"отпускать / отпустить":"опускать（下ろす）と紛らわしい。<b>отпустить</b>＝握っていたものを放す・行かせる。<b>опустить</b>＝下へ下ろす。",
+"стремиться":"「目指す・努力して向かう」。<span class='warn'>к＋与格</span>（стремиться к цели）または＋不定形。完了体はない。",
+"cmd|слушай":"слушать の命令形。<b>聞いて</b>という指示。<span class='warn'>接続・談話タブの слушай（「ねえ」と呼びかける談話標識）と同形</span>で、文頭に置けば呼びかけ、動作の指示なら本来の意味になる。вы なら слушайте。",
+"класть / положить":"<span class='warn'>置き方で動詞が変わる。</span><b>класть</b>＝横にして置く（положить книгу на стол）、<b>ставить</b>＝立てて置く（поставить стакан）、<b>вешать</b>＝掛ける（повесить куртку）。日本語はどれも「置く」なので、物の姿勢で選び直す必要がある。変化：класть → <b>кладу, кладёшь</b>。",
+"ставить / поставить":"立てて置く。класть（横に置く）との対。<span class='warn'>поставить чайник</span>（やかんを火にかける）、поставить подпись（署名する）のように慣用も多い。",
+"собирать / собрать":"①集める（собрать вещи）②<b>組み立てる</b>（собрать мебель）③収穫する。<span class='warn'>собираться（～するつもりだ）と語形が近い</span>ので、-ся の有無で読み分ける。変化：собрать → <b>соберу, соберёшь</b>。",
+"разбирать / разобрать":"собирать の対。①分解する（разобрать двигатель）②整理する（разобрать документы）③聞き取る（не разобрал＝聞き取れなかった）。変化：разобрать → <b>разберу, разберёшь</b>。",
+"доставать / достать":"①取り出す（достать из сумки）②<b>手に入れる</b>（достать билеты）。②は「苦労して入手する」という含みがあり、купить とは別。変化：доставать → <b>достаю, достаёшь</b>／достать → <b>достану, достанешь</b>。",
+"рвать / порвать":"<span class='warn'>不規則。рву, рвёшь, рвут</span>。①破る（порвать бумагу）②もぎ取る（рвать цветы）。-ся 形 порваться は「破れる」。",
+"печь / испечь":"<span class='warn'>不規則で子音交替がある。пеку, печёшь, печёт, пекут</span>。オーブンで焼くのが печь、フライパンなら жарить、湯で煮るなら варить。",
+"нарезать":"<span class='warn'>不完了体と完了体が同じ綴り</span>で、アクセントと変化が違う。不完了体は最後の音節を強く読み、<b>нарезаю, нарезаешь</b>。完了体は真ん中の音節を強く読み、<b>нарежу, нарежешь</b>。表記では区別できないので、耳で覚えるしかない。",
+"заменять / заменить":"交換する。<span class='warn'>＋対格＋на＋対格</span>（заменить деталь на новую）。または＋造格。запчасти の話で頻出。",
+"красить / покрасить":"塗る。名詞 краска（塗料）と同根。<b>красить стены</b>（壁を塗る）。「化粧する」の краситься も同じ語。",
+"стучать / постучать":"<span class='warn'>в＋対格</span>（стучать в дверь＝ドアをノックする）。音を立てて叩く動作全般。変化：стучать → <b>стучу, стучишь</b>。",
+"давить / надавить":"面で押さえつける。<b>нажимать</b>（ボタンなど一点を押す）、<b>толкать</b>（押して動かす）と使い分ける。日本語の「押す」は3つに割れる。",
+"сажать / посадить":"①植える（посадить дерево）②<b>座らせる</b>（посадить ребёнка）。自分が座る садиться / сесть との他動詞・自動詞の対。",
+"смешивать / смешать":"混ぜる。<span class='warn'>мешать は「邪魔する」と「かき混ぜる」の両方の意味を持つ</span>ので、混ぜるとはっきり言いたいときは смешивать か перемешивать を使う。",
+"подгорать / подгореть":"焦げる。гореть（燃える）に под- が付いた形。<b>Молоко подгорело</b>（牛乳が焦げついた）。",
+"оказываться / оказаться":"<span class='warn'>接頭辞から意味が読めない代表格</span>。「～であることが判明する」。<b>Оказалось, что он уже уехал</b>（彼はもう出発していたと分かった）。丸ごと覚えるほかない。変化：оказаться → <b>окажусь, окажешься</b>。",
+"заставлять / заставить":"<span class='warn'>＋対格＋不定形。</span>「無理に～させる」。ставить（置く）と同根だが意味は無関係。заставить его работать。もう一つ「物でふさぐ」の意味もある。",
+"обращаться / обратиться":"①<b>к＋与格</b>＝人に呼びかける・相談する（обратиться к врачу）②<b>с＋造格</b>＝物を扱う（обращаться с техникой）。前置詞で意味が割れる。変化：обратиться → <b>обращусь, обратишься</b>（я の形で т が щ に替わる）。",
+"занимать / занять":"①場所を占める（занять место）②<b>お金を借りる</b>（занять денег）。<span class='warn'>заниматься（従事する）とは別の語</span>として扱う。変化：занять → <b>займу, займёшь</b>。",
+"попадать / попасть":"①命中する・入る（<b>Попал!</b>＝入った）②たどり着く（попасть в Москву）③陥る（попасть в беду）。в＋対格。シュートが決まったときの一語がこれ。変化：попасть → <b>попаду, попадёшь</b>。",
+"хватает / хватит":"無人称で使う。<span class='warn'>足りないものは生格</span>（денег не хватает＝お金が足りない）。<b>Хватит!</b> 単独なら「もうやめろ」。хватать（つかむ）と同じ語だが別物として覚える。",
+"бить / побить":"<span class='warn'>不規則。бью, бьёшь, бьют</span>。по＋与格で「～を打つ」（бить по воротам＝ゴールを狙って蹴る）。一回なら ударить。",
+"кидать / кинуть":"бросать の口語版で、意味はほぼ同じ。会話では кидать のほうが多い。<b>Кинь мне мяч</b>（ボール投げて）。",
+"метать / метнуть":"<span class='warn'>競技の投てき専用</span>。метать копьё（やり投げ）、метание диска。日常の「投げる」には使わない。変化：метать → <b>мечу, мечешь</b>。",
+"забрасывать / забросить":"в＋対格で「中へ投げ入れる」。забросить мяч в корзину（バスケで決める）。забивать は得点全般、забросить は投げ入れる動作そのもの。",
+"зависеть":"<span class='warn'>от＋生格。</span>完了体はない。Это зависит от погоды（天気次第だ）。返事に使える <b>Смотря по обстоятельствам</b> と併せて。変化：зависеть → <b>завишу, зависишь</b>。",
+"состоять":"①<b>из＋生格</b>＝～から成る（состоять из трёх частей）②<b>в＋前置格</b>＝本質は～にある。完了体はない。変化：состоять → <b>состою, состоишь</b>。",
+"принадлежать":"<span class='warn'>＋与格＝誰のものか</span>（книга принадлежит мне）。<b>к＋与格</b>なら「～に属する」（принадлежать к группе）。完了体はない。変化：принадлежать → <b>принадлежу, принадлежишь</b>。",
+"жениться":"<span class='warn'>主語は男性。</span>жениться на＋前置格（на ней）。女性は <b>выходить замуж за＋対格</b>。двое なら поженились。不完了体と完了体が同形。",
+"умирать / умереть":"от＋生格＝病気や原因で（умереть от болезни）。за＋対格＝～のために。<span class='warn'>過去形は умер, умерла</span> とアクセントが動く。変化：умереть → <b>умру, умрёшь</b>。",
+"петь / спеть":"<span class='warn'>不規則。пою, поёшь, поют</span>。спеть песню。曲を「かける」のは включать。",
+"врать / соврать":"<span class='warn'>不規則。вру, врёшь</span>。口語。改まった場面では обманывать（だます）や говорить неправду。",
+"сниться / присниться":"<span class='warn'>＋与格＝誰が見るか</span>。<b>Мне снился странный сон</b>（変な夢を見た）。夢の内容が主語になる点が日本語と逆。",
+"надоедать / надоесть":"<span class='warn'>＋与格。</span><b>Мне надоело</b>（もううんざりだ）。うんざりする側が与格、原因が主語。変化：надоесть → <b>надоем, надоешь … надоедят</b>（есть＝食べる と同じ型）。",
+"значить":"「意味する」。完了体はない。<b>Что это значит?</b>（これはどういう意味ですか）はレッスンでそのまま使える。",
+"cmd|иди сюда":"идти の命令形は иди。<span class='warn'>「行って」も「来て」も同じ形</span>で、сюда（こっちへ）／туда（あっちへ）で向きを示す。",
+"cmd|стой":"стоять から。<b>Стой!</b> で「止まれ」。сидеть（座っている）→ сиди と混同しないこと。Стоп! も通じる。",
+"cmd|держи":"①持って（держи крепко＝しっかり持って）②<b>はい、どうぞ</b>と物を差し出すときにも使う。вы なら Держите。",
+"cmd|дай":"дать の命令形。<span class='warn'>不完了体の давай は「さあ」の意味に転用される</span>ので別物として扱う。丁寧に頼むなら Дайте, пожалуйста。",
+"cmd|брось":"бросить から。一回投げるのが брось、<b>投げ続けて</b>なら不完了体の бросай。「やめろ」の意味にもなる（Брось курить）。",
+"cmd|лови":"ловить から。投げる側が声をかけるときの決まり文句。<b>Лови!</b>＝「ほら、行くよ」。",
+"cmd|не двигайся":"<span class='warn'>否定の命令は必ず不完了体</span>。Не двинься とは言わない。Не трогай（触らないで）、Не беги（走らないで）も同じ形。",
+"cmd|перестань":"перестать から。<b>Хватит!</b>（もういい）もほぼ同義でよく使う。Прекрати! は強い言い方。",
+"cmd|тише":"比較級だが単独で命令として働く。<b>Тише!</b>＝静かに。громче なら「もっと大きく」。",
+"cmd|осторожно":"副詞だが単独で警告になる。<b>Осторожно!</b>＝危ない・気をつけて。Берегись! はもっと切迫した「どけ」。",
+"cmd|давай":"①さあ（давай попробуем＝やってみよう）②<b>じゃあね</b>（電話の切り際。口語）③давай＋不完了体不定形＝しようよ。用法が広いので文脈で判断。",
+"cmd|попробуй":"попробовать から。<b>Попробуй ещё раз</b>（もう一度やってみて）。「味見して」の意味にもなる。",
+"быть":"変化：現在形はふつう使わない（「ある」の意味の есть だけが残る）。未来は <b>буду, будешь</b>。",
+"жить / прожить":"変化：жить → <b>живу, живёшь</b>。",
+"оставаться / остаться":"変化：оставаться → <b>остаюсь, остаёшься</b>／остаться → <b>останусь, останешься</b>。",
+"сидеть":"変化：сидеть → <b>сижу, сидишь</b>。",
+"садиться / сесть":"支配：行き先なので <span class='warn'>в／на＋対格</span>（сесть в автобус, сесть на стул）。座っている状態の сидеть は＋前置格。変化：сесть → <b>сяду, сядешь</b>。",
+"стоять":"変化：стоять → <b>стою, стоишь</b>。3人称の стоит は стоить（値段がする）の стоит と同じ綴り。стоять は後ろの音節を、стоить は前の音節を強く読む。",
+"вставать / встать":"変化：вставать → <b>встаю, встаёшь</b>／встать → <b>встану, встанешь</b>。",
+"лежать":"変化：лежать → <b>лежу, лежишь</b>。",
+"ложиться / лечь":"支配：行き先なので <span class='warn'>на／в＋対格</span>（лечь на диван）。横たわっている状態の лежать は＋前置格。変化：лечь → <b>лягу, ляжешь … лягут</b>。",
+"спать / поспать":"変化：спать → <b>сплю, спишь</b>。",
+"существовать":"変化：существовать → <b>существую, существуешь</b>。",
+"ехать / ездить":"変化：ехать → <b>еду, едешь</b>。",
+"приходить / прийти":"変化：прийти → <b>приду, придёшь</b>。",
+"приезжать / приехать":"変化：приехать → <b>приеду, приедешь</b>。",
+"уходить / уйти":"変化：уйти → <b>уйду, уйдёшь</b>。",
+"уезжать / уехать":"変化：уехать → <b>уеду, уедешь</b>。",
+"входить / войти":"変化：войти → <b>войду, войдёшь</b>。",
+"выходить / выйти":"変化：выйти → <b>выйду, выйдешь</b>。",
+"подходить / подойти":"支配：「近づく」は <span class='warn'>к＋与格</span>（подойти к окну）。「合う・似合う」は <span class='warn'>＋与格</span>（это мне подходит）。変化：подойти → <b>подойду, подойдёшь</b>。",
+"переходить / перейти":"変化：перейти → <b>перейду, перейдёшь</b>。",
+"бежать / бегать":"変化：бежать → <b>бегу, бежишь … бегут</b>。",
+"лететь / летать":"変化：лететь → <b>лечу, летишь</b>。",
+"плыть / плавать":"変化：плыть → <b>плыву, плывёшь</b>。",
+"подниматься / подняться":"変化：подняться → <b>поднимусь, поднимешься</b>。",
+"падать / упасть":"変化：упасть → <b>упаду, упадёшь</b>。",
+"приседать / присесть":"変化：присесть → <b>присяду, присядешь</b>。",
+"махать / помахать":"支配：<span class='warn'>＋造格</span>（махать рукой＝手を振る）。変化：махать → <b>машу, машешь</b>。",
+"обнимать / обнять":"変化：обнять → <b>обниму, обнимешь</b>。",
+"целовать / поцеловать":"変化：целовать → <b>целую, целуешь</b>。",
+"указывать / указать":"変化：указать → <b>укажу, укажешь</b>。",
+"дышать":"支配：<span class='warn'>＋造格</span>（дышать свежим воздухом＝新鮮な空気を吸う）。変化：дышать → <b>дышу, дышишь</b>。",
+"танцевать / потанцевать":"変化：танцевать → <b>танцую, танцуешь</b>。",
+"вести / водить":"変化：вести → <b>веду, ведёшь</b>。",
+"везти / возить":"変化：везти → <b>везу, везёшь</b>。",
+"приносить / принести":"変化：принести → <b>принесу, принесёшь</b>。",
+"передавать / передать":"変化：передавать → <b>передаю, передаёшь</b>／передать → <b>передам, передашь … передадут</b>。",
+"давать / дать":"変化：давать → <b>даю, даёшь</b>／дать → <b>дам, дашь, даст, дадим, дадите, дадут</b>。",
+"нажимать / нажать":"変化：нажать → <b>нажму, нажмёшь</b>。",
+"сжимать / сжать":"変化：сжать → <b>сожму, сожмёшь</b>。",
+"трясти / потрясти":"変化：трясти → <b>трясу, трясёшь</b>。",
+"тереть / потереть":"変化：тереть → <b>тру, трёшь</b>。",
+"жать / пожать":"変化：жать → <b>жму, жмёшь</b>。",
+"забивать / забить":"変化：забить → <b>забью, забьёшь</b>。",
+"отбивать / отбить":"変化：отбить → <b>отобью, отобьёшь</b>。",
+"тренироваться / потренироваться":"変化：тренироваться → <b>тренируюсь, тренируешься</b>。",
+"соревноваться":"変化：соревноваться → <b>соревнуюсь, соревнуешься</b>。",
+"побеждать / победить":"変化：победить には я の形がない。「私が勝つ」は <b>я одержу победу</b> か <b>я выиграю</b> と言い換える。",
+"подавать / подать":"変化：подавать → <b>подаю, подаёшь</b>／подать → <b>подам, подашь … подадут</b>。",
+"догонять / догнать":"変化：догнать → <b>догоню, догонишь</b>。",
+"разминаться / размяться":"変化：размяться → <b>разомнусь, разомнёшься</b>。",
+"отжиматься / отжаться":"変化：отжаться → <b>отожмусь, отожмёшься</b>。",
+"финишировать":"変化：финишировать → <b>финиширую, финишируешь</b>。",
+"разбивать / разбить":"変化：разбить → <b>разобью, разобьёшь</b>。",
+"резать / разрезать":"変化：резать → <b>режу, режешь</b>。",
+"шить / сшить":"変化：шить → <b>шью, шьёшь</b>／сшить → <b>сошью, сошьёшь</b>。",
+"прибивать / прибить":"変化：прибить → <b>прибью, прибьёшь</b>。",
+"рисовать / нарисовать":"変化：рисовать → <b>рисую, рисуешь</b>。",
+"смазывать / смазать":"変化：смазать → <b>смажу, смажешь</b>。",
+"поливать / полить":"変化：полить → <b>полью, польёшь</b>。",
+"завязывать / завязать":"変化：завязать → <b>завяжу, завяжешь</b>。",
+"развязывать / развязать":"変化：развязать → <b>развяжу, развяжешь</b>。",
+"упаковывать / упаковать":"変化：упаковать → <b>упакую, упакуешь</b>。",
+"распаковывать / распаковать":"変化：распаковать → <b>распакую, распакуешь</b>。",
+"накрывать / накрыть":"変化：накрыть → <b>накрою, накроешь</b>。",
+"сортировать / отсортировать":"変化：сортировать → <b>сортирую, сортируешь</b>。",
+"есть / съесть":"変化：есть → <b>ем, ешь, ест, едим, едите, едят</b>（完全な不規則。съесть も同じ型）。",
+"пить / выпить":"変化：пить → <b>пью, пьёшь</b>／выпить → <b>выпью, выпьешь</b>。",
+"наливать / налить":"変化：налить → <b>налью, нальёшь</b>。",
+"остывать / остыть":"変化：остыть → <b>остыну, остынешь</b>。",
+"мариновать / замариновать":"変化：мариновать → <b>мариную, маринуешь</b>。",
+"выливать / вылить":"変化：вылить → <b>вылью, выльешь</b>。",
+"проливать / пролить":"変化：пролить → <b>пролью, прольёшь</b>。",
+"лить / полить":"変化：лить → <b>лью, льёшь</b>。",
+"жевать / пожевать":"変化：жевать → <b>жую, жуёшь</b>。",
+"умываться / умыться":"変化：умыться → <b>умоюсь, умоешься</b>。",
+"причёсываться / причесаться":"変化：причесаться → <b>причешусь, причешешься</b>。",
+"бриться / побриться":"変化：бриться → <b>бреюсь, бреешься</b>。",
+"одеваться / одеться":"変化：одеться → <b>оденусь, оденешься</b>。",
+"раздеваться / раздеться":"変化：раздеться → <b>разденусь, разденешься</b>。",
+"мыть / вымыть":"変化：мыть → <b>мою, моешь</b>。",
+"вытирать / вытереть":"変化：вытереть → <b>вытру, вытрешь</b>。",
+"подметать / подмести":"変化：подмести → <b>подмету, подметёшь</b>。",
+"полоскать / прополоскать":"変化：полоскать → <b>полощу, полощешь</b>。",
+"выносить / вынести":"変化：вынести → <b>вынесу, вынесешь</b>。",
+"запирать / запереть":"変化：запереть → <b>запру, запрёшь</b>。",
+"видеть / увидеть":"変化：видеть → <b>вижу, видишь</b>。",
+"слышать / услышать":"変化：слышать → <b>слышу, слышишь</b>。",
+"показывать / показать":"変化：показать → <b>покажу, покажешь</b>。",
+"прятать / спрятать":"変化：прятать → <b>прячу, прячешь</b>。",
+"искать / поискать":"支配：具体的な物は対格（искать ключи）、<span class='warn'>抽象は生格</span>（искать помощи＝助けを求める）。変化：искать → <b>ищу, ищешь</b>。",
+"понимать / понять":"変化：понять → <b>пойму, поймёшь</b>。",
+"забывать / забыть":"変化：забыть → <b>забуду, забудешь</b>。",
+"верить / поверить":"支配：<span class='warn'>＋与格</span>＝人や言葉を信じる（верить другу）。<span class='warn'>в＋対格</span>＝存在や力を信じる（верить в успех）。",
+"сомневаться":"支配：<span class='warn'>в＋前置格</span>（сомневаться в успехе＝成功を疑う）。",
+"узнавать / узнать":"変化：узнавать → <b>узнаю, узнаёшь</b>／узнать → <b>узнаю, узнаешь</b>。я の形は同じ綴りで、узнавать は最後の音節を、узнать は真ん中の音節を強く読む。",
+"напоминать / напомнить":"支配：思い出させる相手が<span class='warn'>与格</span>（напомни мне＝思い出させて）、内容は о＋前置格。「似ている」は＋対格（он напоминает отца）。",
+"выбирать / выбрать":"変化：выбрать → <b>выберу, выберешь</b>。",
+"признавать / признать":"変化：признавать → <b>признаю, признаёшь</b>。",
+"убеждать / убедить":"支配：<span class='warn'>＋対格＋в＋前置格</span>（убедить его в этом）、または＋不定形。変化：убедить には я の形がない。<b>я смогу убедить</b> のように言い換える。",
+"интересоваться":"支配：<span class='warn'>＋造格</span>（интересоваться историей＝歴史に興味がある）。変化：интересоваться → <b>интересуюсь, интересуешься</b>。",
+"привыкать / привыкнуть":"支配：<span class='warn'>к＋与格</span>（привыкнуть к климату＝気候に慣れる）。",
+"увлекаться / увлечься":"支配：<span class='warn'>＋造格</span>（увлекаться музыкой＝音楽に夢中になる）。変化：увлечься → <b>увлекусь, увлечёшься … увлекутся</b>。",
+"справляться / справиться":"支配：<span class='warn'>с＋造格</span>（справиться с задачей＝課題をこなす）。",
+"писать / написать":"変化：писать → <b>пишу, пишешь</b>。",
+"записывать / записать":"変化：записать → <b>запишу, запишешь</b>。",
+"достигать / достичь":"支配：<span class='warn'>＋生格</span>（достичь цели＝目的を達する）。変化：достичь → <b>достигну, достигнешь</b>。",
+"касаться / коснуться":"支配：<span class='warn'>＋生格</span>（коснуться руки＝手に触れる）。<b>что касается</b>＋生格で「～について言えば」。",
+"говорить / сказать":"変化：сказать → <b>скажу, скажешь</b>。",
+"рассказывать / рассказать":"変化：рассказать → <b>расскажу, расскажешь</b>。",
+"называть / назвать":"支配：<span class='warn'>＋対格＋造格</span>（назвать сына Иваном＝息子をイワンと名づける）。変化：назвать → <b>назову, назовёшь</b>。",
+"спрашивать / спросить":"支配：尋ねる相手は対格か <span class='warn'>у＋生格</span>（спросить у прохожего＝通行人に尋ねる）。内容は о＋前置格。",
+"советовать / посоветовать":"支配：<span class='warn'>＋与格＋不定形</span>（советую вам попробовать＝試してみるといいですよ）。変化：советовать → <b>советую, советуешь</b>。",
+"просить / попросить":"支配：頼む相手は対格（попросить друга）か у＋生格。<span class='warn'>求める内容は о＋前置格</span>（просить о помощи）か＋不定形。",
+"описывать / описать":"変化：описать → <b>опишу, опишешь</b>。",
+"звать / позвать":"変化：звать → <b>зову, зовёшь</b>。",
+"звонить / позвонить":"支配：<span class='warn'>＋与格</span>（позвонить маме＝母に電話する）。場所へかけるなら в＋対格（позвонить в офис）。",
+"благодарить / поблагодарить":"支配：<span class='warn'>＋対格＋за＋対格</span>（благодарю вас за помощь＝ご協力に感謝します）。",
+"извиняться / извиниться":"支配：<span class='warn'>перед＋造格</span>＝誰に、<span class='warn'>за＋対格</span>＝何を（извиниться перед клиентом за опоздание）。",
+"здороваться / поздороваться":"支配：<span class='warn'>с＋造格</span>（поздороваться с соседом＝隣人に挨拶する）。",
+"прощаться / попрощаться":"支配：<span class='warn'>с＋造格</span>（попрощаться с друзьями＝友人に別れを告げる）。",
+"поздравлять / поздравить":"支配：<span class='warn'>＋対格＋с＋造格</span>（поздравляю вас с днём рождения＝お誕生日おめでとう）。",
+"ждать / подождать":"支配：特定の人・物は対格（ждать сестру）、<span class='warn'>不特定・抽象は生格</span>（ждать ответа＝返事を待つ）。変化：ждать → <b>жду, ждёшь</b>。",
+"встречаться / встретиться":"支配：<span class='warn'>с＋造格</span>（встретиться с другом）。-ся のない встретить は＋対格。",
+"кричать / крикнуть":"変化：кричать → <b>кричу, кричишь</b>。",
+"шептать / прошептать":"変化：шептать → <b>шепчу, шепчешь</b>。",
+"молчать / помолчать":"変化：молчать → <b>молчу, молчишь</b>。",
+"нравиться / понравиться":"支配：<span class='warn'>好きな人が与格、好かれる物が主語</span>（мне нравится этот город＝この町が気に入っている）。",
+"хотеть / захотеть":"変化：хотеть → <b>хочу, хочешь, хочет, хотим, хотите, хотят</b>（単数と複数で型が変わる）。",
+"хотеться / захотеться":"支配：<span class='warn'>無人称。したい人が与格</span>（мне хочется спать＝眠い）。変化：<b>хочется</b>（現在）と <b>хотелось</b>（過去）の形だけを使う。",
+"желать / пожелать":"支配：<span class='warn'>相手が与格、願う内容が生格</span>（желаю вам счастья＝お幸せに）。",
+"радоваться / обрадоваться":"支配：<span class='warn'>＋与格</span>（радоваться подарку＝贈り物を喜ぶ）。変化：радоваться → <b>радуюсь, радуешься</b>。",
+"удивляться / удивиться":"支配：<span class='warn'>＋与格</span>（удивиться новости＝知らせに驚く）。",
+"бояться":"支配：<span class='warn'>＋生格</span>（бояться темноты＝暗がりが怖い）。変化：бояться → <b>боюсь, боишься</b>。",
+"беспокоиться":"支配：<span class='warn'>о＋前置格</span>（беспокоиться о здоровье＝健康を気にかける）。",
+"волноваться / взволноваться":"支配：<span class='warn'>за＋対格</span>（волноваться за детей＝子どもを心配する）。変化：волноваться → <b>волнуюсь, волнуешься</b>。",
+"сердиться / рассердиться":"支配：<span class='warn'>на＋対格</span>（сердиться на брата＝弟に腹を立てる）。",
+"обижаться / обидеться":"支配：<span class='warn'>на＋対格</span>（обидеться на шутку＝冗談に気を悪くする）。変化：обидеться → <b>обижусь, обидишься</b>。",
+"скучать":"支配：「恋しい」は <span class='warn'>по＋与格</span>（скучать по дому＝家が恋しい）。",
+"смеяться / засмеяться":"支配：<span class='warn'>над＋造格</span>（смеяться над шуткой＝冗談を笑う）。変化：смеяться → <b>смеюсь, смеёшься</b>。",
+"плакать / заплакать":"変化：плакать → <b>плачу, плачешь</b>。я の形 плачу は платить（払う）の я の形と同じ綴り。плакать は前の音節を、платить は後ろの音節を強く読む。",
+"мочь / смочь":"変化：мочь → <b>могу, можешь … могут</b>。",
+"мечтать / помечтать":"支配：<span class='warn'>о＋前置格</span>（мечтать о путешествии＝旅を夢見る）。",
+"планировать / запланировать":"変化：планировать → <b>планирую, планируешь</b>。",
+"надеяться":"支配：<span class='warn'>на＋対格</span>（надеяться на успех＝成功を期待する）。変化：надеяться → <b>надеюсь, надеешься</b>。",
+"решаться / решиться":"支配：<span class='warn'>на＋対格</span>（решиться на переезд＝引っ越しを決心する）、または＋不定形。",
+"предпочитать / предпочесть":"支配：<span class='warn'>＋対格＋与格</span>で「B より A を好む」（предпочитать чай кофе＝コーヒーより紅茶が好き）。変化：предпочесть → <b>предпочту, предпочтёшь</b>。",
+"отказываться / отказаться":"支配：<span class='warn'>от＋生格</span>（отказаться от предложения＝申し出を断る）。変化：отказаться → <b>откажусь, откажешься</b>。",
+"рисковать / рискнуть":"支配：<span class='warn'>＋造格</span>（рисковать жизнью＝命を賭ける）。変化：рисковать → <b>рискую, рискуешь</b>。",
+"готовиться / подготовиться":"支配：<span class='warn'>к＋与格</span>（готовиться к экзамену＝試験の準備をする）。",
+"работать / поработать":"支配：職業は<span class='warn'>造格</span>（работать переводчиком＝通訳として働く）。取り組む対象は над＋造格（работать над проектом）。",
+"помогать / помочь":"支配：<span class='warn'>＋与格</span>（помочь другу＝友人を手伝う）。「～を」でも対格にしない。変化：помочь → <b>помогу, поможешь … помогут</b>。",
+"мешать / помешать":"支配：<span class='warn'>＋与格</span>（не мешай мне＝邪魔しないで）。「かき混ぜる」の意味のときは＋対格。",
+"участвовать":"支配：<span class='warn'>в＋前置格</span>（участвовать в проекте＝プロジェクトに参加する）。変化：участвовать → <b>участвую, участвуешь</b>。",
+"организовывать / организовать":"変化：организовать → <b>организую, организуешь</b>。",
+"управлять":"支配：<span class='warn'>＋造格</span>（управлять компанией＝会社を経営する）。",
+"руководить":"支配：<span class='warn'>＋造格</span>（руководить отделом＝部署を率いる）。",
+"использовать":"変化：использовать → <b>использую, используешь</b>。",
+"пользоваться / воспользоваться":"支配：<span class='warn'>＋造格</span>（пользоваться телефоном＝電話を使う）。「～を」でも対格にしない。変化：пользоваться → <b>пользуюсь, пользуешься</b>。",
+"опаздывать / опоздать":"支配：<span class='warn'>на＋対格</span>（опоздать на поезд＝列車に乗り遅れる）。",
+"успевать / успеть":"支配：<span class='warn'>на＋対格</span>（успеть на поезд＝列車に間に合う）、または＋不定形。",
+"защищать / защитить":"変化：защитить → <b>защищу, защитишь</b>（я の形で т が щ に替わる）。",
+"контролировать / проконтролировать":"変化：контролировать → <b>контролирую, контролируешь</b>。",
+"патрулировать":"変化：патрулировать → <b>патрулирую, патрулируешь</b>。",
+"продавать / продать":"変化：продавать → <b>продаю, продаёшь</b>／продать → <b>продам, продашь … продадут</b>。",
+"платить / заплатить":"支配：<span class='warn'>за＋対格</span>（платить за обед＝昼食代を払う）。",
+"тратить / потратить":"支配：<span class='warn'>＋対格＋на＋対格</span>（тратить деньги на книги＝本にお金を使う）。",
+"заказывать / заказать":"変化：заказать → <b>закажу, закажешь</b>。",
+"принимать / принять":"変化：принять → <b>приму, примешь</b>。",
+"отдавать / отдать":"変化：отдавать → <b>отдаю, отдаёшь</b>／отдать → <b>отдам, отдашь … отдадут</b>。",
+"подписывать / подписать":"変化：подписать → <b>подпишу, подпишешь</b>。",
+"происходить / произойти":"変化：произойти → <b>произойдёт</b>（ふつう3人称で使う）。",
+"расти / вырасти":"変化：расти → <b>расту, растёшь</b>。",
+"начинаться / начаться":"変化：начаться → <b>начнётся</b>（ふつう3人称で使う）。",
+"начинать / начать":"変化：начать → <b>начну, начнёшь</b>。",
+"открывать / открыть":"変化：открыть → <b>открою, откроешь</b>。",
+"закрывать / закрыть":"変化：закрыть → <b>закрою, закроешь</b>。",
+"превращаться / превратиться":"支配：<span class='warn'>в＋対格</span>（вода превращается в лёд＝水が氷になる）。変化：превратиться → <b>превращусь, превратишься</b>（я の形で т が щ に替わる）。",
+"гореть / сгореть":"変化：гореть → <b>горю, горишь</b>。",
+"удаваться / удаться":"支配：<span class='warn'>無人称。人が与格＋不定形</span>（мне удалось купить билет＝切符が買えた）。変化：удаваться → <b>удаётся</b>／удаться → <b>удастся</b>（3人称単数だけを使う）。",
+"отличаться / отличиться":"支配：<span class='warn'>от＋生格</span>＝～と違う（отличаться от других）。違う点は造格（отличаться размером）。",
+"совпадать / совпасть":"変化：совпасть → <b>совпаду, совпадёшь</b>。",
+"содержать":"変化：содержать → <b>содержу, содержишь</b>。",
+"соответствовать":"支配：<span class='warn'>＋与格</span>（соответствовать стандартам＝基準に合う）。変化：соответствовать → <b>соответствую, соответствуешь</b>。",
+"оказывать / оказать":"支配：決まった名詞と組む。оказать помощь（援助する）、<span class='warn'>оказать влияние на＋対格</span>（～に影響を与える）。変化：оказать → <b>окажу, окажешь</b>。",
+"относиться / отнестись":"支配：<span class='warn'>к＋与格</span>（хорошо относиться к людям＝人に親切に接する）。変化：отнестись → <b>отнесусь, отнесёшься</b>。",
+"являться":"支配：<span class='warn'>＋造格</span>（Токио является столицей Японии）。書き言葉の「～である」。",
+"болеть / заболеть":"支配：病名は<span class='warn'>造格</span>（болеть гриппом＝インフルエンザにかかっている）。「痛む」の болеть は別の変化で、<b>болит, болят</b> だけを使う（у меня болит голова）。",
+"уставать / устать":"変化：уставать → <b>устаю, устаёшь</b>／устать → <b>устану, устанешь</b>。",
+"чувствовать / почувствовать":"変化：чувствовать → <b>чувствую, чувствуешь</b>。",
+"убивать / убить":"変化：убить → <b>убью, убьёшь</b>。",
+"спасать / спасти":"変化：спасти → <b>спасу, спасёшь</b>。",
+"разводиться / развестись":"変化：развестись → <b>разведусь, разведёшься</b>。",
+"мужчина":"<span class='warn'>-а で終わるが男性名詞</span>（этот мужчина）。変化は女性型。",
+"парень":"<span class='warn'>-ь で終わる男性名詞</span>（этот парень）。生格 парня。",
+"мать":"<span class='warn'>-ь で終わる女性名詞</span>（моя мать）。主格・対格以外は матер- の形になる（生格 матери）。",
+"дочь":"<span class='warn'>-ь で終わる女性名詞</span>（моя дочь）。主格・対格以外は дочер- の形になる（生格 дочери）。",
+"коллега":"<span class='warn'>男女どちらにも使う</span>（мой коллега／моя коллега）。変化は女性型。",
+"гость":"<span class='warn'>-ь で終わる男性名詞</span>（дорогой гость）。",
+"учитель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。複数は учителя。",
+"день":"<span class='warn'>-ь で終わる男性名詞</span>（хороший день）。生格 дня。",
+"ночь":"<span class='warn'>-ь で終わる女性名詞</span>（тёмная ночь）。",
+"область":"<span class='warn'>-ь で終わる女性名詞</span>（Московская область）。",
+"площадь":"<span class='warn'>-ь で終わる女性名詞</span>（Красная площадь）。",
+"огонь":"<span class='warn'>-ь で終わる男性名詞</span>（сильный огонь）。生格 огня。",
+"дождь":"<span class='warn'>-ь で終わる男性名詞</span>（сильный дождь）。",
+"осень":"<span class='warn'>-ь で終わる女性名詞</span>（золотая осень）。",
+"кровь":"<span class='warn'>-ь で終わる女性名詞</span>（красная кровь）。",
+"мысль":"<span class='warn'>-ь で終わる女性名詞</span>（интересная мысль）。",
+"цель":"<span class='warn'>-ь で終わる女性名詞</span>（главная цель）。",
+"любовь":"<span class='warn'>-ь で終わる女性名詞</span>（первая любовь）。生格 любви。",
+"жизнь":"<span class='warn'>-ь で終わる女性名詞</span>（вся жизнь）。",
+"кофе":"<span class='warn'>不変化の男性名詞</span>（чёрный кофе）。口語では中性も許容される。",
+"обувь":"<span class='warn'>-ь で終わる女性名詞</span>（зимняя обувь）。常に単数で使う。",
+"метро":"<span class='warn'>不変化の中性名詞</span>（московское метро）。в метро, на метро と形が変わらない。",
+"jp|монастырь":"<span class='warn'>-ь で終わる男性名詞</span>（буддийский монастырь）。",
+"jp|настоятель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"jp|проповедь":"<span class='warn'>-ь で終わる女性名詞</span>。",
+"jp|князь":"<span class='warn'>-ь で終わる男性名詞</span>。複数は князья。説明：<b>Это крупный феодал, который владел землями и имел своих самураев.</b>",
+"jp|тушь":"<span class='warn'>-ь で終わる女性名詞</span>（чёрная тушь）。",
+"jp|кисть":"<span class='warn'>-ь で終わる女性名詞</span>（тонкая кисть）。",
+"jp|глазурь":"<span class='warn'>-ь で終わる女性名詞</span>。",
+"jp|ткань":"<span class='warn'>-ь で終わる女性名詞</span>（шёлковая ткань）。",
+"jp|летопись":"<span class='warn'>-ь で終わる女性名詞</span>（древняя летопись）。",
+"jp|цунами":"<span class='warn'>不変化の中性名詞</span>（сильное цунами）。",
+"jp|посетитель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"jp|очередь":"<span class='warn'>-ь で終わる女性名詞</span>（длинная очередь）。",
+"biz|покупатель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"biz|отрасль":"<span class='warn'>-ь で終わる女性名詞</span>（важная отрасль）。",
+"biz|руководитель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"biz|автомобиль":"<span class='warn'>-ь で終わる男性名詞</span>（новый автомобиль）。",
+"biz|деталь":"<span class='warn'>-ь で終わる女性名詞</span>（важная деталь）。",
+"biz|двигатель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"biz|модель":"<span class='warn'>-ь で終わる女性名詞</span>（новая модель）。",
+"biz|гавань":"<span class='warn'>-ь で終わる女性名詞</span>（тихая гавань）。",
+"biz|получатель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"biz|отправитель":"<span class='warn'>-тель で終わる語（～する人・物）は男性名詞</span>。",
+"biz|подпись":"<span class='warn'>-ь で終わる女性名詞</span>（ваша подпись）。",
+"biz|связь":"<span class='warn'>-ь で終わる女性名詞</span>（мобильная связь）。",
+"biz|печать":"<span class='warn'>-ь で終わる女性名詞</span>（круглая печать）。",
+"biz|прибыль":"<span class='warn'>-ь で終わる女性名詞</span>（чистая прибыль）。",
+"biz|резюме":"<span class='warn'>不変化の中性名詞</span>（моё резюме）。",
+"biz|уголь":"<span class='warn'>-ь で終わる男性名詞</span>（каменный уголь）。生格 угля。",
+"jp|жрица":"説明：<b>Это девушка, которая помогает священнику и исполняет ритуальные танцы.</b>",
+"jp|собаки-стражи":"説明：<b>Это пара каменных статуй, которые стоят у входа и охраняют святилище.</b>",
+"jp|соломенная верёвка":"説明：<b>Это верёвка из рисовой соломы, которая отмечает священное место.</b>",
+"jp|омовение":"説明：<b>Это обряд очищения, который совершают перед молитвой: моют руки и полощут рот.</b>",
+"jp|ящик для пожертвований":"説明：<b>Это ящик, в который перед молитвой бросают монеты.</b>",
+"jp|амулет":"説明：<b>Это талисман в тканевом мешочке, который покупают в святилище на удачу.</b>",
+"jp|табличка с пожеланием":"説明：<b>Это деревянная табличка, на которой пишут желание и оставляют в святилище.</b>",
+"jp|предсказание":"説明：<b>Это листок с предсказанием, который вытягивают в святилище или храме.</b>",
+"jp|переносное святилище":"説明：<b>Это небольшое святилище, которое во время праздника носят по улицам на плечах.</b>",
+"jp|хлопок в ладоши":"説明：<b>Это два хлопка в ладоши, которые делают во время молитвы в святилище.</b>",
+"jp|храмовый колокол":"説明：<b>Это большой колокол, в который в новогоднюю ночь бьют сто восемь раз.</b>",
+"jp|благовония":"説明：<b>Это ароматические палочки, которые зажигают в храме и на могиле.</b>",
+"jp|главная башня":"説明：<b>Это самая высокая башня замка, которая была символом власти князя.</b>",
+"jp|сёгун":"説明：<b>Это военный правитель, который управлял страной от имени императора.</b>",
+"jp|сёгунат":"説明：<b>Это военное правительство, которое возглавлял сёгун.</b>",
+"jp|фамильный герб":"説明：<b>Это знак семьи, который передаётся из поколения в поколение.</b>",
+"jp|сухой сад":"説明：<b>Это сад без воды, в котором камни и песок изображают горы и море.</b>",
+"jp|чайный домик":"説明：<b>Это небольшой домик, в котором проводят чайную церемонию.</b>",
+"jp|веранда":"説明：<b>Это узкая деревянная веранда, которая идёт вдоль комнат и выходит в сад.</b>",
+"jp|раздвижная перегородка":"説明：<b>Это перегородка из дерева и бумаги, которая раздвигается и разделяет комнаты.</b>",
+"jp|ниша":"説明：<b>Это ниша в стене, в которую ставят цветы и вешают свиток.</b>",
+"jp|гостиница в японском стиле":"説明：<b>Это традиционная гостиница, в которой спят на футоне и ужинают в номере.</b>",
+"jp|гостевой дом":"説明：<b>Это небольшая гостиница, которую держит семья в собственном доме.</b>",
+"jp|футон":"説明：<b>Это матрас и одеяло, которые расстилают на полу на ночь.</b>",
+"jp|прихожая":"説明：<b>Это прихожая, в которой снимают обувь перед тем, как войти в дом.</b>",
+"jp|первое посещение храма":"説明：<b>Это первое в году посещение святилища или храма, которое совершают в начале января.</b>",
+"jp|новогодние блюда":"説明：<b>Это праздничные блюда, которые готовят заранее и едят в первые дни января.</b>",
+"jp|денежный подарок":"説明：<b>Это деньги в конверте, которые дарят детям на Новый год.</b>",
+"jp|любование цветами":"説明：<b>Это весенний пикник под цветущей сакурой, который устраивают с друзьями и коллегами.</b>",
+"jp|поминовение предков":"説明：<b>Это летний праздник, во время которого встречают души предков.</b>",
+"jp|народный танец":"説明：<b>Это танец, который летом танцуют все вместе вокруг деревянной вышки.</b>",
+"jp|Праздник кукол":"説明：<b>Это праздник девочек третьего марта, во время которого дома выставляют кукол.</b>",
+"jp|карповый флаг":"説明：<b>Это флаг в форме карпа, который вешают ко Дню детей.</b>",
+"jp|Праздник звёзд":"説明：<b>Это летний праздник, во время которого желания пишут на полосках бумаги и вешают на бамбук.</b>",
+"jp|изгнание демонов":"説明：<b>Это обряд в начале февраля, во время которого разбрасывают бобы и прогоняют демонов.</b>",
+"jp|уличный ларёк":"説明：<b>Это ларёк, в котором на праздниках продают еду и игрушки.</b>",
+"jp|рисовый шарик":"説明：<b>Это шарик из варёного риса с начинкой, который заворачивают в водоросли.</b>",
+"jp|бульон":"説明：<b>Это бульон из водорослей и сушёной рыбы, который служит основой японской кухни.</b>",
+"jp|мисо":"説明：<b>Это паста из соевых бобов, из которой варят суп.</b>",
+"jp|рисовая лепёшка":"説明：<b>Это лепёшка из клейкого риса, которую едят на Новый год.</b>",
+"jp|порошковый чай":"説明：<b>Это зелёный чай в порошке, который взбивают с горячей водой.</b>",
+"jp|чайная церемония":"説明：<b>Это искусство, в котором хозяин готовит чай и угощает гостей по строгим правилам.</b>",
+"jp|рисовое вино":"説明：<b>Это алкогольный напиток из риса, который пьют и холодным, и тёплым.</b>",
+"jp|театр Но":"説明：<b>Это старинный театр масок, в котором актёры медленно танцуют и поют.</b>",
+"jp|Кабуки":"説明：<b>Это традиционный театр, в котором все роли исполняют мужчины.</b>",
+"jp|кукольный театр":"説明：<b>Это кукольный театр, в котором каждую куклу ведут три человека.</b>",
+"jp|юмористический рассказ":"説明：<b>Это юмористический рассказ, который один артист исполняет сидя.</b>",
+"jp|каллиграфия":"説明：<b>Это искусство, в котором иероглифы пишут кистью и тушью.</b>",
+"jp|трёхструнный инструмент":"説明：<b>Это инструмент с тремя струнами, на котором играют большим плектром.</b>",
+"jp|гравюра":"説明：<b>Это цветная гравюра на дереве, которая изображает актёров, красавиц и пейзажи.</b>",
+"jp|японская бумага":"説明：<b>Это прочная бумага ручной работы, которую делают из коры деревьев.</b>",
+"jp|складывание бумаги":"説明：<b>Это искусство, в котором из листа бумаги складывают фигурки без ножниц и клея.</b>",
+"jp|эпоха воюющих провинций":"説明：<b>Это период, в который князья воевали друг с другом за власть.</b>",
+"jp|общественная купальня":"説明：<b>Это общественная баня, в которую жители района ходят мыться.</b>",
+"jp|купальня под открытым небом":"説明：<b>Это ванна под открытым небом, из которой видны горы или море.</b>",
+"jp|террасные поля":"説明：<b>Это рисовые поля, которые ступенями поднимаются по склону горы.</b>",
+"jp|скоростной поезд":"説明：<b>Это скоростной поезд, который соединяет крупные города Японии.</b>",
+"jp|слоговая азбука":"説明：<b>Это азбука, в которой каждый знак обозначает слог.</b>",
+"jp|вежливая речь":"説明：<b>Это особый стиль речи, которым выражают уважение к собеседнику.</b>"
+};
+
+const out=document.getElementById('out');
+const chips=document.getElementById('chips');
+const qEl=document.getElementById('q');
+const clr=document.getElementById('clr');
+let filter='all', query='', mode='list', hideSide='ja', maskMode='solid', shuf=false, shufAll=false, selMode=false, tipSearch=false;
+const SEL=new Set();
+
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* 検索用にそろえる：小文字にして ё→е（1文字→1文字なので位置はずれない） */
+const norm=s=>s.toLowerCase().replace(/ё/g,'е');
+/* 補足の中身（タグを外して norm したもの）。「補足も検索」がオンのときだけ使うので、要るときに作ってためておく */
+const tipNorm=new Map();
+function tipText(ru,pos){
+  const k=pos+'|'+ru;
+  if(!tipNorm.has(k)){ const t=tipFor(ru,pos); tipNorm.set(k,t?norm(plainText(t)):''); }
+  return tipNorm.get(k);
+}
+/* 語 w が検索語 q（norm 済み）に当たるか。一覧・テスト・書き出しで共通 */
+const hit=(w,q,pos)=>!q||norm(w[0]).includes(q)||norm(w[1]).includes(q)||(tipSearch&&tipText(w[0],pos).includes(q));
+const count=p=>p.groups.reduce((n,g)=>n+g[1].length,0);
+const TOTAL=D.reduce((n,p)=>n+count(p),0);
+document.title='ロシア語語彙 '+TOTAL.toLocaleString('ja-JP');
+document.getElementById('total').textContent=TOTAL.toLocaleString('ja-JP')+'語';
+
+/* 「現在地」の表：語数は D から数える（1行＝1語）。b2＝B2目安の語数の幅で、到達％は幅の真ん中に対する割合。
+   note と bar は、目安がない品詞の一言とバーの長さ(%) */
+const GOAL={
+  adj:{b2:[750,1000]}, verb:{b2:[1000,1200]}, noun:{b2:[2000,2500],name:'名詞（汎用）'},
+  conj:{note:'ほぼ完了',bar:95}, jp:{note:'初版',bar:30}, biz:{note:'面接用',bar:30}, cmd:{note:'命令形',bar:30}
+};
+document.getElementById('progress').innerHTML=D.map(p=>{
+  const g=GOAL[p.id]||{}, n=count(p), b=g.b2;
+  const pct=b?Math.min(100,Math.round(n/((b[0]+b[1])/2)*100)):(g.bar||0);
+  return '<tr><td>'+esc(g.name||p.name)+'</td><td class="num">'+n+'</td><td class="num">'+(b?b[0]+'–'+b[1]:'—')+'</td>'+
+    '<td>'+(b?pct+'%':esc(g.note||''))+'<div class="bar"><i style="width:'+pct+'%"></i></div></td></tr>';
+}).join('');
+
+// chips
+const mk=(id,label,n)=>{
+  const b=document.createElement('button');
+  b.className='chip';b.dataset.id=id;
+  b.innerHTML=esc(label)+(n?'<span class="c">'+n+'</span>':'');
+  b.setAttribute('aria-pressed',id===filter);
+  b.onclick=()=>{
+    filter=id;quiz=null;
+    if(id==='col'&&mode!=='list'){
+      mode='list';
+      [...modes.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.m==='list'));
+    }
+    [...chips.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.id===id));
+    render();window.scrollTo({top:0});
+  };
+  chips.appendChild(b);
+};
+mk('all','すべて',TOTAL);
+D.forEach(p=>mk(p.id,p.name,count(p)));
+mk('col','コラム',D.reduce((n,p)=>n+p.notes.length,0)+1);
+
+function hl(text,q){
+  if(!q) return esc(text);
+  const i=norm(text).indexOf(q);
+  if(i<0) return esc(text);
+  return esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+q.length))+'</mark>'+esc(text.slice(i+q.length));
+}
+function ruHtml(ru,q){
+  return hl(ru,q).replace(/ \/ /g,' <span class="sl">/</span> ');
+}
+function bars(s){
+  const n=Math.min([...s.replace(/\s/g,'')].length,14);
+  return '■'.repeat(n);
+}
+
+function ylTerm(s){
+  return s.split(' / ')[0].split('...')[0].replace(/＋.*$/,'').replace(/,/g,'').trim().replace(/\s+/g,'_');
+}
+function sayTerm(s){
+  return s.split(' / ')[0].split('...')[0].replace(/＋.*$/,'').trim();
+}
+function tipFor(ru,pos){ return TIPS[(pos||'')+'|'+ru]||TIPS[ru]; }
+/* 補足の中のロシア語の太字は、タップで読み上げられるようにする */
+function tipHtml(t){
+  return t.replace(/<b>([^<]*[а-яё][^<]*)<\/b>/gi,(m,s)=>'<b data-say="'+esc(s.replace(/…/g,','))+'">'+s+'</b>');
+}
+function rowHtml(w,q,pos){
+  const k=(pos||'')+'|'+w[0], tip=tipFor(w[0],pos);
+  return '<li class="'+(SEL.has(k)?'sel':'')+'" data-k="'+esc(k)+'"><div class="hd"><span class="ru" data-say="'+esc(sayTerm(w[0]))+'" data-ini="'+esc(w[0][0])+'" data-mask="'+bars(w[0])+'">'+ruHtml(w[0],q)+
+    '</span></div>'+
+    '<span class="ja" data-ini="'+esc(w[1][0])+'" data-mask="'+bars(w[1])+'">'+hl(w[1],q)+'</span>'+
+    '<a class="vid" href="https://youglish.com/pronounce/'+encodeURIComponent(ylTerm(w[0]))+'/russian" target="_blank" rel="noopener" aria-label="動画（YouGlish）" title="動画（YouGlish）">▶</a>'+
+    (tip?'<div class="tip">'+tipHtml(tip)+'</div>':'')+'</li>';
+}
+/* カテゴリ見出しの一括選択ボタン。ラベルは選択状況から決める */
+function gsText(d){
+  return d._items.every(w=>SEL.has(d._pos+'|'+w[0]))?'解除':'全選択';
+}
+function gsLabel(d){
+  if(!d||!d._items) return;
+  const b=d.querySelector('.gsel');
+  if(b) b.textContent=gsText(d);
+}
+/* 開いたカテゴリだけ行を生成する（初期描画を軽くするため） */
+function fill(d){
+  if(d.dataset.done) return;
+  d.dataset.done='1';
+  const ul=document.createElement('ul');
+  ul.className='list';
+  ul.innerHTML=d._items.map(w=>rowHtml(w,d._q,d._pos)).join('');
+  d.appendChild(ul);
+}
+function renderColumns(){
+  const frag=document.createDocumentFragment();
+  const vn=document.createElement('details');
+  vn.className='note';
+  vn.innerHTML='<summary>音で確認する</summary><div class="body">'+
+    '<p>ロシア語の語を<b>タップすると読み上げる</b>。補足の中のロシア語も同じ。速度は「操作」の中の「読み上げ」で切り替え。<a href="#" class="diag">鳴らないときはここ</a></p>'+
+    '<p>行の右端の <span class="vid">▶</span> は <a href="https://youglish.com/russian" target="_blank" rel="noopener">YouGlish</a>。その語を実際に喋っている場面が続けて再生される。<span class="warn">アクセントの位置は表記から分からない</span>ので、耳で確かめるのが速い。</p>'+
+    '<p>映像つきの用例なら <a href="https://ruscorpora.ru/search/murco" target="_blank" rel="noopener">МУРКО</a>（ロシア語国立コーパス）。映画・講演・日常会話がクリップ化され、アクセント注記つきで検索できる。</p></div>';
+  frag.appendChild(vn);
+  D.forEach(p=>{
+    if(!p.notes.length) return;
+    const t=document.createElement('div');
+    t.className='pos-title';
+    t.textContent=p.name;
+    frag.appendChild(t);
+    p.notes.forEach(([title,body],ix)=>{
+      const n=document.createElement('details');
+      n.className='note';
+      n.innerHTML='<summary>'+esc(title)+'</summary><div class="body">'+body+'</div>';
+      frag.appendChild(n);
+    });
+  });
+  out.innerHTML='';
+  out.appendChild(frag);
+}
+function renderList(){
+  if(filter==='col'){ renderColumns(); return; }
+  const q=norm(query.trim());
+  const plan=[];
+  let shown=0;
+  D.forEach(p=>{
+    if(filter!=='all'&&filter!==p.id) return;
+    const hits=p.groups.map(([t,ws])=>[t,ws.filter(w=>hit(w,q,p.id))]).filter(g=>g[1].length);
+    if(!hits.length) return;
+    hits.forEach(g=>shown+=g[1].length);
+    plan.push([p,hits]);
+  });
+  if(!shown){ out.innerHTML='<div class="empty">「'+esc(query)+'」に一致する語はありません</div>'; return; }
+  // 赤シートの「全体を混ぜる」：分類の見出しから当たりがつかないよう、見出しなしの1本のリストにする
+  if(mode==='sheet'&&shufAll){
+    const all=[];
+    plan.forEach(([p,hits])=>hits.forEach(g=>g[1].forEach(w=>all.push([w,p.id]))));
+    shuffle(all);
+    out.innerHTML='<div class="pos-title">全体を混ぜた並び　'+all.length+'語</div><ul class="list">'+all.map(x=>rowHtml(x[0],q,x[1])).join('')+'</ul>';
+    return;
+  }
+  const auto=!!q;
+  const frag=document.createDocumentFragment();
+  plan.forEach(([p,hits])=>{
+    const h=document.createElement('div');
+    h.className='pos-title';
+    h.textContent=p.name;
+    frag.appendChild(h);
+    hits.forEach(([t,ws])=>{
+      const d=document.createElement('details');
+      d.className='grp';
+      d._items=shuf?shuffle(ws.slice()):ws;
+      d._q=q;
+      d._pos=p.id;
+      d.innerHTML='<summary><span class="gname">'+esc(t)+'</span><span class="gsel">'+gsText(d)+'</span><span class="cnt">'+ws.length+'</span></summary>';
+      d.addEventListener('toggle',()=>fill(d));
+      if(auto){ d.open=true; fill(d); }
+      frag.appendChild(d);
+    });
+  });
+  out.innerHTML='';
+  out.appendChild(frag);
+}
+
+/* 入力のたびに描き直さない。日本語の変換中は待ち、打ち終わって150ミリ秒後に1回だけ描く */
+let composing=false, compText='', qTimer=0;
+function applyQuery(){
+  query=qEl.value;
+  clr.style.display=query?'block':'none';
+  if(mode==='quiz') quiz=null;
+  render();
+}
+function queueQuery(){ clearTimeout(qTimer); qTimer=setTimeout(applyQuery,150); }
+qEl.addEventListener('compositionstart',()=>{composing=true;compText='';clearTimeout(qTimer);});
+qEl.addEventListener('compositionupdate',e=>{compText=e.data||'';});
+qEl.addEventListener('compositionend',()=>{composing=false;queueQuery();});
+qEl.addEventListener('input',e=>{
+  clr.style.display=qEl.value?'block':'none';
+  // Android のキーボードはロシア語を打つ間も「変換中」扱いにするので、キリル文字だけのときは待たない
+  if((composing||e.isComposing)&&!/^[Ѐ-ӿ]*$/.test(compText)) return;
+  queueQuery();
+});
+clr.onclick=()=>{clearTimeout(qTimer);qEl.value='';query='';clr.style.display='none';render();qEl.focus();};
+
+/* ================= mode switching ================= */
+const modes=document.getElementById('modes');
+const sheetbar=document.getElementById('sheetbar');
+modes.addEventListener('click',e=>{
+  const b=e.target.closest('.mode'); if(!b) return;
+  mode=b.dataset.m;
+  [...modes.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.m===mode));
+  if(mode!=='quiz') quiz=null;
+  // コラムには語がないので、赤シートかテストへ切り替えたら範囲を「すべて」に戻す
+  if(mode!=='list'&&filter==='col'){
+    filter='all';
+    [...chips.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.id===filter));
+  }
+  render();
+  window.scrollTo({top:0});
+});
+
+/* ================= red sheet ================= */
+let toolsOpen=false;
+document.getElementById('toolsbtn').onclick=e=>{
+  toolsOpen=!toolsOpen;
+  document.getElementById('tools').classList.toggle('hidden',!toolsOpen);
+  e.target.setAttribute('aria-expanded',toolsOpen);
+};
+function selLabel(){
+  document.getElementById('selbtn').textContent = selMode
+    ? (SEL.size?'選択中：'+SEL.size+'語':'選択：タップで追加')
+    : (SEL.size?'選択：'+SEL.size+'語':'選択：オフ');
+}
+let expFmt='anki', expItems=[];
+function plainText(s){
+  return String(s).replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+}
+function expData(){
+  const items=expItems;
+  if(expFmt==='anki'){
+    // タブ区切り3フィールド：表 / 裏 / 注記
+    return items.map(x=>[x.ru, x.ja, plainText(tipFor(x.ru,x.pos)||'')].join('\t')).join('\n');
+  }
+  return items.map(x=>x.ru+' — '+x.ja).join('\n');
+}
+/* items と src を渡すと、その語だけを書き出す（テスト結果の「間違えた語」用）。渡さなければ今の範囲 */
+function showExport(items,src){
+  expItems=items=items||buildPool();
+  src=src||(SEL.size?'選択した語':scopeName()+(query.trim()?'／「'+query.trim()+'」':''));
+  const old=document.getElementById('expbox'); if(old) old.remove();
+  const box=document.createElement('div');
+  box.className='note'; box.id='expbox';
+  box.innerHTML='<h4>書き出し　'+esc(src)+'　'+items.length+'語</h4><div class="body">'+
+    '<div class="expfmt" id="expfmt">'+
+      '<button class="mini" data-f="anki">Anki（タブ区切り）</button>'+
+      '<button class="mini" data-f="text">テキスト</button></div>'+
+    '<textarea id="exptxt" readonly rows="9"></textarea>'+
+    '<div class="expbtns"><button class="mini" id="copytxt">コピー</button><button class="mini" id="closeexp">閉じる</button></div>'+
+    '<p class="exphint" id="exphint"></p></div>';
+  out.prepend(box);
+  const ta=()=>document.getElementById('exptxt');
+  const sync=()=>{
+    [...document.getElementById('expfmt').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===expFmt));
+    ta().value=expData();
+    document.getElementById('exphint').innerHTML = expFmt==='anki'
+      ? 'Anki の「ファイル → 読み込み」で貼り付けたテキストファイルを指定。区切りは<b>タブ</b>、フィールドは<b>表・裏・注記</b>の3つ。注記まで取り込むならノートタイプのフィールドを3つにしておく。'
+      : 'チャットに貼れば、この語だけで問題を作れる。';
+  };
+  sync();
+  document.getElementById('expfmt').onclick=e=>{
+    const b=e.target.closest('.mini'); if(!b) return;
+    expFmt=b.dataset.f; sync();
+  };
+  document.getElementById('closeexp').onclick=()=>box.remove();
+  document.getElementById('copytxt').onclick=async e=>{
+    const txt=ta().value;
+    try{ await navigator.clipboard.writeText(txt); e.target.textContent='コピーした'; }
+    catch(_){ ta().select(); ta().setSelectionRange(0,txt.length); e.target.textContent='長押しでコピー'; }
+    setTimeout(()=>{e.target.textContent='コピー';},1800);
+  };
+  scrollTo({top:0});
+}
+document.getElementById('expbtn').onclick=()=>showExport();
+document.getElementById('selbtn').onclick=()=>{
+  selMode=!selMode;
+  document.body.classList.toggle('selecting',selMode);
+  selLabel();
+};
+document.getElementById('spd').onclick=()=>{SPK.rate=SPK.rate===1?0.65:1;spdLabel();};
+document.getElementById('tipq').onclick=e=>{
+  tipSearch=!tipSearch;
+  e.target.textContent='補足も検索：'+(tipSearch?'オン':'オフ');
+  if(mode!=='quiz'||!quiz) render();     // 出題中のテストは止めない
+};
+document.getElementById('side').onclick=e=>{
+  hideSide=hideSide==='ja'?'ru':'ja';
+  e.target.textContent='隠す面：'+(hideSide==='ja'?'日本語':'ロシア語');
+  applySheet();
+  out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
+};
+const MASKS=[['solid','ベタ'],['initial','頭文字'],['count','文字数']];
+document.getElementById('mask').onclick=e=>{
+  const i=MASKS.findIndex(m=>m[0]===maskMode);
+  const next=MASKS[(i+1)%MASKS.length];
+  maskMode=next[0];
+  e.target.textContent='隠し方：'+next[1];
+  applySheet();
+  out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
+};
+document.getElementById('shuf').onclick=()=>{shuf=true;shufAll=false;render();window.scrollTo({top:0});};
+document.getElementById('shufall').onclick=()=>{shufAll=true;render();window.scrollTo({top:0});};
+document.getElementById('revall').onclick=()=>out.querySelectorAll('ul.list li').forEach(li=>li.classList.add('rev'));
+document.getElementById('hideall').onclick=()=>out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
+out.addEventListener('click',e=>{
+  if(e.target.closest('a')) return;
+  const rb=e.target.closest('.rec .d[data-info]');
+  if(rb){
+    // 記録の棒を押したら、その日の内訳を下に出す
+    out.querySelectorAll('.rec .d[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
+    rb.setAttribute('aria-pressed','true');
+    const box=rb.closest('.rec').parentNode.querySelector('.rec-info');
+    if(box) box.textContent=rb.dataset.info;
+    return;
+  }
+  const gs=e.target.closest('.gsel');
+  if(gs){
+    // summary の中なので、開閉が起きないように止める
+    e.preventDefault(); e.stopPropagation();
+    const g=gs.closest('details.grp');
+    const keys=g._items.map(w=>g._pos+'|'+w[0]);
+    const all=keys.every(k=>SEL.has(k));
+    keys.forEach(k=>all?SEL.delete(k):SEL.add(k));
+    g.querySelectorAll('ul.list li').forEach(x=>x.classList.toggle('sel',SEL.has(x.dataset.k)));
+    gsLabel(g); selLabel();
+    return;
+  }
+  const li=e.target.closest('ul.list li');
+  if(selMode&&li){
+    const k=li.dataset.k;
+    if(SEL.has(k)){SEL.delete(k);li.classList.remove('sel');}
+    else{SEL.add(k);li.classList.add('sel');}
+    gsLabel(li.closest('details.grp'));
+    selLabel();
+    return;
+  }
+  const hw=e.target.closest('[data-say]');
+  const hidden=document.body.classList.contains('sheet')&&document.body.classList.contains('hide-ru')&&li&&!li.classList.contains('rev');
+  if(hw&&!hidden){ say(hw.dataset.say,'ru-RU'); return; }
+  if(mode==='sheet'&&li) li.classList.toggle('rev');
+});
+function applySheet(){
+  document.body.classList.toggle('sheet',mode==='sheet');
+  document.body.classList.toggle('quiz',mode==='quiz');
+  document.body.classList.toggle('hide-ja',mode==='sheet'&&hideSide==='ja');
+  document.body.classList.toggle('hide-ru',mode==='sheet'&&hideSide==='ru');
+  MASKS.forEach(m=>document.body.classList.toggle('mask-'+m[0],mode==='sheet'&&maskMode===m[0]));
+  sheetbar.classList.toggle('hidden',mode!=='sheet');
+  if(mode!=='sheet'){ shuf=false; shufAll=false; }
+}
+
+/* ================= 端末に保存する記録（苦手・図鑑・日ごとの判定・設定） ================= */
+const store={
+  get(k,d){ try{ const v=JSON.parse(localStorage.getItem(k)); return v&&typeof v==='object'?v:d; }catch(_){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){} }
+};
+const WKEY='rv-weak-v1', ZKEY='rv-zukan-v1', DKEY='rv-daily-v1', PKEY='rv-prefs-v1';
+const WEAK=store.get(WKEY,{});    // 苦手な語　　 {品詞id|ロシア語: 続けて「わかった」を押した回数}
+const ZUKAN=store.get(ZKEY,{});   // 図鑑　　　　 {品詞id|ロシア語: [最後に決めた日, 決めた日数]}
+const DAILY=store.get(DKEY,{});   // 日ごとの判定 {日付: {r:判定, raw:点, ok:正解数, n:問題数, t:平均秒}}
+const PREFS=Object.assign({limit:0,sound:true},store.get(PKEY,{}));   // limit＝日→露の制限時間（秒。0 はなし）
+const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>dkey(new Date());
+
+/* 全語の一覧。記録のキーは「品詞id|ロシア語」（選択 SEL と同じ形） */
+const ALL=[];
+D.forEach(p=>p.groups.forEach(([cat,ws])=>ws.forEach(w=>ALL.push({ru:w[0],ja:w[1],cat:cat,pos:p.id}))));
+const keyOf=x=>x.pos+'|'+x.ru;
+const weakItems=()=>ALL.filter(x=>keyOf(x) in WEAK);
+const inZukan=k=>!!ZUKAN[k]&&ZUKAN[k][1]>=2;
+
+function sndLabel(){ document.getElementById('sndbtn').textContent='効果音：'+(PREFS.sound?'オン':'オフ'); }
+document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.set(PKEY,PREFS); sndLabel(); };
+sndLabel();
+
+/* 手応えの演出：正解で短い効果音（端末の中で作る。音声ファイルは読み込まない）、Android では軽い振動 */
+let AC=null;
+function tone(seq){
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+    let t=AC.currentTime+0.01;
+    seq.forEach(([f,d])=>{
+      const o=AC.createOscillator(), g=AC.createGain();
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(0.11,t+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+      o.connect(g); g.connect(AC.destination);
+      o.start(t); o.stop(t+d+0.02);
+      t+=d*0.75;
+    });
+  }catch(_){}
+}
+function cheer(combo){
+  if(!PREFS.sound) return;
+  tone(combo>=5?[[784,.07],[988,.07],[1319,.17]]:combo>=3?[[784,.08],[1175,.16]]:[[880,.08],[1175,.13]]);
+  // 振動は、画面を一度でも触ったあとでないとブラウザに止められる
+  try{ if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive)) navigator.vibrate(combo>=3?[12,40,12]:12); }catch(_){}
+}
+
+/* 連続日数：1日1セットで1日ぶん伸びる。1日だけ空いた日は、月2回までの「休み」で埋まって途切れない */
+function streakInfo(){
+  const has=x=>!!DAILY[dkey(x)];
+  const d=new Date(); d.setHours(12,0,0,0);
+  const cur=d.getFullYear()+'-'+d.getMonth();
+  if(!has(d)) d.setDate(d.getDate()-1);            // 今日がまだなら、きのうまでの続きを数える
+  let n=0; const used={};
+  for(let i=0;i<3700;i++){
+    if(has(d)) n++;
+    else{
+      const m=d.getFullYear()+'-'+d.getMonth(), prev=new Date(d); prev.setDate(prev.getDate()-1);
+      if(has(prev)&&(used[m]||0)<2) used[m]=(used[m]||0)+1; else break;
+    }
+    d.setDate(d.getDate()-1);
+  }
+  return {n:n,rest:2-(used[cur]||0)};
+}
+function streakText(){ const s=streakInfo(); return '連続 '+s.n+' 日（今月の休み あと'+s.rest+'回）'; }
+
+/* 日ごとの記録（直近14日）。棒の高さ＝その日の点（2倍ぶんを除く）、棒の上の字＝判定。棒を押すと内訳が出る */
+function recordHtml(){
+  const base=new Date(); base.setHours(12,0,0,0);
+  const days=[];
+  for(let i=13;i>=0;i--){ const x=new Date(base); x.setDate(base.getDate()-i); days.push(x); }
+  if(!days.some(x=>DAILY[dkey(x)])) return '<div class="rec-info">まだ記録がありません。「今日の10問」を終えると、判定がここに並びます。</div>';
+  const md=x=>(x.getMonth()+1)+'/'+x.getDate();
+  const bars=days.map((x,i)=>{
+    const r=DAILY[dkey(x)], cls='d'+(i===13?' today':'');
+    if(!r) return '<span class="'+cls+' none"></span>';
+    const info=md(x)+'　判定 '+r.r+'　'+r.raw+'点　正答率 '+Math.round(r.ok/r.n*100)+'%'+(r.t?'　平均 '+r.t+'秒':'');
+    return '<button class="'+cls+'" data-info="'+esc(info)+'" title="'+esc(info)+'" aria-pressed="false"><b>'+esc(r.r)+'</b>'+
+      '<i style="height:'+Math.max(4,Math.round(r.raw/(r.n*100)*78))+'%"></i></button>';
+  }).join('');
+  return '<div class="rec">'+bars+'</div><div class="rec-x"><span>'+md(days[0])+'</span><span>今日</span></div>'+
+    '<div class="rec-info">棒を押すと、その日の内訳が出ます。</div>';
+}
+
+/* 図鑑：別々の日に2回、制限時間内に正解した語だけが載る。品詞ごとに何語埋まったかを出す */
+function zukanHtml(){
+  let got=0, half=0;
+  const rows=D.map(p=>{
+    let n=0, tot=0;
+    p.groups.forEach(g=>g[1].forEach(w=>{ const e=ZUKAN[p.id+'|'+w[0]]; tot++; if(e&&e[1]>=2) n++; else if(e) half++; }));
+    got+=n;
+    return '<div>'+esc(p.name)+'</div><div class="bar"><i style="width:'+(n/tot*100)+'%"></i></div><div class="num">'+n+' / '+tot+'</div>';
+  }).join('');
+  return '<p>別々の日に2回、制限時間内に正解した語が載ります。同じ日に何回正解しても1回ぶんです。<br>'+
+    TOTAL.toLocaleString('ja-JP')+'語のうち <b>'+got+'</b> 語（あと1回で載る語 '+half+'）</p><div class="zk">'+rows+'</div>';
+}
+
+/* ================= quiz ================= */
+let quiz=null, qDir='ru2ja', qLen=10, qScope='range', lastSaid='';
+let qTimerId=0, qT0=0;     // 制限時間のタイマーと、問題が出た時刻
+
+/* ---- テストの途中経過を保存して、再読み込みでも続きから ---- */
+const QKEY='rv-quiz-v1';
+function qsave(){
+  try{
+    if(quiz&&quiz.i<quiz.items.length) localStorage.setItem(QKEY,JSON.stringify({t:Date.now(),dir:quiz.dir,q:quiz}));
+    else localStorage.removeItem(QKEY);
+  }catch(_){}
+}
+function qclear(){ try{ localStorage.removeItem(QKEY); }catch(_){} }
+function qload(){
+  try{
+    const s=localStorage.getItem(QKEY); if(!s) return null;
+    const o=JSON.parse(s);
+    if(!o||!o.q||!Array.isArray(o.q.items)||!o.q.items.length) return null;
+    if(o.q.i>=o.q.items.length) return null;
+    if(Date.now()-o.t>7*864e5) return null;   // 1週間で破棄
+    return o;
+  }catch(_){ return null; }
+}
+
+function buildPool(){
+  if(SEL.size){
+    const a=[];
+    D.forEach(p=>p.groups.forEach(([cat,ws])=>ws.forEach(w=>{if(SEL.has(p.id+'|'+w[0])) a.push({ru:w[0],ja:w[1],cat:cat,pos:p.id});})));
+    return a;
+  }
+  const q=norm(query.trim()), arr=[], all=filter==='all'||filter==='col';
+  D.forEach(p=>{
+    if(!all&&filter!==p.id) return;
+    p.groups.forEach(([cat,ws])=>ws.forEach(w=>{
+      if(hit(w,q,p.id)) arr.push({ru:w[0],ja:w[1],cat:cat,pos:p.id});
+    }));
+  });
+  return arr;
+}
+/* 範囲の名前。コラム表示中（'col'）は品詞に当たらないので「全品詞」として扱う */
+function scopeName(){ const p=D.find(p=>p.id===filter); return p?p.name:'全品詞'; }
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* テスト1回ぶんの状態を作る。o＝{dir:出題方向, limit:制限時間（秒）, kind:'daily'（今日の10問）か 'free'}
+   制限時間は日→露のときだけ効く。得点・図鑑・2倍ボーナスも、制限時間つきのときだけ */
+function makeQuiz(items,o){
+  const limit=o.dir==='ja2ru'?(+o.limit||0):0;
+  let x2=0;
+  items=items.map(x=>{
+    const y={ru:x.ru,ja:x.ja,cat:x.cat,pos:x.pos};
+    // たまに出る「得点2倍」。頻度は低め（およそ8問に1回、1セットで2問まで）
+    if(limit&&x2<2&&Math.random()<0.125){ y.x2=1; x2++; }
+    return y;
+  });
+  return {items:items,i:0,wrong:[],ok:0,shown:false,dir:o.dir,limit:limit,kind:o.kind||'free',raw:0,pts:0,combo:0,best:0,tsum:0,tcnt:0};
+}
+function startQuiz(items,o){
+  quiz=makeQuiz(items,o);
+  lastSaid=''; qsave(); renderQuestion(); window.scrollTo({top:0});
+}
+/* 今日の10問：苦手な語（5語まで）と、まだ図鑑にない語を混ぜる */
+function dailyItems(){
+  const weak=shuffle(weakItems()).slice(0,5), used=new Set(weak.map(keyOf));
+  let items=weak.concat(shuffle(ALL.filter(x=>!used.has(keyOf(x))&&!inZukan(keyOf(x)))).slice(0,10-weak.length));
+  if(items.length<10){     // 図鑑がほぼ埋まったら、残りは全体から足す
+    const have=new Set(items.map(keyOf));
+    items=items.concat(shuffle(ALL.filter(x=>!have.has(keyOf(x)))).slice(0,10-items.length));
+  }
+  return shuffle(items);
+}
+function startDaily(){ startQuiz(dailyItems(),{dir:'ja2ru',limit:PREFS.limit||5,kind:'daily'}); }
+
+function renderSetup(){
+  clearTimeout(qTimerId);
+  const pool=buildPool(), weak=weakItems();
+  const scope=SEL.size?'選択した語':(scopeName()+(query.trim()?'／「'+esc(query.trim())+'」で絞り込み':''));
+  const done=DAILY[today()];
+  out.innerHTML=
+    '<div class="q-setup">'+
+      '<h3>今日の10問</h3>'+
+      '<p>日 → 露・制限 '+(PREFS.limit||5)+'秒。苦手な語と、まだ図鑑にない語から出します。</p>'+
+      '<p>'+(done?'今日の判定は <b>'+esc(done.r)+'</b>。もう1セットは練習で、記録には残りません。':'終えると、今日の判定（S〜C）が出ます。')+'<br>'+streakText()+'</p>'+
+      '<button class="go" id="daily" style="margin-top:4px">'+(done?'もう1セット':'始める')+'</button>'+
+    '</div>'+
+    '<div class="q-setup">'+
+      '<h3>テスト</h3>'+
+      '<div class="q-label">出題範囲</div><div class="opts" id="scope">'+
+        '<button class="opt" data-v="range">'+scope+'（'+pool.length+'語）</button>'+
+        '<button class="opt" data-v="weak">苦手だけ（'+weak.length+'語）</button></div>'+
+      '<div class="q-label">出題方向</div><div class="opts" id="dir">'+
+        '<button class="opt" data-v="ru2ja">露 → 日</button>'+
+        '<button class="opt" data-v="ja2ru">日 → 露</button></div>'+
+      '<div class="q-label">制限時間（日 → 露のとき）</div><div class="opts" id="lim">'+
+        '<button class="opt" data-v="0">なし</button>'+
+        '<button class="opt" data-v="2">2秒</button>'+
+        '<button class="opt" data-v="3">3秒</button>'+
+        '<button class="opt" data-v="5">5秒</button></div>'+
+      '<div class="q-label">問題数</div><div class="opts" id="len">'+
+        '<button class="opt" data-v="10">10問</button>'+
+        '<button class="opt" data-v="20">20問</button>'+
+        '<button class="opt" data-v="50">50問</button>'+
+        '<button class="opt" data-v="0">全部</button></div>'+
+      '<button class="go" id="start">始める</button>'+
+      (SEL.size?'<button class="go sub" id="clearsel">選択を解除（'+SEL.size+'語）</button>':'')+
+      '<div class="q-hint" id="qhint"></div>'+
+    '</div>'+
+    '<div class="q-setup"><h3>記録</h3>'+recordHtml()+'</div>'+
+    '<div class="q-setup"><h3>図鑑</h3>'+zukanHtml()+'</div>';
+  const sync=(id,val)=>[...document.getElementById(id).children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===String(val)));
+  const items=()=>qScope==='weak'?weak:pool;
+  const refresh=()=>{
+    sync('scope',qScope); sync('dir',qDir); sync('lim',PREFS.limit); sync('len',qLen);
+    const n=items().length;
+    document.getElementById('start').disabled=!n;
+    document.getElementById('qhint').textContent=n?'':(qScope==='weak'
+      ?'苦手な語はまだありません。テストで「あやふや」を押した語がここに入ります'
+      :'範囲に語がありません。検索や品詞を変えてください');
+  };
+  refresh();
+  const pick=(id,fn)=>{ document.getElementById(id).onclick=e=>{const b=e.target.closest('.opt');if(!b)return;fn(b.dataset.v);refresh();}; };
+  pick('scope',v=>{qScope=v;});
+  pick('dir',v=>{qDir=v;});
+  pick('len',v=>{qLen=+v;});
+  // 制限時間は「今日の10問」にも使うので、端末に覚えておく
+  document.getElementById('lim').onclick=e=>{const b=e.target.closest('.opt');if(!b)return;PREFS.limit=+b.dataset.v;store.set(PKEY,PREFS);renderSetup();};
+  const cs=document.getElementById('clearsel');
+  if(cs) cs.onclick=()=>{SEL.clear();selLabel();renderSetup();};
+  document.getElementById('daily').onclick=startDaily;
+  document.getElementById('start').onclick=()=>{
+    const a=shuffle(items().slice());
+    startQuiz(qLen?a.slice(0,qLen):a,{dir:qDir,limit:PREFS.limit,kind:'free'});
+  };
+}
+
+function renderQuestion(){
+  clearTimeout(qTimerId); qT0=0;
+  const z=quiz, it=z.items[z.i];
+  const ru2ja=z.dir==='ru2ja', timed=z.limit>0;
+  const promptTxt=ru2ja?ruHtml(it.ru,''):esc(it.ja);
+  const ansTxt=ru2ja?esc(it.ja):ruHtml(it.ru,'');
+  const tip=z.shown?tipFor(it.ru,it.pos):'';
+  // 制限時間のバー：時間切れで開いたら空、自分で開いたら残りぶんで止める
+  const left=z.shown?(z.late?0:Math.max(0,1-z.t/z.limit)):1;
+  out.innerHTML=
+    '<div class="q-top"><span><b>'+(z.i+1)+'</b> / '+z.items.length+'</span>'+
+      (z.combo>=2&&!z.shown?'<span class="q-combo">'+z.combo+'連続</span>':'')+
+      '<span>'+(timed?'得点 <b>'+z.pts+'</b>'+(z.gain&&!z.shown?'<i class="q-gain">+'+z.gain+'</i>':''):'正解 <b>'+z.ok+'</b>')+'</span></div>'+
+    '<div class="q-prog'+(timed?' t':'')+'"><i style="width:'+(z.i/z.items.length*100)+'%"></i></div>'+
+    (timed?'<div class="q-timer"><i id="qbar" style="transform:scaleX('+left+')"></i></div>':'')+
+    '<div class="q-card">'+
+      (it.x2?'<div class="q-x2">★ 得点2倍</div>':'')+
+      (z.shown?'<div class="q-cat">'+esc(it.cat)+'</div>':'')+
+      '<div class="q-prompt'+(ru2ja?'':' ja-side')+'"'+(ru2ja?' data-say="'+esc(sayTerm(it.ru))+'"':'')+'>'+promptTxt+'</div>'+
+      (z.shown?'<div class="q-ans'+(ru2ja?'':' ru-side')+'"'+(ru2ja?'':' data-say="'+esc(sayTerm(it.ru))+'"')+'>'+ansTxt+'</div>':'')+
+      (tip?'<div class="tip" style="text-align:left;margin:6px 0 0">'+tipHtml(tip)+'</div>':'')+
+    '</div>'+
+    '<div class="q-btns">'+(z.shown
+      ? '<button class="ng" id="ng">✕ あやふや</button><button class="ok" id="ok">○ わかった</button>'
+      : '<button class="reveal" id="rev">答えを見る</button>')+
+    '</div>'+
+    (z.shown&&z.late?'<div class="q-hint">時間切れ。合っていても「あやふや」を押す</div>':'');
+  // ロシア語が画面に出た瞬間に一度だけ読み上げる
+  const key=z.i+'|'+(z.shown?'a':'q');
+  const visible = ru2ja ? !z.shown : z.shown;
+  if(visible && lastSaid!==key){ lastSaid=key; say(sayTerm(it.ru),'ru-RU'); }
+  if(z.shown){
+    document.getElementById('ok').onclick=()=>mark(true);
+    document.getElementById('ng').onclick=()=>mark(false);
+  }else{
+    document.getElementById('rev').onclick=()=>reveal(false);
+  }
+  if(timed&&!z.shown){
+    const i=z.i;
+    const run=()=>{
+      if(quiz!==z||z.i!==i||z.shown) return;
+      // 画面が見えていない間は計り始めない
+      if(document.hidden){ document.addEventListener('visibilitychange',run,{once:true}); return; }
+      qT0=performance.now();
+      const bar=document.getElementById('qbar');
+      if(bar) bar.style.animation='drain '+z.limit+'s linear forwards';
+      qTimerId=setTimeout(()=>reveal(true),z.limit*1000);
+    };
+    // 開いた直後の1問目だけ、画面を見る間を少し置いてから計り始める
+    if(z.wait){ z.wait=0; qTimerId=setTimeout(run,1200); } else run();
+  }
+}
+
+/* 答えを開く。auto＝制限時間が切れて自動で開いたとき */
+function reveal(auto){
+  const z=quiz;
+  if(!z||z.shown||z.i>=z.items.length) return;
+  clearTimeout(qTimerId);
+  z.shown=true;
+  if(z.limit>0){
+    z.late=!!auto;
+    z.t=auto?z.limit:(qT0?Math.min(z.limit,(performance.now()-qT0)/1000):0);
+  }
+  renderQuestion();
+}
+
+/* 速さの点：問題が出てから答えを開くまでが短いほど高い（0.5秒以内で100点、1秒ごとに20点ずつ下がり、最低10点） */
+const speedPts=t=>Math.max(10,Math.min(100,Math.round(100-20*(t-0.5))));
+
+function mark(good){
+  const z=quiz, it=z.items[z.i], k=keyOf(it), timed=z.limit>0;
+  const inTime=good&&!(timed&&z.late);     // 正解で、制限時間つきなら時間内に自分で開いたとき
+  z.gain=0;
+  if(good){
+    z.ok++;
+    // 苦手な語は、「わかった」が2回続いたら外す
+    if(k in WEAK){ if(++WEAK[k]>=2) delete WEAK[k]; store.set(WKEY,WEAK); }
+  }else{
+    z.wrong.push(it);
+    WEAK[k]=0; store.set(WKEY,WEAK);
+  }
+  if(inTime){
+    z.combo++; if(z.combo>z.best) z.best=z.combo;
+    if(timed){
+      const p=speedPts(z.t);
+      z.raw+=p; z.gain=p*(it.x2?2:1); z.pts+=z.gain;
+      z.tsum+=z.t; z.tcnt++;
+      // 図鑑：同じ日は1回ぶんだけ数える。別々の日に2回で載る
+      const d=today(), e=ZUKAN[k];
+      if(!e) ZUKAN[k]=[d,1];
+      else if(e[1]<2&&e[0]!==d){ e[0]=d; e[1]++; }
+      store.set(ZKEY,ZUKAN);
+    }
+    cheer(z.combo);
+  }else z.combo=0;
+  z.i++; z.shown=false; z.late=false;
+  qsave();
+  if(z.i>=z.items.length) renderResult(); else renderQuestion();
+}
+
+/* 判定：1問あたりの点（2倍ぶんを除く。不正解と時間切れは0点）の平均で決める */
+const rankOf=a=>a>=80?'S':a>=60?'A':a>=40?'B':'C';
+
+function renderResult(){
+  clearTimeout(qTimerId);
+  qclear();
+  const z=quiz, n=z.items.length, pct=Math.round(z.ok/n*100), timed=z.limit>0;
+  let html='';
+  if(z.kind==='daily'){
+    // 1日1回の判定：その日の最初の1セットだけを記録する。判定と自己ベストは、2倍ぶんを除いた点で決める
+    const d=today(), first=!DAILY[d], r=rankOf(z.raw/n), avg=z.tcnt?z.tsum/z.tcnt:0;
+    const best=Object.values(DAILY).reduce((m,x)=>Math.max(m,x.raw||0),0);
+    if(first){ DAILY[d]={r:r,raw:z.raw,ok:z.ok,n:n,t:Math.round(avg*10)/10}; store.set(DKEY,DAILY); }
+    html+='<div class="rank-h">'+(first?'今日の判定':'練習（今日の判定は '+esc(DAILY[d].r)+' で記録済み）')+'</div>'+
+      '<div class="rank">'+r+'</div>'+
+      '<div class="score-sub">正答率 '+pct+'%　平均 '+(z.tcnt?avg.toFixed(1)+'秒':'—')+'　得点 '+z.pts+(z.pts!==z.raw?'（2倍ぶんを除くと '+z.raw+'）':'')+'</div>'+
+      (first&&best>0&&z.raw>best?'<div class="score-sub">自己ベスト更新（これまで '+best+'点）</div>':'')+
+      '<div class="score-sub">'+streakText()+(z.best>=3?'　最大 '+z.best+' 連続正解':'')+'</div>'+
+      recordHtml();
+  }else{
+    html+='<div class="score">'+pct+'<small>%</small></div>'+
+      '<div class="score-sub">'+n+'問中 '+z.ok+'問。'+(z.wrong.length?'取りこぼし '+z.wrong.length+'語':'全問クリア')+(timed?'　得点 '+z.pts:'')+'</div>'+
+      (z.best>=3?'<div class="score-sub">最大 '+z.best+' 連続正解</div>':'');
+  }
+  if(z.wrong.length){
+    html+='<div class="wrong-h">もう一度の語</div><ul class="list">'+
+      z.wrong.map(w=>rowHtml([w.ru,w.ja],'',w.pos)).join('')+
+      '</ul>';
+  }
+  html+='<div class="again">'+
+    (z.wrong.length?'<button class="primary" id="redo">間違いだけ復習</button><button id="expwrong">間違えた語を書き出し</button>':'')+
+    '<button id="new">'+(z.kind==='daily'?'テストの画面へ':'もう一度')+'</button><button id="back">一覧に戻る</button></div>';
+  out.innerHTML=html;
+  if(z.wrong.length){
+    document.getElementById('redo').onclick=()=>startQuiz(shuffle(z.wrong.slice()),{dir:z.dir,limit:z.limit,kind:'free'});
+    document.getElementById('expwrong').onclick=()=>showExport(z.wrong,'間違えた語');
+  }
+  document.getElementById('new').onclick=()=>{quiz=null;renderSetup();window.scrollTo({top:0});};
+  document.getElementById('back').onclick=()=>{
+    mode='list';quiz=null;
+    [...modes.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.m==='list'));
+    render();window.scrollTo({top:0});
+  };
+}
+
+document.addEventListener('keydown',e=>{
+  // 結果画面（quiz.i が最後まで進んだ状態）ではキーを受け付けない
+  if(mode!=='quiz'||!quiz||quiz.i>=quiz.items.length||document.activeElement===qEl) return;
+  if(!quiz.shown&&(e.key===' '||e.key==='Enter')){e.preventDefault();reveal(false);}
+  else if(quiz.shown&&e.key==='1'){mark(false);}
+  else if(quiz.shown&&e.key==='2'){mark(true);}
+});
+
+const PAGELANG='ru-RU';
+/* ================= 発音（ブラウザ内蔵の音声合成） ================= */
+const SPK={rate:1,ok:null};
+function voiceFor(lang){
+  if(!window.speechSynthesis) return null;
+  const vs=speechSynthesis.getVoices()||[];
+  const full=lang.toLowerCase(), p=full.slice(0,2);
+  return vs.find(v=>v.lang&&v.lang.toLowerCase().replace('_','-')===full)
+      || vs.find(v=>v.lang&&v.lang.toLowerCase().replace('_','-').startsWith(p)) || null;
+}
+function spdLabel(){
+  const b=document.getElementById('spd'); if(!b) return;
+  if(SPK.ok===false) b.textContent='読み上げ：音声なし';
+  else b.textContent='読み上げ：'+(SPK.rate===1?'標準':'ゆっくり');
+}
+function checkVoices(){
+  if(!window.speechSynthesis){SPK.ok=false;spdLabel();return;}
+  const vs=speechSynthesis.getVoices()||[];
+  if(!vs.length) return;            // まだ読み込み中
+  SPK.ok=!!voiceFor(PAGELANG);
+  spdLabel();
+}
+function say(text,lang){
+  if(!window.speechSynthesis){alert('この端末は読み上げに対応していません。');return;}
+  try{speechSynthesis.cancel();}catch(_){}
+  // Chrome は cancel 直後の speak を落とすことがあるので少し待つ
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=lang; u.rate=SPK.rate;
+    const v=voiceFor(lang);
+    if(v) u.voice=v;
+    u.onerror=()=>{SPK.ok=false;spdLabel();};
+    speechSynthesis.speak(u);
+    setTimeout(()=>{
+      if(SPK.ok===false&&!SPK.told){
+        SPK.told=true;
+        alert('端末に'+(PAGELANG.startsWith('ru')?'ロシア語':'英語')+'の音声データが入っていないため鳴りません。\n\nAndroid: 設定 → システム → 言語と入力 → テキスト読み上げ → 音声データをインストール\niPhone: 設定 → アクセシビリティ → 読み上げコンテンツ → 声');
+      }
+    },400);
+  },60);
+}
+if(window.speechSynthesis){
+  checkVoices();
+  speechSynthesis.onvoiceschanged=checkVoices;
+  [200,700,1500].forEach(t=>setTimeout(checkVoices,t));
+}
+
+/* ================= 読み上げ診断 ================= */
+function runDiag(anchor){
+  const box=document.createElement('div');
+  box.className='note';
+  const has=!!window.speechSynthesis;
+  const vs=has?(speechSynthesis.getVoices()||[]):[];
+  const v=has?voiceFor(PAGELANG):null;
+  const L=[];
+  L.push('① 読み上げ機能：'+(has?'あり':'<b>なし</b>（このブラウザは非対応）'));
+  L.push('② 端末の音声の数：'+vs.length+(vs.length?'':'　<b>0なら音声データが未インストール</b>'));
+  if(vs.length) L.push('③ 入っている言語：'+[...new Set(vs.map(x=>x.lang))].sort().join(', '));
+  L.push('④ '+PAGELANG+' の音声：'+(v?v.name+'（'+v.lang+'）':'<b>見つからない</b>'));
+  L.push('⑤ iframe の中：'+(window.top!==window.self?'<b>はい</b>（アプリ内表示だと鳴らないことがある）':'いいえ'));
+  L.push('⑥ 音量：端末がマナーモードだと鳴らない場合がある。メディア音量も確認');
+  box.innerHTML='<h4>読み上げ診断</h4>'+L.map(x=>'<div class="src">'+x+'</div>').join('')+
+    '<div class="src" id="diagres">⑦ テスト発話：実行中…</div>';
+  const n=anchor.closest('.note'); if(n&&n.after) n.after(box); else out.prepend(box);
+  if(!has){document.getElementById('diagres').textContent='⑦ テスト発話：実行できない';return;}
+  const fired=[];
+  const show=()=>{const r=document.getElementById('diagres'); if(r) r.textContent='⑦ テスト発話：'+fired.join(' → ');};
+  const u=new SpeechSynthesisUtterance(PAGELANG.indexOf('ru')===0?'проверка звука':'sound check');
+  u.lang=PAGELANG; if(v) u.voice=v;
+  u.onstart=()=>{fired.push('start');show();};
+  u.onend=()=>{fired.push('end');show();};
+  u.onerror=ev=>{fired.push('error: '+(ev&&ev.error||'不明'));show();};
+  try{speechSynthesis.cancel();}catch(_){}
+  setTimeout(()=>speechSynthesis.speak(u),80);
+  setTimeout(()=>{if(!fired.length){const r=document.getElementById('diagres'); if(r) r.textContent='⑦ テスト発話：イベントが一つも起きなかった（ブラウザが要求を無視している）';}},2600);
+}
+document.addEventListener('click',e=>{
+  const d=e.target.closest('.diag'); if(!d) return;
+  e.preventDefault(); e.stopPropagation();
+  runDiag(d);
+},true);
+
+/* ================= header collapse ================= */
+let ticking=false;
+addEventListener('scroll',()=>{
+  if(ticking) return;
+  ticking=true;
+  requestAnimationFrame(()=>{
+    // 縮む/戻るのしきい値を離して、境界での往復（ブルブル）を防ぐ
+    const y=scrollY, on=document.body.classList.contains('scrolled');
+    if(!on && y>110) document.body.classList.add('scrolled');
+    else if(on && y<40) document.body.classList.remove('scrolled');
+    ticking=false;
+  });
+},{passive:true});
+
+/* ================= dispatcher ================= */
+function render(){
+  clearTimeout(qTimerId);
+  applySheet();
+  // 「現在地」の表は、一覧の「すべて」とコラムのときだけ出す
+  document.getElementById('status').classList.toggle('hidden',!(mode==='list'&&(filter==='all'||filter==='col')));
+  if(mode==='quiz'){
+    if(quiz&&quiz.i>=quiz.items.length) quiz=null;     // 終わったテストは描き直さない
+    quiz?renderQuestion():renderSetup();
+  }
+  else renderList();
+}
+
+/* 開いたとき：途中のテストがあれば続きから。なければ、まだ済んでいない日は「今日の10問」をすぐ始める */
+(function(){
+  const o=qload();
+  if(o){
+    quiz=Object.assign({dir:o.dir||'ru2ja',limit:0,kind:'free',raw:0,pts:0,combo:0,best:0,tsum:0,tcnt:0},o.q);
+    quiz.shown=false; quiz.late=false;
+  }else if(!DAILY[today()]){
+    quiz=makeQuiz(dailyItems(),{dir:'ja2ru',limit:PREFS.limit||5,kind:'daily'});
+    qsave();
+  }
+  if(quiz){
+    quiz.wait=1; mode='quiz';
+    [...modes.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.m==='quiz'));
+  }
+  render();
+})();
+</script>
+</body>
+</html>
