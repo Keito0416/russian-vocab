@@ -120,6 +120,17 @@
     gap:0 10px;align-items:baseline;padding:0 0 0 20px;
   }
   ul.list li+li{border-top:1px solid var(--hair)}
+  /* 覚え具合の印（行の左の余白に出す）：●＝苦手。間違えた回数が多いほど増える（3つまで）。✓＝図鑑に載った */
+  ul.list li{position:relative}
+  ul.list li[data-st]::before{position:absolute;left:5px;top:15px;font-size:7px;line-height:9px;color:var(--ink);white-space:pre;content:"●"}
+  ul.list li[data-st="w2"]::before{content:"●\A●";top:11px}
+  ul.list li[data-st="w3"]::before{content:"●\A●\A●";top:7px}
+  ul.list li[data-st="ok"]::before{content:"✓";left:3px;top:10px;font-size:13px;line-height:20px;color:var(--dim)}
+  body.sheet ul.list li[data-st]::before{left:4px;top:50%;transform:translateY(-50%)}
+  .legend{font-size:13px;color:var(--dim);margin-top:14px}
+  .legend b{font-weight:400;color:var(--ink)}
+  details.grp>summary .wk{font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums;font-weight:400;white-space:nowrap}
+  details.grp>summary .wk::before{content:"●";font-size:7px;vertical-align:2px;margin-right:3px}
   .hd{min-width:0;padding:10px 0}
   .ru{font-family:var(--serif);font-size:15px;line-height:1.35}
   .ru .sl{color:var(--dim);padding:0 1px}
@@ -301,7 +312,11 @@
   body.testing .q-top{margin-top:12px}
   .q-bar{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
   .q-bar button{min-height:40px;padding:0 18px;border:1px solid var(--rule);background:var(--card);color:var(--ink2);border-radius:3px;font-size:13px;font-family:inherit;cursor:pointer}
-  .q-bar button.arm{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .q-bar button.arm,.mini.arm{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  /* 記録の初期化：左に中身、右に消すボタン */
+  .rs{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--hair);font-size:13px}
+  .rs span{flex:1;min-width:0}
+  .rs .mini{flex:0 0 auto;min-width:132px}
   .q-timer{height:4px;background:var(--rule);border-radius:2px;margin-bottom:14px;overflow:hidden}
   .q-timer i{display:block;height:100%;background:var(--ink2);transform-origin:left center}
   @keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
@@ -360,6 +375,7 @@
       <button class="mini" id="expbtn">書き出し</button>
       <button class="mini" id="tipq">補足も検索：オフ</button>
       <button class="mini" id="sndbtn">効果音：オン</button>
+      <button class="mini" id="resetbtn">記録の初期化</button>
     </div>
     <div class="subbar hidden" id="sheetbar">
       <button class="mini" id="side">隠す面：日本語</button>
@@ -1305,7 +1321,8 @@ function tipHtml(t){
 }
 function rowHtml(w,q,pos){
   const k=(pos||'')+'|'+w[0], tip=tipFor(w[0],pos);
-  return '<li class="'+(SEL.has(k)?'sel':'')+'" data-k="'+esc(k)+'"><div class="hd"><span class="ru" data-say="'+esc(sayTerm(w[0]))+'" data-ini="'+esc(w[0][0])+'" data-mask="'+bars(w[0])+'">'+ruHtml(w[0],q)+
+  const st=stOf(k);
+  return '<li class="'+(SEL.has(k)?'sel':'')+'" data-k="'+esc(k)+'"'+(st?' data-st="'+st+'"':'')+'><div class="hd"><span class="ru" data-say="'+esc(sayTerm(w[0]))+'" data-ini="'+esc(w[0][0])+'" data-mask="'+bars(w[0])+'">'+ruHtml(w[0],q)+
     '</span></div>'+
     '<span class="ja" data-ini="'+esc(w[1][0])+'" data-mask="'+bars(w[1])+'">'+hl(w[1],q)+'</span>'+
     '<a class="vid" href="https://youglish.com/pronounce/'+encodeURIComponent(ylTerm(w[0]))+'/russian" target="_blank" rel="noopener" aria-label="動画（YouGlish）" title="動画（YouGlish）">▶</a>'+
@@ -1346,7 +1363,7 @@ function renderList(){
     const all=[];
     plan.forEach(([p,hits])=>hits.forEach(g=>g[1].forEach(w=>all.push([w,p.id]))));
     shuffle(all);
-    out.innerHTML='<div class="pos-title">全体を混ぜた並び　'+all.length+'語</div><ul class="list">'+all.map(x=>rowHtml(x[0],q,x[1])).join('')+'</ul>';
+    out.innerHTML=legendHtml()+'<div class="pos-title">全体を混ぜた並び　'+all.length+'語</div><ul class="list">'+all.map(x=>rowHtml(x[0],q,x[1])).join('')+'</ul>';
     return;
   }
   const auto=!!q;
@@ -1362,13 +1379,14 @@ function renderList(){
       d._items=shuf?shuffle(ws.slice()):ws;
       d._q=q;
       d._pos=p.id;
-      d.innerHTML='<summary><span class="gname">'+esc(t)+'</span><span class="gsel">'+gsText(d)+'</span><span class="cnt">'+ws.length+'</span></summary>';
+      const wk=ws.filter(w=>(p.id+'|'+w[0]) in WEAK).length;     // この分類にある苦手な語の数（閉じたままでも分かるように）
+      d.innerHTML='<summary><span class="gname">'+esc(t)+'</span><span class="gsel">'+gsText(d)+'</span>'+(wk?'<span class="wk">'+wk+'</span>':'')+'<span class="cnt">'+ws.length+'</span></summary>';
       d.addEventListener('toggle',()=>fill(d));
       if(auto){ d.open=true; fill(d); }
       frag.appendChild(d);
     });
   });
-  out.innerHTML='';
+  out.innerHTML=legendHtml();
   out.appendChild(frag);
 }
 
@@ -1549,8 +1567,9 @@ const store={
   get(k,d){ try{ const v=JSON.parse(localStorage.getItem(k)); return v&&typeof v==='object'?v:d; }catch(_){ return d; } },
   set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(_){} }
 };
-const WKEY='rv-weak-v1', ZKEY='rv-zukan-v1', DKEY='rv-daily-v1', PKEY='rv-prefs-v1';
+const WKEY='rv-weak-v1', MKEY='rv-miss-v1', ZKEY='rv-zukan-v1', DKEY='rv-daily-v1', PKEY='rv-prefs-v1';
 const WEAK=store.get(WKEY,{});    // 苦手な語　　 {品詞id|ロシア語: 続けて「わかった」を押した回数}
+const MISS=store.get(MKEY,{});    // 間違えた回数 {品詞id|ロシア語: 「あやふや」を押した回数の合計}
 const ZUKAN=store.get(ZKEY,{});   // 図鑑　　　　 {品詞id|ロシア語: [最後に決めた日, 決めた日数]}
 const DAILY=store.get(DKEY,{});   // 日ごとの判定 {日付: {r:判定, raw:点, ok:正解数, n:問題数, t:平均秒}}
 const PREFS=Object.assign({limit:0,sound:true},store.get(PKEY,{}));   // limit＝テストの制限時間（秒。0 はなし）
@@ -1563,6 +1582,56 @@ D.forEach(p=>p.groups.forEach(([cat,ws])=>ws.forEach(w=>ALL.push({ru:w[0],ja:w[1
 const keyOf=x=>x.pos+'|'+x.ru;
 const weakItems=()=>ALL.filter(x=>keyOf(x) in WEAK);
 const inZukan=k=>!!ZUKAN[k]&&ZUKAN[k][1]>=2;
+/* 一覧と赤シートに出す、覚え具合の印。w1〜w3＝苦手（間違えた回数。3回以上は w3）、ok＝図鑑に載った、空＝印なし */
+function stOf(k){
+  if(k in WEAK) return 'w'+Math.min(3,Math.max(1,MISS[k]||1));
+  return inZukan(k)?'ok':'';
+}
+/* 印の説明。印が1つもないうちは出さない */
+function legendHtml(){
+  const w=Object.keys(WEAK).length, z=Object.keys(ZUKAN).some(inZukan);
+  if(!w&&!z) return '';
+  return '<div class="legend">'+(w?'<b>●</b> 苦手（多いほど、よく間違えている）':'')+(w&&z?'　':'')+(z?'<b>✓</b> 図鑑に載った':'')+'</div>';
+}
+/* 押し間違いを防ぐ2回押し：1回目はボタンを確認の表示に変えて false、数秒のうちにもう一度押されたら true を返す */
+function twice(b,msg){
+  if(b.classList.contains('arm')) return true;
+  const t=b.textContent;
+  b.classList.add('arm'); b.textContent=msg;
+  setTimeout(()=>{ if(b.isConnected&&b.classList.contains('arm')){ b.classList.remove('arm'); b.textContent=t; } },2500);
+  return false;
+}
+
+/* 記録の初期化：消すものを選び、ボタンを2回押すと実行する */
+function showReset(msg){
+  const old=document.getElementById('resetbox'); if(old) old.remove();
+  const half=Object.keys(ZUKAN).filter(k=>!inZukan(k)).length, got=Object.keys(ZUKAN).length-half;
+  const box=document.createElement('div');
+  box.className='note'; box.id='resetbox';
+  box.innerHTML='<h4>記録の初期化</h4><div class="body">'+
+    '<p>'+(msg?'<b>'+msg+'</b>　':'')+'消したものは元に戻せません。「消す」は2回押すと実行します。</p>'+
+    '<div class="rs"><span>苦手な語と、間違えた回数（苦手 '+Object.keys(WEAK).length+'語）</span><button class="mini" data-r="weak">消す</button></div>'+
+    '<div class="rs"><span>図鑑（載った '+got+'語、あと1回 '+half+'語）</span><button class="mini" data-r="zukan">消す</button></div>'+
+    '<div class="rs"><span>判定と連続日数（'+Object.keys(DAILY).length+'日ぶん）</span><button class="mini" data-r="daily">消す</button></div>'+
+    '<div class="rs"><span>すべて（上の3つと、途中のテスト、制限時間や効果音の設定）</span><button class="mini" data-r="all">すべて消す</button></div>'+
+    '<div class="expbtns"><button class="mini" id="closereset">閉じる</button></div></div>';
+  out.prepend(box);
+  const wipe=o=>Object.keys(o).forEach(k=>delete o[k]);
+  box.onclick=e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    if(b.id==='closereset'){ box.remove(); return; }
+    if(!twice(b,'もう一度押すと消す')) return;
+    const r=b.dataset.r, all=r==='all';
+    if(all||r==='weak'){ wipe(WEAK); wipe(MISS); store.set(WKEY,WEAK); store.set(MKEY,MISS); }
+    if(all||r==='zukan'){ wipe(ZUKAN); store.set(ZKEY,ZUKAN); }
+    if(all||r==='daily'){ wipe(DAILY); store.set(DKEY,DAILY); }
+    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sound=true; store.set(PKEY,PREFS); sndLabel(); }
+    render();     // 印や図鑑の表示を今の記録に合わせてから、結果を出し直す
+    showReset(all?'すべて消しました。':'消しました。');
+  };
+  window.scrollTo({top:0});
+}
+document.getElementById('resetbtn').onclick=()=>showReset();
 
 function sndLabel(){ document.getElementById('sndbtn').textContent='効果音：'+(PREFS.sound?'オン':'オフ'); }
 document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.set(PKEY,PREFS); sndLabel(); };
@@ -1788,12 +1857,7 @@ function pauseQuiz(){
 }
 /* 終了：ここまで答えたぶんで結果を出す。押し間違えないよう、2回押して確定する */
 function endQuiz(e){
-  const b=e.currentTarget;
-  if(!b.classList.contains('arm')){
-    b.classList.add('arm'); b.textContent='もう一度押すと終了';
-    setTimeout(()=>{ if(b.isConnected){ b.classList.remove('arm'); b.textContent='終了'; } },2500);
-    return;
-  }
+  if(!twice(e.currentTarget,'もう一度押すと終了')) return;
   clearTimeout(qTimerId);
   const z=quiz;
   if(!z.i){ qclear(); quiz=null; render(); window.scrollTo({top:0}); return; }   // 1問も答えていなければ、テストの画面へ戻るだけ
@@ -1965,6 +2029,7 @@ function mark(good){
   }else{
     z.wrong.push(it);
     WEAK[k]=0; store.set(WKEY,WEAK);
+    MISS[k]=(MISS[k]||0)+1; store.set(MKEY,MISS);     // 間違えた回数は、苦手から外れても残す
     sfx('wrong'); buzz(25);
   }
   if(inTime){
