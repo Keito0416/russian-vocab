@@ -1312,7 +1312,13 @@ const mk=(id,label,n)=>{
   chips.appendChild(b);
 };
 mk('all','すべて',TOTAL);
+mk('weak','苦手',0);     // 苦手な語をまとめて見る。語数は描くたびに入れ直す（weakChip）
 D.forEach(p=>mk(p.id,p.name,count(p)));
+/* 「苦手」のボタンの語数を、今の記録に合わせる */
+function weakChip(){
+  const n=weakItems().length;
+  chips.querySelector('[data-id="weak"]').innerHTML='苦手'+(n?'<span class="c">'+n+'</span>':'');
+}
 
 function hl(text,q){
   if(!q) return esc(text);
@@ -1368,6 +1374,15 @@ function fill(d){
 }
 function renderList(){
   const q=norm(query.trim());
+  // 「苦手」：品詞をまたいで1本のリストにまとめる。よく間違える語（●が多い語）を上に並べる
+  if(filter==='weak'){
+    const items=weakItems().filter(x=>hit([x.ru,x.ja],q,x.pos));
+    if(!items.length){ out.innerHTML='<div class="empty">'+(q?'「'+esc(query)+'」に一致する語はありません':'苦手な語はありません')+'</div>'; return; }
+    if(mode==='sheet'&&(shuf||shufAll)) shuffle(items);
+    else items.sort((a,b)=>(MISS[keyOf(b)]||0)-(MISS[keyOf(a)]||0));
+    out.innerHTML='<div class="pos-title">苦手　'+items.length+'語</div><ul class="list">'+items.map(x=>rowHtml([x.ru,x.ja],q,x.pos)).join('')+'</ul>';
+    return;
+  }
   const plan=[];
   let shown=0;
   D.forEach(p=>{
@@ -1775,7 +1790,7 @@ const SFX={
   rankB:[[523,523,.12,.28,'bell'],[659,659,.3,.28,'bell']],
   rankC:[[440,440,.3,.26,'bell']]
 };
-const CHIPNOTE=[262,294,330,392,440,523,587,659];        // ②の品詞のボタン：左から順に音が上がる
+const CHIPNOTE=[262,294,330,392,440,523,587,659,784];    // ②の品詞のボタン：左から順に音が上がる
 const MODENOTE={list:[392,490],sheet:[494,618],quiz:[587,734],set:[330,413]};     // ②の下のタブ：行き先ごとに決まった2音
 /* ---- 種類③：ロシア風。イ短調。バラライカが主役で、沈む場面はバヤン、ボタンはロシュキ、にぎやかな場面にブーベン ----
    旋律は古い民謡から借りている。品詞のボタンと判定Sは「コロベイニキ」、下のタブと判定Aは「野に白樺が立っていた」。
@@ -1813,7 +1828,8 @@ const RUS=(()=>{
       [s(B4,cq+ce),b(C5,ce)],
       [s(D5,cq),s(E5,cq)],
       [s(C5,cq),s(A4,cq)],
-      [tr(A4,.4)]
+      [tr(A4,.4)],
+      [s(D5,cq),b(F5,ce),s(A5,cq)]                       // 9つめは後半の出だし
     ],
     mode:{                                               // 下のタブ：「白樺」の旋律（ミミ・レド・ドシ・ラ）
       list:[s(E5,.1),b(E5,.1)],
@@ -2172,6 +2188,7 @@ function buildPool(){
     return a;
   }
   const q=norm(query.trim()), arr=[], all=filter==='all';
+  if(filter==='weak') return weakItems().filter(x=>hit([x.ru,x.ja],q,x.pos));
   D.forEach(p=>{
     if(!all&&filter!==p.id) return;
     p.groups.forEach(([cat,ws])=>ws.forEach(w=>{
@@ -2181,7 +2198,7 @@ function buildPool(){
   return arr;
 }
 /* 範囲の名前 */
-function scopeName(){ const p=D.find(p=>p.id===filter); return p?p.name:'全品詞'; }
+function scopeName(){ const p=D.find(p=>p.id===filter); return p?p.name:(filter==='weak'?'苦手':'全品詞'); }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* テスト1回ぶんの状態を作る。o＝{dir:出題方向, limit:制限時間（秒）, kind:'daily'（今日の10問）か 'free'}
@@ -2246,6 +2263,7 @@ function endQuiz(e){
 function renderSetup(){
   clearTimeout(qTimerId);
   document.body.classList.remove('testing');
+  weakChip();
   const pool=buildPool(), weak=weakItems();
   const scope=SEL.size?'選択した語':(scopeName()+(query.trim()?'／「'+esc(query.trim())+'」で絞り込み':''));
   const done=DAILY[today()], saved=qload();
@@ -2265,7 +2283,7 @@ function renderSetup(){
       '<h3>テスト</h3>'+
       '<div class="q-label">出題範囲</div><div class="opts" id="scope">'+
         '<button class="opt" data-v="range">'+scope+'（'+pool.length+'語）</button>'+
-        '<button class="opt" data-v="weak">苦手だけ（'+weak.length+'語）</button></div>'+
+        (filter==='weak'?'':'<button class="opt" data-v="weak">苦手だけ（'+weak.length+'語）</button>')+'</div>'+     // 範囲がすでに「苦手」なら同じ中身なので出さない
       '<div class="q-label">出題方向</div><div class="opts" id="dir">'+
         '<button class="opt" data-v="ru2ja">露 → 和</button>'+
         '<button class="opt" data-v="ja2ru">和 → 露</button></div>'+
@@ -2525,7 +2543,8 @@ function say(text,lang){
   // Chrome は cancel 直後の speak を落とすことがあるので少し待つ
   setTimeout(()=>{
     const u=new SpeechSynthesisUtterance(text);
-    u.lang=lang; u.rate=SPK.rate; u.volume=Math.min(1,PREFS.tv/10);
+    // 音量は1目盛りごとに差が分かるよう、耳の感じ方に合わせて下げる（1目盛り＝3.5デシベル。10 が最大、1 でかなり小さい）
+    u.lang=lang; u.rate=SPK.rate; u.volume=PREFS.tv>=10?1:Math.pow(10,-(10-PREFS.tv)*3.5/20);
     const v=voiceFor(lang);
     if(v) u.voice=v;
     u.onerror=()=>{SPK.ok=false;spdLabel();};
@@ -2562,6 +2581,7 @@ addEventListener('scroll',()=>{
 function render(){
   clearTimeout(qTimerId);
   applySheet();
+  weakChip();
   if(mode==='set') renderSettings();
   else if(mode==='quiz'){
     if(quiz&&quiz.i>=quiz.items.length) quiz=null;     // 終わったテストは描き直さない
