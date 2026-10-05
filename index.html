@@ -45,6 +45,7 @@
   }
   body.scrolled .masthead{margin-top:-40px;opacity:0;pointer-events:none}
   .masthead h1{font-family:var(--serif);font-size:18px;font-weight:400;margin:0;letter-spacing:.01em}
+  .masthead .who{margin-left:auto;max-width:50%;font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .searchrow{display:flex;gap:6px;margin-bottom:8px}
   .search{position:relative;flex:1;min-width:0}
   .search input{
@@ -96,6 +97,8 @@
   .vol{display:flex;align-items:center;gap:12px;margin-top:4px}
   .vol span{flex:0 0 4.6em;font-size:13px;color:var(--ink2)}
   .vol .slide{flex:1;min-width:0}
+  .name{flex:1;min-width:0;min-height:44px;padding:8px 12px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);color:var(--ink);font-family:inherit;font-size:16px;outline:none}
+  .name:focus{border-color:var(--ink2)}
   #sheetbar{grid-template-columns:repeat(7,minmax(0,1fr))}
   .toolrow .tool{flex:1;min-width:0;max-width:88px}
   .tool.th .tv{font-size:24px;line-height:1}
@@ -393,6 +396,7 @@
   <div class="wrap">
     <div class="masthead">
       <h1>Русская лексика</h1>
+      <span class="who" id="who"></span>
     </div>
     <div class="searchrow">
       <div class="search">
@@ -1576,9 +1580,12 @@ const WEAK=store.get(WKEY,{});    // 苦手な語　　 {品詞id|ロシア語: 
 const MISS=store.get(MKEY,{});    // 間違えた回数 {品詞id|ロシア語: 「あやふや」を押した回数の合計}
 const ZUKAN=store.get(ZKEY,{});   // 図鑑　　　　 {品詞id|ロシア語: [最後に決めた日, 決めた日数]}
 const DAILY=store.get(DKEY,{});   // 日ごとの判定 {日付: {r:判定, raw:点, ok:正解数, n:問題数, t:平均秒}}
-const PREFS=Object.assign({limit:0,sv:5,tv:10,theme:1},store.get(PKEY,{}));   // limit＝制限時間（秒。0 はなし）、sv＝効果音の音量（0〜10。5 が標準）、tv＝読み上げの音量（0〜10）、theme＝効果音の種類（1〜3）
+const PREFS=Object.assign({limit:0,sv:5,tv:10,theme:1,name:''},store.get(PKEY,{}));   // limit＝制限時間（秒。0 はなし）、sv＝効果音の音量（0〜10。5 が標準）、tv＝読み上げの音量（0〜10）、theme＝効果音の種類（1〜3）、name＝名前
 if(PREFS.sound===false) PREFS.sv=0;     // 古い保存の形（効果音オフ）は音量 0 に直す
 delete PREFS.sound;
+/* 名前を見出しの右に出す（付けていなければ何も出さない） */
+function whoLabel(){ document.getElementById('who').textContent=PREFS.name||''; }
+whoLabel();
 const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>dkey(new Date());
 
@@ -1608,9 +1615,13 @@ function twice(b,msg){
   return false;
 }
 
-/* 設定の画面：サウンド（音量・効果音の種類・読み上げの速さ）と、記録の初期化（「消す」は2回押すと実行。画面には説明を書かない） */
+/* 設定の画面：アカウント（名前）、サウンド（音量・効果音の種類・読み上げの速さ）、記録、図鑑、初期化（「消す」は2回押すと実行）。
+   画面には説明を書かない */
 function renderSettings(){
   out.innerHTML=
+    '<div class="q-setup"><h3>アカウント</h3>'+
+      '<div class="vol"><span>名前</span><input class="name" id="uname" type="text" maxlength="20" autocomplete="off" aria-label="名前" value="'+esc(PREFS.name||'')+'"></div>'+
+    '</div>'+
     '<div class="q-setup"><h3>サウンド</h3>'+
       '<div class="vol"><span>効果音</span><input class="slide" id="sv" type="range" min="0" max="10" step="1" aria-label="効果音の音量"></div>'+
       '<div class="vol"><span>読み上げ</span><input class="slide" id="tv" type="range" min="0" max="10" step="1" aria-label="読み上げの音量"></div>'+
@@ -1620,6 +1631,8 @@ function renderSettings(){
         '<button class="tool" id="spd" aria-label="読み上げの速さ"><b class="tv"></b><span>速さ</span></button>'+
       '</div>'+
     '</div>'+
+    '<div class="q-setup"><h3>記録</h3>'+recordHtml()+'</div>'+
+    '<div class="q-setup"><h3>図鑑</h3>'+zukanHtml()+'</div>'+
     '<div class="q-setup" id="resetbox"><h3>初期化</h3>'+
       '<div class="rs"><span>苦手</span><i>'+Object.keys(WEAK).length+'語</i><button class="mini" data-r="weak">消す</button></div>'+
       '<div class="rs"><span>図鑑</span><i>'+Object.keys(ZUKAN).filter(inZukan).length+'語</i><button class="mini" data-r="zukan">消す</button></div>'+
@@ -1627,6 +1640,10 @@ function renderSettings(){
       '<div class="rs"><span>すべて</span><button class="mini" data-r="all">消す</button></div>'+
     '</div>';
   spdLabel();
+  // 名前はこの端末の中にだけ保存し、見出しの右に出す
+  const un=document.getElementById('uname');
+  un.oninput=()=>{ PREFS.name=un.value.trim(); whoLabel(); };
+  un.onchange=()=>store.set(PKEY,PREFS);
   const sv=document.getElementById('sv'), tv=document.getElementById('tv');
   sv.value=PREFS.sv; tv.value=PREFS.tv;
   // 音量の横バー：効果音は動かすたびにその大きさで1音鳴らす。読み上げは指を離したときに一言しゃべらせる
@@ -1650,7 +1667,7 @@ function renderSettings(){
     if(all||r==='weak'){ wipe(WEAK); wipe(MISS); store.set(WKEY,WEAK); store.set(MKEY,MISS); }
     if(all||r==='zukan'){ wipe(ZUKAN); store.set(ZKEY,ZUKAN); }
     if(all||r==='daily'){ wipe(DAILY); store.set(DKEY,DAILY); }
-    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sv=5; PREFS.tv=10; PREFS.theme=1; store.set(PKEY,PREFS); if(MASTER) MASTER.gain.value=1; }
+    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sv=5; PREFS.tv=10; PREFS.theme=1; PREFS.name=''; store.set(PKEY,PREFS); if(MASTER) MASTER.gain.value=1; whoLabel(); }
     renderSettings();
   };
 }
@@ -1706,7 +1723,7 @@ const MODENOTE={list:[392,490],sheet:[494,618],quiz:[587,734],set:[330,413]};   
    品詞を左から順に押すと「コロベイニキ」の前半がつながり、下のタブを順に押すと「白樺」の下りになる。
    1つの音に複数の楽器を重ねるときは、声部（1音の並び）を並べた配列にする。ここにない音（めくる・戻す）は②の音を使う */
 const RUS=(()=>{
-  const E3=164.8,Gs3=207.7,A3=220,B3=246.9,C4=261.6,D4=293.7,E4=329.6,A4=440,B4=493.9,C5=523.3,D5=587.3,E5=659.3,F5=698.5,Gs5=830.6,A5=880;
+  const E3=164.8,Gs3=207.7,A3=220,B3=246.9,C4=261.6,D4=293.7,E4=329.6,A4=440,B4=493.9,C5=523.3,D5=587.3,E5=659.3,F5=698.5,G5=784,A5=880;
   const b=(f,gap,v=.36)=>[f,f,.2,v,'bal',gap];            // 1本はじく
   const s=(f,gap,v=.36)=>[f,f,.2,v,'str',gap];            // かき鳴らす
   const tr=(f,len,v=.32)=>[f,f,len,v,'trem',len];        // トレモロ
@@ -1718,7 +1735,17 @@ const RUS=(()=>{
   const e=.1, q=.2, ce=.09, cq=.18;                      // 8分音符と4分音符の長さ（c＝品詞のボタン用で少し速い）
   return {
     b:b, s:s, tr:tr, bub:bub, bay:bay, Am:Am,
-    step:[A4,B4,C5,D5,E5,F5,Gs5,A5],                     // 正解の音が上がっていく段（7番目だけ半音上げた、ロシア民謡らしい音階）
+    // 「コロベイニキ」を1音ずつ並べたもの（前半19音＋後半18音）。横バーを動かすと、この順に1音ずつ鳴る
+    tune:[E5,B4,C5,D5,C5,B4, A4,A4,C5,E5,D5,C5, B4,C5,D5,E5, C5,A4,A4,  D5,F5,A5,G5,F5, E5,C5,E5,D5,C5, B4,B4,C5,D5,E5, C5,A4,A4],
+    // 正解の音：「コロベイニキ」の後半を6つに分けたもの。続けて正解すると曲が先へ進み、6連続で一区切りつく
+    cheer:[
+      [s(D5,q),b(F5,e),s(A5,q)],
+      [s(G5,e),b(F5,e),s(E5,q)],
+      [s(C5,e),b(E5,q),b(D5,e),b(C5,e)],
+      [s(B4,q),b(B4,e),b(C5,e)],
+      [s(D5,q),s(E5,q)],
+      [s(C5,q),s(A4,q),tr(A4,.34)]
+    ],
     chip:[                                               // 品詞のボタン：「コロベイニキ」の前半を8つに分けたもの
       [s(E5,cq),b(B4,ce),b(C5,ce)],
       [s(D5,cq),b(C5,ce),b(B4,ce)],
@@ -1959,21 +1986,26 @@ function play(seq){
 function playAll(x){ if(!x) return; if(Array.isArray(x[0][0])) x.forEach(play); else play(x); }
 /* 名前で鳴らす。選んでいる種類の音を先に探し、なければ②の音を使う */
 function sfx(name){ playAll([null,SFX_1,SFX,RUS.sfx][PREFS.theme][name]||SFX[name]); }
-/* 高さ f（Hz）の音を1つ、選んでいる種類の音色で鳴らす。横バーの目盛りに使う */
+/* 高さ f（Hz）の音を1つ、選んでいる種類の音色で鳴らす */
 const tone1=f=>[[f,f,.04,.2],[f,f,.07,.3,'mar'],[f,f,.2,.34,'bal']][PREFS.theme-1];
 function note(f){ play([tone1(f)]); }
+/* 横バーの1目盛りの音。①②は目盛りが上がるほど高い音（f）。
+   ③は「コロベイニキ」の i 番目の音。右へ動かすと曲が進み、左へ動かすと戻る */
+function slideNote(i,f){
+  if(PREFS.theme!==3){ note(f); return; }
+  const t=RUS.tune; play([RUS.b(t[((i%t.length)+t.length)%t.length],.1)]);
+}
 /* 軽い振動（Android のみ）。効果音の音量が 0 のときは震わせない */
 function buzz(p){ try{ if(PREFS.sv&&navigator.vibrate&&touched()) navigator.vibrate(p); }catch(_){} }
-/* 正解の音：②③は、続けて正解するほど音が1段ずつ上がっていく（8連続で頭打ち。それ以上は耳に刺さるので上げない）。
-   3・5連続と、10連続からの5回ごとには、飾りの音を足す。①は毎回同じ2音 */
+/* 正解の音：①は毎回同じ2音。②は続けて正解するほど音が1段ずつ上がる（8連続で頭打ち。それ以上は耳に刺さるので上げない）。
+   ③は続けて正解するほど民謡が先へ進む。②③は、3・5連続と、10連続からの5回ごとに飾りの音を足す */
 const STEP=[523,587,659,784,880,1047,1175,1319];
 function cheer(combo){
   const i=Math.max(0,Math.min(combo,STEP.length)-1), deco=combo===3||combo===5||(combo>=10&&combo%5===0);
   if(PREFS.theme===1) play([[784,784,.06,.24],[1047,1047,.12,.24]]);
   else if(PREFS.theme===3){
-    // かき鳴らしてブーベンを添える。飾りは、バヤンの和音にのせて高い音へ駆け上がる
-    const f=RUS.step[i];
-    play(deco?[RUS.s(f,.16),RUS.b(659.3,.07),RUS.tr(880,.3,.3)]:[RUS.s(f,.2)]);
+    // 正解のたびに「コロベイニキ」の後半が少しずつ先へ進む。ブーベンを添え、節目ではバヤンの和音を重ねる
+    play(RUS.cheer[(combo-1)%RUS.cheer.length]);
     play(deco?[RUS.bub(.16,.16,.1),RUS.bub(.1,.2,.3)]:[RUS.bub(.1,.14,.09)]);
     if(deco) play(RUS.bay(RUS.Am,.34,.09,.34));
   }else{
@@ -2186,9 +2218,7 @@ function renderSetup(){
       '<button class="go" id="start">始める</button>'+
       (SEL.size?'<button class="go sub" id="clearsel">選択を解除（'+SEL.size+'語）</button>':'')+
       '<div class="q-hint" id="qhint"></div>'+
-    '</div>'+
-    '<div class="q-setup"><h3>記録</h3>'+recordHtml()+'</div>'+
-    '<div class="q-setup"><h3>図鑑</h3>'+zukanHtml()+'</div>';
+    '</div>';
   const el=id=>document.getElementById(id);
   const sync=(id,val)=>[...el(id).children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===String(val)));
   const items=()=>qScope==='weak'?weak:pool;
@@ -2214,11 +2244,11 @@ function renderSetup(){
   pick('scope',v=>{qScope=v;});
   pick('dir',v=>{qDir=v;});
   // 横バーは動かすたびに1目盛りぶん音を鳴らす。制限時間は「今日の10問」にも使うので、端末に覚えておく
-  const LIMNOTE=[392,523,587,659,698,784,880,988,1047,1175,1319];     // 0（なし）〜10秒：ドレミの順に上がる
-  lim.oninput=()=>{ const v=+lim.value; if(v!==PREFS.limit){ PREFS.limit=v; note(LIMNOTE[v]||880); refresh(); } };
+  const LIMNOTE=[392,523,587,659,698,784,880,988,1047,1175,1319];     // ①②の音：0（なし）〜10秒でドレミの順に上がる
+  lim.oninput=()=>{ const v=+lim.value; if(v!==PREFS.limit){ PREFS.limit=v; slideNote(v,LIMNOTE[v]||880); refresh(); } };
   lim.onchange=()=>store.set(PKEY,PREFS);
-  // 問題数は、左端から右端までで2オクターブ上がる
-  len.oninput=()=>{ const v=+len.value; if(v!==qLen){ qLen=v; note(392*Math.pow(2,(v-1)/Math.max(1,len.max-1)*2)); refresh(); } };
+  // 問題数の①②の音は、左端から右端までで2オクターブ上がる
+  len.oninput=()=>{ const v=+len.value; if(v!==qLen){ qLen=v; slideNote(v-1,392*Math.pow(2,(v-1)/Math.max(1,len.max-1)*2)); refresh(); } };
   el('lenall').onclick=()=>{ if(qLen){ qLenLast=qLen; qLen=0; } else qLen=qLenLast; refresh(); };   // 「全部」をやめたら、元の問題数に戻す
   const cs=el('clearsel');
   if(cs) cs.onclick=()=>{SEL.clear();selLabel();renderSetup();};
