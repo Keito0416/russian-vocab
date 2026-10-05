@@ -93,6 +93,10 @@
   body.setting .searchrow,body.setting #tools,body.setting .chips{display:none}
   body.setting .masthead{padding-bottom:13px}
   .toolrow{display:flex;gap:6px;margin-top:10px}
+  .vol{display:flex;align-items:center;gap:12px;margin-top:4px}
+  .vol span{flex:0 0 4.6em;font-size:13px;color:var(--ink2)}
+  .vol .slide{flex:1;min-width:0}
+  #sheetbar{grid-template-columns:repeat(7,minmax(0,1fr))}
   .toolrow .tool{flex:1;min-width:0;max-width:88px}
   .tool.th .tv{font-size:24px;line-height:1}
   #side[data-side="ru"] .l,#side[data-side="ja"] .r,#mask .mk{fill:var(--mask);stroke:var(--mask)}
@@ -352,15 +356,22 @@
   .q-x2{align-self:center;font-size:13px;background:var(--hl);color:var(--ink);padding:3px 12px;border-radius:999px}
   .rank{font-family:var(--serif);font-size:88px;line-height:1;text-align:center;margin:6px 0 10px;animation:pop .4s ease}
   .rank-h{text-align:center;font-size:13px;letter-spacing:.08em;color:var(--dim);margin-top:24px}
-  /* 日ごとの記録：棒の高さ＝その日の点（2倍ぶんを除く）、棒の上の字＝判定 */
-  .rec{display:flex;align-items:flex-end;gap:3px;height:104px;margin-top:10px;border-bottom:1px solid var(--rule)}
-  .rec .d{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;border:0;background:none;padding:0;font-family:inherit;cursor:pointer}
-  .rec .d b{font-family:var(--serif);font-weight:400;font-size:13px;line-height:1.5;color:var(--ink2)}
-  .rec .d i{display:block;width:100%;max-width:26px;background:var(--dim);border-radius:4px 4px 0 0}
-  .rec .d.today i{background:var(--ink)}
-  .rec .d.none{cursor:default}
-  .rec .d[aria-pressed="true"] b{color:var(--ink);font-weight:600}
-  .rec-x{display:flex;justify-content:space-between;font-size:13px;color:var(--dim);margin-top:4px}
+  /* 日ごとの記録：カレンダー（1列＝1週間、上が月曜）。色が濃いほど判定が高い */
+  .cal-m,.cal{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:3px}
+  .cal-m{margin-top:10px;height:20px;font-size:13px;color:var(--dim)}
+  .cal-m span{white-space:nowrap}
+  .cal{grid-template-rows:repeat(7,auto);grid-auto-flow:column;margin-top:2px}
+  .c{display:block;aspect-ratio:1;border:0;padding:0;border-radius:3px;background:var(--rule)}
+  .c.f{background:none}
+  .c.rS,.c.rA,.c.rB,.c.rC{background:var(--ink)}
+  .c.rA{opacity:.7}
+  .c.rB{opacity:.44}
+  .c.rC{opacity:.24}
+  .cal button.c{cursor:pointer}
+  .cal .c.t{outline:1.5px solid var(--ink2);outline-offset:1px}
+  .cal .c[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px}
+  .cal-l{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:8px;font-size:13px;color:var(--dim)}
+  .cal-l .c{width:12px;height:12px}
   .rec-info{min-height:21px;font-size:13px;color:var(--ink2);margin-top:6px}
   .zk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 10px;align-items:center;font-size:13px}
   .zk .bar{margin:0}
@@ -394,7 +405,7 @@
     <div id="tools" class="hidden">
     <div class="subbar" id="listbar">
       <button class="tool" id="tipq" aria-label="補足も検索" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 9.3h5M8 11.8h3.2"/></svg><span>補足</span></button>
-      <button class="tool" id="selbtn" aria-label="選択" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><path d="M8 12.2l2.8 2.8 5.4-5.5"/></svg><i class="badge"></i><span>選択</span></button>
+      <button class="tool selbtn" aria-label="選択" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><path d="M8 12.2l2.8 2.8 5.4-5.5"/></svg><i class="badge"></i><span>選択</span></button>
       <button class="tool" id="expbtn" aria-label="書き出し"><svg viewBox="0 0 24 24"><path d="M12 15V4.5M8 8.5l4-4 4 4M5 13v6h14v-6"/></svg><span>出力</span></button>
     </div>
     <div class="subbar hidden" id="sheetbar">
@@ -404,6 +415,7 @@
       <button class="tool" id="shufall" aria-label="全体を混ぜる" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3.5 8H7c4.2 0 5.3 8 9.5 8h4M3.5 16H7c1.3 0 2.3-.8 3.2-1.9M13.3 9.9C14.2 8.8 15.2 8 16.5 8h4M18 5.5L20.5 8 18 10.5M18 13.5l2.5 2.5-2.5 2.5"/></svg><span>全体</span></button>
       <button class="tool" id="revall" aria-label="全部めくる"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></svg><span>めくる</span></button>
       <button class="tool" id="hideall" aria-label="全部戻す"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><path d="M4.5 4.5l15 15"/></svg><span>戻す</span></button>
+      <button class="tool selbtn" aria-label="選択" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><path d="M8 12.2l2.8 2.8 5.4-5.5"/></svg><i class="badge"></i><span>選択</span></button>
     </div>
     </div>
     <div class="chips" id="chips"></div>
@@ -1399,8 +1411,8 @@ modes.addEventListener('click',e=>{
   mode=b.dataset.m;
   [...modes.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.m===mode));
   if(mode!=='quiz') quiz=null;
-  // 選択は一覧でする操作なので、ほかの画面へ移ったら選択中をやめる（選んだ語は残す）
-  if(mode!=='list'&&selMode){ selMode=false; document.body.classList.remove('selecting'); selLabel(); }
+  // 選択は一覧と赤シートでする操作なので、テストや設定へ移ったら選択中をやめる（選んだ語は残す）
+  if(mode!=='list'&&mode!=='sheet'&&selMode){ selMode=false; document.body.classList.remove('selecting'); selLabel(); }
   render();
   window.scrollTo({top:0});
 });
@@ -1414,9 +1426,10 @@ document.getElementById('toolsbtn').onclick=e=>{
 };
 /* 選択のボタン：選択中は塗り、選んだ語数を右上に出す */
 function selLabel(){
-  const b=document.getElementById('selbtn');
-  b.setAttribute('aria-pressed',selMode);
-  b.querySelector('.badge').textContent=SEL.size||'';
+  document.querySelectorAll('.selbtn').forEach(b=>{
+    b.setAttribute('aria-pressed',selMode);
+    b.querySelector('.badge').textContent=SEL.size||'';
+  });
 }
 let expFmt='anki', expItems=[];
 function plainText(s){
@@ -1468,11 +1481,11 @@ function showExport(items,src){
   scrollTo({top:0});
 }
 document.getElementById('expbtn').onclick=()=>showExport();
-document.getElementById('selbtn').onclick=()=>{
+document.querySelectorAll('.selbtn').forEach(b=>{ b.onclick=()=>{
   selMode=!selMode;
   document.body.classList.toggle('selecting',selMode);
   selLabel(); sfx(selMode?'on':'off');
-};
+}; });
 document.getElementById('tipq').onclick=e=>{
   tipSearch=!tipSearch;
   e.currentTarget.setAttribute('aria-pressed',tipSearch); sfx(tipSearch?'on':'off');
@@ -1499,12 +1512,12 @@ document.getElementById('revall').onclick=()=>out.querySelectorAll('ul.list li')
 document.getElementById('hideall').onclick=()=>out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
 out.addEventListener('click',e=>{
   if(e.target.closest('a')) return;
-  const rb=e.target.closest('.rec .d[data-info]');
+  const rb=e.target.closest('.cal .c[data-info]');
   if(rb){
-    // 記録の棒を押したら、その日の内訳を下に出す
-    out.querySelectorAll('.rec .d[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
+    // 記録のマスを押したら、その日の内訳を下に出す
+    out.querySelectorAll('.cal .c[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
     rb.setAttribute('aria-pressed','true');
-    const box=rb.closest('.rec').parentNode.querySelector('.rec-info');
+    const box=rb.closest('.cal').parentNode.querySelector('.rec-info');
     if(box) box.textContent=rb.dataset.info;
     return;
   }
@@ -1563,7 +1576,9 @@ const WEAK=store.get(WKEY,{});    // 苦手な語　　 {品詞id|ロシア語: 
 const MISS=store.get(MKEY,{});    // 間違えた回数 {品詞id|ロシア語: 「あやふや」を押した回数の合計}
 const ZUKAN=store.get(ZKEY,{});   // 図鑑　　　　 {品詞id|ロシア語: [最後に決めた日, 決めた日数]}
 const DAILY=store.get(DKEY,{});   // 日ごとの判定 {日付: {r:判定, raw:点, ok:正解数, n:問題数, t:平均秒}}
-const PREFS=Object.assign({limit:0,sound:true,theme:1},store.get(PKEY,{}));   // limit＝テストの制限時間（秒。0 はなし）、theme＝効果音の種類（1〜3）
+const PREFS=Object.assign({limit:0,sv:5,tv:10,theme:1},store.get(PKEY,{}));   // limit＝制限時間（秒。0 はなし）、sv＝効果音の音量（0〜10。5 が標準）、tv＝読み上げの音量（0〜10）、theme＝効果音の種類（1〜3）
+if(PREFS.sound===false) PREFS.sv=0;     // 古い保存の形（効果音オフ）は音量 0 に直す
+delete PREFS.sound;
 const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>dkey(new Date());
 
@@ -1593,25 +1608,32 @@ function twice(b,msg){
   return false;
 }
 
-/* 設定の画面：音まわりと、記録の初期化（「消す」は2回押すと実行。画面には説明を書かない） */
-const ICON_SND='<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2l4.8 4v-13l-4.8 4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
-function sndLabel(){ const b=document.getElementById('sndbtn'); if(b) b.setAttribute('aria-pressed',PREFS.sound); }
+/* 設定の画面：サウンド（音量・効果音の種類・読み上げの速さ）と、記録の初期化（「消す」は2回押すと実行。画面には説明を書かない） */
 function renderSettings(){
   out.innerHTML=
-    '<div class="q-setup"><h3>音</h3><div class="toolrow" id="sndrow">'+
-      '<button class="tool" id="sndbtn" aria-label="効果音">'+ICON_SND+'<span>効果音</span></button>'+
-      // 効果音の種類：①シンプル ②木琴と鐘 ③ロシア風。画面には数字だけ出す
-      [1,2,3].map(n=>'<button class="tool th" data-th="'+n+'" aria-label="効果音の種類 '+n+'" aria-pressed="'+(PREFS.theme===n)+'"><b class="tv">'+'①②③'[n-1]+'</b></button>').join('')+
-      '<button class="tool" id="spd" aria-label="読み上げの速さ"><b class="tv"></b><span>速さ</span></button>'+
-    '</div></div>'+
+    '<div class="q-setup"><h3>サウンド</h3>'+
+      '<div class="vol"><span>効果音</span><input class="slide" id="sv" type="range" min="0" max="10" step="1" aria-label="効果音の音量"></div>'+
+      '<div class="vol"><span>読み上げ</span><input class="slide" id="tv" type="range" min="0" max="10" step="1" aria-label="読み上げの音量"></div>'+
+      '<div class="toolrow" id="sndrow">'+
+        // 効果音の種類：①シンプル ②木琴と鐘 ③ロシア風。画面には数字だけ出す
+        [1,2,3].map(n=>'<button class="tool th" data-th="'+n+'" aria-label="効果音の種類 '+n+'" aria-pressed="'+(PREFS.theme===n)+'"><b class="tv">'+'①②③'[n-1]+'</b></button>').join('')+
+        '<button class="tool" id="spd" aria-label="読み上げの速さ"><b class="tv"></b><span>速さ</span></button>'+
+      '</div>'+
+    '</div>'+
     '<div class="q-setup" id="resetbox"><h3>初期化</h3>'+
       '<div class="rs"><span>苦手</span><i>'+Object.keys(WEAK).length+'語</i><button class="mini" data-r="weak">消す</button></div>'+
       '<div class="rs"><span>図鑑</span><i>'+Object.keys(ZUKAN).filter(inZukan).length+'語</i><button class="mini" data-r="zukan">消す</button></div>'+
       '<div class="rs"><span>判定</span><i>'+Object.keys(DAILY).length+'日</i><button class="mini" data-r="daily">消す</button></div>'+
       '<div class="rs"><span>すべて</span><button class="mini" data-r="all">消す</button></div>'+
     '</div>';
-  sndLabel(); spdLabel();
-  document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.set(PKEY,PREFS); sndLabel(); sfx('on'); };
+  spdLabel();
+  const sv=document.getElementById('sv'), tv=document.getElementById('tv');
+  sv.value=PREFS.sv; tv.value=PREFS.tv;
+  // 音量の横バー：効果音は動かすたびにその大きさで1音鳴らす。読み上げは指を離したときに一言しゃべらせる
+  sv.oninput=()=>{ const v=+sv.value; if(v===PREFS.sv) return; PREFS.sv=v; if(MASTER) MASTER.gain.value=v/5; sfx('tick'); };
+  sv.onchange=()=>store.set(PKEY,PREFS);
+  tv.oninput=()=>{ PREFS.tv=+tv.value; };
+  tv.onchange=()=>{ store.set(PKEY,PREFS); if(PREFS.tv) say('привет','ru-RU'); };
   // 種類を選んだら、その種類の「テスト開始」の音を鳴らして聞かせる
   document.getElementById('sndrow').addEventListener('click',e=>{
     const b=e.target.closest('.th'); if(!b) return;
@@ -1628,7 +1650,7 @@ function renderSettings(){
     if(all||r==='weak'){ wipe(WEAK); wipe(MISS); store.set(WKEY,WEAK); store.set(MKEY,MISS); }
     if(all||r==='zukan'){ wipe(ZUKAN); store.set(ZKEY,ZUKAN); }
     if(all||r==='daily'){ wipe(DAILY); store.set(DKEY,DAILY); }
-    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sound=true; PREFS.theme=1; store.set(PKEY,PREFS); }
+    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sv=5; PREFS.tv=10; PREFS.theme=1; store.set(PKEY,PREFS); if(MASTER) MASTER.gain.value=1; }
     renderSettings();
   };
 }
@@ -1636,8 +1658,9 @@ function renderSettings(){
 /* 効果音：音は端末の中で作る（音声ファイルは読み込まない）。
    1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 音色, 次の音までの間(秒)]。並べた順に鳴らす。
    間を省くと長さの8割。0 にすると次の音と同時に鳴る（和音）。
-   音色：なし＝素直な音（高さを滑らせると「ぽん」になる）、'mar'＝木琴、'bell'＝澄んだ鐘、'noise'＝紙がこすれる音、'triangle'＝少しざらついた音、
-   'bal'＝バラライカ（弦をはじく）、'trem'＝バラライカのトレモロ（同じ音を細かくはじき続ける）、'bay'＝バヤン（ロシアのアコーディオン）、'kol'＝教会の鐘 */
+   音色：なし＝素直な音（高さを滑らせると「ぽん」になる）、'mar'＝木琴、'bell'＝澄んだ鐘、'noise'＝紙がこすれる音、'triangle'＝少しざらついた音、'rest'＝休み（間だけ空ける）
+   ロシアの楽器：'bal'＝バラライカ（1本はじく）、'str'＝バラライカのかき鳴らし（開放弦のミを添える）、'trem'＝トレモロ、
+   'bay'＝バヤン（アコーディオン）、'kol'＝教会の鐘、'lo'＝ロシュキ（木のスプーンを打ち合わせる音。高さに 1 を入れると高めの音）、'bub'＝ブーベン（タンバリン） */
 /* ---- 種類①：シンプル。素直な音だけで、数も少なめ。ここにない音（めくる・戻す）は②の音を使う ---- */
 const SFX_1={
   tick:[[660,660,.035,.2]],
@@ -1676,102 +1699,221 @@ const SFX={
   rankB:[[523,523,.12,.28,'bell'],[659,659,.3,.28,'bell']],
   rankC:[[440,440,.3,.26,'bell']]
 };
-/* ---- 種類③：ロシア風。イ短調。触ったときはバラライカ、沈む場面はバヤン。ここにない音（めくる・戻す）は②の音を使う ----
-   判定Sだけは民謡「コロベイニキ」（19世紀の民謡）の出だしを借りている */
-const SFX_RU={
-  tick:[[220,220,.03,.17,'bal']],
-  on:[[330,330,.05,.18,'bal'],[440,440,.09,.18,'bal']],
-  off:[[440,440,.05,.16,'bal'],[330,330,.09,.16,'bal']],
-  open:[[523,523,.05,.17,'bal'],[659,659,.08,.17,'bal']],
-  close:[[659,659,.05,.15,'bal'],[523,523,.08,.15,'bal']],
-  shuf:[[440,440,.36,.15,'trem']],
-  reveal:[[330,330,.05,.16,'bal',.03],[440,440,.1,.17,'bal']],
-  late:[[330,330,.14,.13,'bay'],[262,262,.22,.13,'bay']],
-  wrong:[[262,262,.12,.14,'bay'],[220,220,.24,.14,'bay']],
-  start:[[330,330,.05,.18,'bal',.035],[330,330,.05,.18,'bal',.035],[440,440,.34,.17,'trem']],          // バラライカの開放弦（ミ・ミ・ラ）をかき鳴らす
-  x2:[[659,659,.05,.18,'bal',.06],[880,880,.05,.18,'bal',.06],[1319,1319,.22,.16,'trem']],
-  done:[[220,220,.34,.09,'bay',0],[262,262,.34,.09,'bay',0],[330,330,.34,.09,'bay']],               // イ短調の和音
-  rankS:[[659,659,.16,.19,'bal',.22],[494,494,.08,.19,'bal',.11],[523,523,.08,.19,'bal',.11],[587,587,.16,.19,'bal',.22],[523,523,.08,.19,'bal',.11],[494,494,.08,.19,'bal',.11],[220,220,1.4,.2,'kol',0],[440,440,.6,.17,'trem']],
-  rankA:[[440,440,.08,.19,'bal',.11],[523,523,.08,.19,'bal',.11],[659,659,.08,.19,'bal',.11],[880,880,.45,.17,'trem']],
-  rankB:[[659,659,.1,.18,'bal',.13],[523,523,.1,.18,'bal',.13],[440,440,.3,.18,'bal']],
-  rankC:[[220,220,.36,.12,'bay']]
-};
-const CHIPNOTE=[262,294,330,392,440,523,587,659];        // 品詞のボタン：左から順に音が上がる
-const CHIP_RU=[220,247,262,294,330,349,392,440];         // ロシア風はイ短調の音階
-const MODENOTE={list:[392,490],sheet:[494,618],quiz:[587,734],set:[330,413]};     // 下のタブ：行き先ごとに決まった2音
-const MODE_RU={list:[330,440],sheet:[440,523],quiz:[523,659],set:[220,330]};
+const CHIPNOTE=[262,294,330,392,440,523,587,659];        // ②の品詞のボタン：左から順に音が上がる
+const MODENOTE={list:[392,490],sheet:[494,618],quiz:[587,734],set:[330,413]};     // ②の下のタブ：行き先ごとに決まった2音
+/* ---- 種類③：ロシア風。イ短調。バラライカが主役で、沈む場面はバヤン、ボタンはロシュキ、にぎやかな場面にブーベン ----
+   旋律は古い民謡から借りている。品詞のボタンと判定Sは「コロベイニキ」、下のタブと判定Aは「野に白樺が立っていた」。
+   品詞を左から順に押すと「コロベイニキ」の前半がつながり、下のタブを順に押すと「白樺」の下りになる。
+   1つの音に複数の楽器を重ねるときは、声部（1音の並び）を並べた配列にする。ここにない音（めくる・戻す）は②の音を使う */
+const RUS=(()=>{
+  const E3=164.8,Gs3=207.7,A3=220,B3=246.9,C4=261.6,D4=293.7,E4=329.6,A4=440,B4=493.9,C5=523.3,D5=587.3,E5=659.3,F5=698.5,Gs5=830.6,A5=880;
+  const b=(f,gap,v=.36)=>[f,f,.2,v,'bal',gap];            // 1本はじく
+  const s=(f,gap,v=.36)=>[f,f,.2,v,'str',gap];            // かき鳴らす
+  const tr=(f,len,v=.32)=>[f,f,len,v,'trem',len];        // トレモロ
+  const r=gap=>[0,0,0,0,'rest',gap];                     // 休み
+  const lo=(gap,v=.28,hi=0)=>[hi,hi,0,v,'lo',gap];        // ロシュキ
+  const bub=(gap,v=.2,d=.14)=>[0,0,d,v,'bub',gap];       // ブーベン
+  const bay=(fs,len,v,gap)=>fs.map((f,i)=>[f,f,len,v,'bay',i<fs.length-1?0:gap]);     // バヤンの和音（単音なら1つだけ渡す）
+  const Am=[A3,C4,E4], E=[Gs3,B3,E4];
+  const e=.1, q=.2, ce=.09, cq=.18;                      // 8分音符と4分音符の長さ（c＝品詞のボタン用で少し速い）
+  return {
+    b:b, s:s, tr:tr, bub:bub, bay:bay, Am:Am,
+    step:[A4,B4,C5,D5,E5,F5,Gs5,A5],                     // 正解の音が上がっていく段（7番目だけ半音上げた、ロシア民謡らしい音階）
+    chip:[                                               // 品詞のボタン：「コロベイニキ」の前半を8つに分けたもの
+      [s(E5,cq),b(B4,ce),b(C5,ce)],
+      [s(D5,cq),b(C5,ce),b(B4,ce)],
+      [s(A4,cq),b(A4,ce),b(C5,ce)],
+      [s(E5,cq),b(D5,ce),b(C5,ce)],
+      [s(B4,cq+ce),b(C5,ce)],
+      [s(D5,cq),s(E5,cq)],
+      [s(C5,cq),s(A4,cq)],
+      [tr(A4,.4)]
+    ],
+    mode:{                                               // 下のタブ：「白樺」の旋律（ミミ・レド・ドシ・ラ）
+      list:[s(E5,.1),b(E5,.1)],
+      sheet:[s(D5,.14),b(C5,.1)],
+      quiz:[s(C5,.1),b(B4,.1)],
+      set:[s(A4,.2)]
+    },
+    sfx:{
+      tick:[lo(.06)],
+      on:[b(E4,.07,.3),b(A4,.1,.32)],
+      off:[b(A4,.07,.28),b(E4,.1,.28)],
+      open:[b(C5,.05,.26),b(E5,.1,.3)],
+      close:[b(E5,.05,.24),b(C5,.1,.28)],
+      shuf:[[bub(0,.16)],[tr(A4,.36)]],
+      reveal:[b(E4,.035,.24),b(A4,.1,.28)],
+      late:bay([E4],.14,.2,.16).concat(bay([C4],.24,.2,.2)),
+      wrong:bay([C4],.12,.2,.14).concat(bay([A3],.26,.2,.2)),
+      start:[[bub(0,.2)],[s(A4,e),s(C5,e),tr(E5,.36)]],
+      x2:[[bub(.09,.2,.1),bub(.09,.22,.2)],[b(E5,.08),b(A5,.08),tr(A5,.24,.28)]],
+      done:[bay(Am,.4,.1,.3),[s(A4,.2)]],
+      // 判定S：「コロベイニキ」の出だしと結び。バヤンが「ブン・チャ」と伴奏し、最後に鐘が鳴る
+      rankS:[
+        [s(E5,q),b(B4,e),b(C5,e),s(D5,q),b(C5,e),b(B4,e), s(A4,q),b(A4,e),b(C5,e),s(E5,q),b(D5,e),b(C5,e), s(C5,q),s(A4,q),[A3,A3,1.5,.15,'kol',0],tr(A4,.7)],
+        bay([E3],.14,.16,q).concat(bay(E,.12,.1,q),bay([B3],.14,.14,q),bay(E,.12,.1,q), bay([A3],.14,.16,q),bay(Am,.12,.1,q),bay([E3],.14,.14,q),bay(Am,.12,.1,q), bay([A3],.14,.14,q),bay(Am,.12,.1,q),bay([A3].concat(Am),.8,.1,.8)),
+        [r(q*8+q*2),bub(.1,.22,.4)]
+      ],
+      // 判定A：「野に白樺が立っていた」の一節
+      rankA:[
+        [s(E5,e),b(E5,e),b(E5,e),b(E5,e), s(D5,q),b(C5,e),b(C5,e), s(B4,q),tr(A4,.6)],
+        bay([A3],.14,.15,q).concat(bay(Am,.12,.1,q),bay([D4],.14,.14,q),bay(Am,.12,.1,q),bay([E3].concat(E),.16,.1,q),bay([A3].concat(Am),.6,.1,.6))
+      ],
+      rankB:[[s(C5,q),s(B4,q),tr(A4,.4)],bay(Am,.16,.09,q).concat(bay(E,.16,.09,q),bay(Am,.4,.09,.4))],
+      rankC:[bay(Am,.5,.1,.5)]
+    }
+  };
+})();
 // 効果音の種類は 1〜3。古い保存の形（'std'・'ru'）は数字に直す
 PREFS.theme=PREFS.theme==='ru'?3:PREFS.theme==='std'?2:([1,2,3].includes(PREFS.theme)?PREFS.theme:1);
-let AC=null, OUT=null, NOISE=null;
+let AC=null, MASTER=null, BODY=null, NOISE=null;
+const KS={};      // バラライカの弦の音。高さごとに一度作って覚えておく
 // 画面を一度でも触ったあとでないと、ブラウザは音も振動も出させない
 const touched=()=>!navigator.userActivation||navigator.userActivation.hasBeenActive;
-/* バラライカの1はじき。少しだけ高さの違う2本を重ね（複弦）、はじいた直後だけ明るくして、すぐ丸い音にする */
-function pluck(f,t,v,len){
-  const lp=AC.createBiquadFilter(), g=AC.createGain();
-  lp.type='lowpass'; lp.Q.value=1;
-  lp.frequency.setValueAtTime(Math.min(f*9,9000),t);
-  lp.frequency.exponentialRampToValueAtTime(Math.max(f*1.6,500),t+len*0.5);
+/* 音の出口を用意する。効果音の音量（MASTER）→ 音割れ防止 → スピーカー。バラライカだけは手前で胴の響き（BODY）を足す */
+function audio(){
+  if(!AC){
+    AC=new (window.AudioContext||window.webkitAudioContext)();
+    // 音割れ防止：小さい音はそのまま通し、大きすぎる山だけを丸める（0.6 まではそのまま、そこから上はなだらかに 0.94 へ近づける）。
+    // 自動で音量をならす仕組みは、短い音を小さくしてしまうので使わない
+    const half=AC.createGain(), lim=AC.createWaveShaper(), curve=new Float32Array(2049);
+    for(let i=0;i<2049;i++){ const u=(i/1024-1)*2, a=Math.abs(u); curve[i]=a<=.6?u:Math.sign(u)*(.6+.34*Math.tanh((a-.6)/.34)); }
+    half.gain.value=.5; lim.curve=curve; lim.oversample='2x';
+    half.connect(lim); lim.connect(AC.destination);
+    MASTER=AC.createGain(); MASTER.gain.value=PREFS.sv/5;
+    MASTER.connect(half);
+    // 胴の響き：三角の胴がよく鳴る高さを少し持ち上げ、耳に刺さる高さを落とす
+    BODY=AC.createGain();
+    const p1=AC.createBiquadFilter(), p2=AC.createBiquadFilter(), hs=AC.createBiquadFilter();
+    p1.type='peaking'; p1.frequency.value=560; p1.Q.value=1.3; p1.gain.value=5;
+    p2.type='peaking'; p2.frequency.value=1450; p2.Q.value=2; p2.gain.value=4;
+    hs.type='highshelf'; hs.frequency.value=5200; hs.gain.value=-5;
+    BODY.connect(p1); p1.connect(p2); p2.connect(hs); hs.connect(MASTER);
+    // ザーという雑音。紙の音・スプーン・タンバリンで使い回す
+    NOISE=AC.createBuffer(1,Math.floor(AC.sampleRate*0.5),AC.sampleRate);
+    const a=NOISE.getChannelData(0);
+    for(let i=0;i<a.length;i++) a[i]=Math.random()*2-1;
+  }
+  if(AC.state==='suspended') AC.resume();
+}
+/* バラライカの弦1本ぶんの音を計算で作る（弦をはじいた波が行き来しながら丸く小さくなっていく様子をなぞる）。
+   bright＝爪で返すときの明るい音 */
+function ksBuf(f,bright){
+  const sr=AC.sampleRate, N=Math.max(4,Math.floor(sr/f-0.5)), k=N+(bright?'b':'');
+  if(KS[k]) return KS[k];
+  const len=Math.floor(sr*Math.min(1.1,0.45+60/f)), buf=AC.createBuffer(1,len,sr), o=buf.getChannelData(0), line=new Float32Array(N);
+  // はじいた瞬間は雑音。少し丸めて、はじく位置で決まる倍音を抜く
+  let p=0; const a=bright?.85:.55;
+  for(let i=0;i<N;i++){ p=a*(Math.random()*2-1)+(1-a)*p; line[i]=p; }
+  const pp=Math.max(1,Math.round(N*.22)), first=line.slice();
+  for(let i=0;i<N;i++) line[i]=first[i]-first[(i+N-pp)%N];
+  let x=0, peak=0;
+  for(let i=0;i<len;i++){
+    const y=(x+1)%N, v=line[x];
+    o[i]=v; if(Math.abs(v)>peak) peak=Math.abs(v);
+    line[x]=.9935*.5*(v+line[y]);
+    x=y;
+  }
+  const fade=Math.floor(sr*.03);
+  for(let i=0;i<len;i++){ o[i]/=peak||1; if(i>len-fade) o[i]*=(len-i)/fade; }
+  buf._f=sr/(N+.5);      // 作った音の実際の高さ。狙いの高さとの差は、鳴らす速さで合わせる
+  return KS[k]=buf;
+}
+function pluck(f,t,v,bright){
+  const buf=ksBuf(f,bright), s=AC.createBufferSource(), g=AC.createGain();
+  s.buffer=buf; s.playbackRate.value=f/buf._f;
+  g.gain.value=v;
+  s.connect(g); g.connect(BODY);
+  s.start(t);
+}
+/* 旋律を弾く弦は、ごくわずかに高さと時間をずらした2本ぶんを重ねて厚みを出す */
+function pluck2(f,t,v,bright){ pluck(f,t,v,bright); pluck(f*1.0035,t+.006,v*.5,bright); }
+/* かき鳴らし：開放弦のミ2本をさっとなでてから、旋律の弦を鳴らす */
+function strum(f,t,v){ pluck(329.6,t,v*.42); pluck(330.6,t+.009,v*.38); pluck2(f,t+.02,v); }
+/* トレモロ：下ろす・返すを細かく繰り返す。返しは少し弱く明るく、間隔は人の手のようにわずかに揺らす */
+function trem(f,t,d,v){
+  pluck(329.6,t,v*.35);
+  for(let x=0,i=0;x<d;i++){ pluck(f,t+x,(i%2?v*.68:v)*(.8+.3*Math.min(1,x/d+.3)),i%2===1); x+=.058+Math.random()*.012; }
+}
+/* バヤン：少しずつ高さの違うリード3枚でうなりを作り、蛇腹のふくらみを付ける */
+function bayan(f,t,d,v){
+  const g=AC.createGain(), lp=AC.createBiquadFilter(), pk=AC.createBiquadFilter();
+  lp.type='lowpass'; lp.frequency.value=3200; lp.Q.value=.5;
+  pk.type='peaking'; pk.frequency.value=1100; pk.Q.value=1.2; pk.gain.value=5;
   g.gain.setValueAtTime(0.0001,t);
-  g.gain.exponentialRampToValueAtTime(v,t+0.002);
-  g.gain.exponentialRampToValueAtTime(0.0001,t+len);
-  [-5,5].forEach(c=>{
-    const o=AC.createOscillator();
-    o.type='sawtooth'; o.frequency.setValueAtTime(f,t); o.detune.setValueAtTime(c,t);
-    o.connect(lp); o.start(t); o.stop(t+len+0.02);
+  g.gain.linearRampToValueAtTime(v,t+.035);
+  g.gain.linearRampToValueAtTime(v*.8,t+Math.max(.06,d*.6));
+  g.gain.setValueAtTime(v*.8,t+d);
+  g.gain.linearRampToValueAtTime(0.0001,t+d+.07);
+  [[1,-11,'sawtooth',.5],[1,0,'sawtooth',.5],[1,9,'sawtooth',.5],[2,3,'square',.12]].forEach(([m,c,ty,a])=>{
+    const o=AC.createOscillator(), pg=AC.createGain();
+    o.type=ty; o.frequency.setValueAtTime(f*m,t); o.detune.setValueAtTime(c,t);
+    pg.gain.value=a; o.connect(pg); pg.connect(lp);
+    o.start(t); o.stop(t+d+.1);
   });
-  lp.connect(g); g.connect(OUT);
+  lp.connect(pk); pk.connect(g); g.connect(MASTER);
+}
+/* 教会の鐘：倍音が不ぞろいで（短3度が混じる）、低い音ほど長く残る。各倍音をわずかにずらした2本で鳴らし、うねりを付ける */
+function kolokol(f,t,d,v){
+  const g=AC.createGain(); g.gain.value=v; g.connect(MASTER);
+  [[.5,.45,1],[1,1,.9],[1.19,.5,.7],[1.5,.28,.55],[2,.45,.5],[2.51,.2,.3],[3.01,.16,.22],[4.1,.08,.13]].forEach(([m,a,k])=>{
+    [-.6,.6].forEach(df=>{
+      const o=AC.createOscillator(), pg=AC.createGain();
+      o.frequency.setValueAtTime(f*m+df,t);
+      pg.gain.setValueAtTime(0.0001,t);
+      pg.gain.exponentialRampToValueAtTime(a*.5,t+.004);
+      pg.gain.exponentialRampToValueAtTime(0.0001,t+d*k);
+      o.connect(pg); pg.connect(g);
+      o.start(t); o.stop(t+d*k+.05);
+    });
+  });
+}
+/* ロシュキ：木のスプーンを打ち合わせる「カッ」。ごく短い雑音を、木が鳴る2つの高さだけ通す */
+function lozhki(t,v,hi){
+  const s=AC.createBufferSource(), g=AC.createGain();
+  s.buffer=NOISE;
+  [[hi?2150:1650,9],[hi?4000:3150,11]].forEach(([fc,qv])=>{
+    const bp=AC.createBiquadFilter();
+    bp.type='bandpass'; bp.frequency.value=fc; bp.Q.value=qv;
+    s.connect(bp); bp.connect(g);
+  });
+  g.gain.setValueAtTime(v*7,t);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+.05);
+  g.connect(MASTER);
+  s.start(t,Math.random()*.3,.07);
+}
+/* ブーベン：タンバリンの「シャラッ」。高い雑音を細かく震わせる */
+function buben(t,d,v){
+  const s=AC.createBufferSource(), hp=AC.createBiquadFilter(), am=AC.createGain(), g=AC.createGain(), lfo=AC.createOscillator(), lg=AC.createGain();
+  s.buffer=NOISE; s.loop=true;
+  hp.type='highpass'; hp.frequency.value=6200;
+  am.gain.value=.6; lfo.frequency.value=37; lg.gain.value=.4;
+  lfo.connect(lg); lg.connect(am.gain);
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(v,t+.004);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+  s.connect(hp); hp.connect(am); am.connect(g); g.connect(MASTER);
+  s.start(t); s.stop(t+d+.02); lfo.start(t); lfo.stop(t+d+.02);
 }
 /* seq（1音の並び）を、今から順に鳴らす */
 function play(seq){
-  if(!PREFS.sound||!seq||!touched()) return;
+  if(!PREFS.sv||!seq||!touched()) return;
   try{
-    if(!AC){
-      AC=new (window.AudioContext||window.webkitAudioContext)();
-      // 音が重なっても割れないよう、出口で大きすぎる音を抑える
-      OUT=AC.createDynamicsCompressor();
-      OUT.threshold.value=-12; OUT.ratio.value=6;
-      OUT.connect(AC.destination);
-    }
-    if(AC.state==='suspended') AC.resume();
+    audio();
     let t=AC.currentTime+0.005;
     seq.forEach(([f0,f1,d,v,w,gap])=>{
       const t0=t;
       t+=gap===undefined?d*0.8:gap;
-      if(w==='bal'){ pluck(f0,t0,v,Math.max(.2,d+.16)); return; }
-      if(w==='trem'){ for(let x=0;x<d;x+=0.068) pluck(f0,t0+x,x?v*0.8:v,0.12); return; }
+      if(w==='rest') return;
+      if(w==='bal'){ pluck2(f0,t0,v); return; }
+      if(w==='str'){ strum(f0,t0,v); return; }
+      if(w==='trem'){ trem(f0,t0,d,v); return; }
+      if(w==='bay'){ bayan(f0,t0,d,v); return; }
+      if(w==='kol'){ kolokol(f0,t0,d,v); return; }
+      if(w==='lo'){ lozhki(t0,v,f0>0); return; }
+      if(w==='bub'){ buben(t0,d,v); return; }
       const g=AC.createGain();
-      g.connect(OUT);
-      if(w==='bay'){
-        // バヤン：少しずらした2つの音を重ねてうなりを作り、高い成分を削ってリードらしくする
-        const lp=AC.createBiquadFilter();
-        lp.type='lowpass'; lp.frequency.value=2400;
-        g.gain.setValueAtTime(0.0001,t0);
-        g.gain.linearRampToValueAtTime(v,t0+0.03);
-        g.gain.setValueAtTime(v,t0+d);
-        g.gain.linearRampToValueAtTime(0.0001,t0+d+0.09);
-        [[1,-8,'sawtooth',1],[1,8,'sawtooth',1],[2,0,'square',.22]].forEach(([m,c,ty,a])=>{
-          const o=AC.createOscillator(), pg=AC.createGain();
-          o.type=ty; o.frequency.setValueAtTime(f0*m,t0); o.detune.setValueAtTime(c,t0);
-          pg.gain.value=a; o.connect(pg); pg.connect(lp);
-          o.start(t0); o.stop(t0+d+0.12);
-        });
-        lp.connect(g);
-        return;
-      }
-      if(w==='kol'){
-        // 教会の鐘：倍音が不ぞろいで（短3度が混じる）、低い音ほど長く残る
-        g.gain.value=v;
-        [[.5,.5,1],[1,1,.85],[1.2,.5,.65],[1.5,.3,.5],[2,.45,.45],[2.6,.2,.28],[3,.15,.2]].forEach(([m,a,k])=>{
-          const o=AC.createOscillator(), pg=AC.createGain();
-          o.frequency.setValueAtTime(f0*m,t0);
-          pg.gain.setValueAtTime(0.0001,t0);
-          pg.gain.exponentialRampToValueAtTime(a,t0+0.004);
-          pg.gain.exponentialRampToValueAtTime(0.0001,t0+d*k);
-          o.connect(pg); pg.connect(g);
-          o.start(t0); o.stop(t0+d*k+0.05);
-        });
-        return;
-      }
+      g.connect(MASTER);
       if(w==='bell'||w==='mar'){
         // 鐘：元の高さに2倍・3倍の高さを薄く重ね、余韻を長めに残す
         // 木琴：元の高さに4倍の高さを一瞬だけ重ね、すぐ消す
@@ -1791,12 +1933,6 @@ function play(seq){
       }
       let s;
       if(w==='noise'){
-        // 0.3秒ぶんのザーという音を1回だけ作って使い回す
-        if(!NOISE){
-          NOISE=AC.createBuffer(1,Math.floor(AC.sampleRate*0.3),AC.sampleRate);
-          const a=NOISE.getChannelData(0);
-          for(let i=0;i<a.length;i++) a[i]=Math.random()*2-1;
-        }
         s=AC.createBufferSource(); s.buffer=NOISE;
         const bp=AC.createBiquadFilter();
         bp.type='bandpass'; bp.Q.value=0.8;
@@ -1819,42 +1955,46 @@ function play(seq){
     });
   }catch(_){}
 }
+/* 声部が1つでも複数でも鳴らす（複数のときは、同時に鳴り始める） */
+function playAll(x){ if(!x) return; if(Array.isArray(x[0][0])) x.forEach(play); else play(x); }
 /* 名前で鳴らす。選んでいる種類の音を先に探し、なければ②の音を使う */
-function sfx(name){ play([null,SFX_1,SFX,SFX_RU][PREFS.theme][name]||SFX[name]); }
-/* 高さ f（Hz）の音を1つ、選んでいる種類の音色で鳴らす。横バーの目盛り・品詞・下のタブに使う */
-const tone1=f=>[[f,f,.04,.2],[f,f,.07,.3,'mar'],[f,f,.07,.18,'bal']][PREFS.theme-1];
+function sfx(name){ playAll([null,SFX_1,SFX,RUS.sfx][PREFS.theme][name]||SFX[name]); }
+/* 高さ f（Hz）の音を1つ、選んでいる種類の音色で鳴らす。横バーの目盛りに使う */
+const tone1=f=>[[f,f,.04,.2],[f,f,.07,.3,'mar'],[f,f,.2,.34,'bal']][PREFS.theme-1];
 function note(f){ play([tone1(f)]); }
-/* 軽い振動（Android のみ）。効果音と同じ切り替えに従う */
-function buzz(p){ try{ if(PREFS.sound&&navigator.vibrate&&touched()) navigator.vibrate(p); }catch(_){} }
-/* 正解の音：続けて正解するほど、音が1段ずつ上がっていく（8連続で頭打ち。それ以上は耳に刺さるので上げない）。
-   3・5連続と、10連続からの5回ごとには、飾りの音を足す */
+/* 軽い振動（Android のみ）。効果音の音量が 0 のときは震わせない */
+function buzz(p){ try{ if(PREFS.sv&&navigator.vibrate&&touched()) navigator.vibrate(p); }catch(_){} }
+/* 正解の音：②③は、続けて正解するほど音が1段ずつ上がっていく（8連続で頭打ち。それ以上は耳に刺さるので上げない）。
+   3・5連続と、10連続からの5回ごとには、飾りの音を足す。①は毎回同じ2音 */
 const STEP=[523,587,659,784,880,1047,1175,1319];
-const STEP_RU=[440,494,523,587,659,698,831,880];     // イ短調（7番目だけ半音上げた、ロシア民謡らしい音階）
 function cheer(combo){
   const i=Math.max(0,Math.min(combo,STEP.length)-1), deco=combo===3||combo===5||(combo>=10&&combo%5===0);
-  let seq;
-  if(PREFS.theme===1) seq=[[784,784,.06,.24],[1047,1047,.12,.24]];     // ①は毎回同じ2音
+  if(PREFS.theme===1) play([[784,784,.06,.24],[1047,1047,.12,.24]]);
   else if(PREFS.theme===3){
-    const f=STEP_RU[i];
-    seq=[[f/2,f/2,.05,.15,'bal',.03],[f,f,.14,.2,'bal']];           // 1オクターブ下とほぼ同時にはじく
-    if(deco) seq.push([659,659,.05,.17,'bal',.07],[880,880,.3,.16,'trem']);
+    // かき鳴らしてブーベンを添える。飾りは、バヤンの和音にのせて高い音へ駆け上がる
+    const f=RUS.step[i];
+    play(deco?[RUS.s(f,.16),RUS.b(659.3,.07),RUS.tr(880,.3,.3)]:[RUS.s(f,.2)]);
+    play(deco?[RUS.bub(.16,.16,.1),RUS.bub(.1,.2,.3)]:[RUS.bub(.1,.14,.09)]);
+    if(deco) play(RUS.bay(RUS.Am,.34,.09,.34));
   }else{
-    const f=STEP[i];
-    seq=[[f,f,.07,.32,'bell'],[f*1.5,f*1.5,.16,.32,'bell']];        // その段の音と、5度上
+    const f=STEP[i], seq=[[f,f,.07,.32,'bell'],[f*1.5,f*1.5,.16,.32,'bell']];        // その段の音と、5度上
     if(deco) seq.push([1568,1568,.06,.2,'bell'],[2093,2093,.06,.2,'bell'],[2637,2637,.3,.22,'bell']);
+    play(seq);
   }
-  play(seq);
   buzz(combo>=3?[12,40,12]:12);
 }
 /* 触ったときの音。押した場所の種類で鳴らし分ける
    （オン・オフの切り替え、混ぜる、めくる、答え合わせ、開始、結果は、それぞれの処理の中で鳴らす。語のタップは読み上げが鳴るので足さない） */
 document.addEventListener('click',e=>{
   const t=e.target, c=t.closest('.chip'), m=t.closest('.mode'), th=PREFS.theme;
-  // ①は品詞もタブも同じ1音。②③は品詞ごと・行き先ごとに音が変わる
-  if(c){ const a=th===3?CHIP_RU:CHIPNOTE; note(th===1?587:a[[...chips.children].indexOf(c)%a.length]); }
-  else if(m){ const p=(th===3?MODE_RU:MODENOTE)[m.dataset.m]||[392,490]; play(th===1?[tone1(494)]:[tone1(p[0]),tone1(p[1])]); }
+  // ①は品詞もタブも同じ1音。②は品詞ごと・行き先ごとに音が変わる。③は民謡の一節になる
+  if(c){ const i=[...chips.children].indexOf(c); if(th===3) play(RUS.chip[i%RUS.chip.length]); else note(th===1?587:CHIPNOTE[i%CHIPNOTE.length]); }
+  else if(m){
+    if(th===3) play(RUS.mode[m.dataset.m]||RUS.mode.list);
+    else{ const p=MODENOTE[m.dataset.m]||[392,490]; play(th===1?[tone1(494)]:[tone1(p[0]),tone1(p[1])]); }
+  }
   else if(t.closest('details.grp>summary')&&!t.closest('.gsel')) sfx(t.closest('details').open?'close':'open');
-  else if(t.closest('.toolsbtn,.mini,.opt,.gsel,.clear,.again button,.rec button,.q-bar button,.tool:not([aria-pressed])')) sfx('tick');
+  else if(t.closest('.toolsbtn,.mini,.opt,.gsel,.clear,.again button,.cal button,.q-bar button,.tool:not([aria-pressed])')) sfx('tick');
 },true);
 
 /* 連続日数：1日1セットで1日ぶん伸びる。1日だけ空いた日は、月2回までの「休み」で埋まって途切れない */
@@ -1876,22 +2016,25 @@ function streakInfo(){
 }
 function streakText(){ const s=streakInfo(); return '連続 '+s.n+' 日（今月の休み あと'+s.rest+'回）'; }
 
-/* 日ごとの記録（直近14日）。棒の高さ＝その日の点（2倍ぶんを除く）、棒の上の字＝判定。棒を押すと内訳が出る */
+/* 日ごとの記録：カレンダー（1列＝1週間、上が月曜。直近18週）。色が濃いほど判定が高い。マスを押すと下に内訳が出る */
 function recordHtml(){
-  const base=new Date(); base.setHours(12,0,0,0);
-  const days=[];
-  for(let i=13;i>=0;i--){ const x=new Date(base); x.setDate(base.getDate()-i); days.push(x); }
-  if(!days.some(x=>DAILY[dkey(x)])) return '<div class="rec-info">まだ記録がありません</div>';
-  const md=x=>(x.getMonth()+1)+'/'+x.getDate();
-  const bars=days.map((x,i)=>{
-    const r=DAILY[dkey(x)], cls='d'+(i===13?' today':'');
-    if(!r) return '<span class="'+cls+' none"></span>';
-    const info=md(x)+'　判定 '+r.r+'　'+r.raw+'点　正答率 '+Math.round(r.ok/r.n*100)+'%'+(r.t?'　平均 '+r.t+'秒':'');
-    return '<button class="'+cls+'" data-info="'+esc(info)+'" title="'+esc(info)+'" aria-pressed="false"><b>'+esc(r.r)+'</b>'+
-      '<i style="height:'+Math.max(4,Math.round(r.raw/(r.n*100)*78))+'%"></i></button>';
-  }).join('');
-  return '<div class="rec">'+bars+'</div><div class="rec-x"><span>'+md(days[0])+'</span><span>今日</span></div>'+
-    '<div class="rec-info">棒を押すと内訳</div>';
+  const WEEKS=18, now=new Date(); now.setHours(12,0,0,0);
+  const start=new Date(now); start.setDate(now.getDate()-((now.getDay()+6)%7)-7*(WEEKS-1));     // 18週前の月曜
+  let cells='', months='', lastM=-1;
+  for(let w=0;w<WEEKS;w++) for(let d=0;d<7;d++){
+    const x=new Date(start); x.setDate(start.getDate()+w*7+d);
+    const k=dkey(x), r=DAILY[k], t=k===dkey(now)?' t':'';
+    if(d===0){ months+='<span>'+(x.getMonth()!==lastM?(x.getMonth()+1)+'月':'')+'</span>'; lastM=x.getMonth(); }
+    if(x>now) cells+='<i class="c f"></i>';
+    else if(!r) cells+='<i class="c'+t+'"></i>';
+    else{
+      const info=(x.getMonth()+1)+'/'+x.getDate()+'　'+r.r+'　'+r.raw+'点　正答率 '+Math.round(r.ok/r.n*100)+'%'+(r.t?'　平均 '+r.t+'秒':'');
+      cells+='<button class="c r'+esc(r.r)+t+'" data-info="'+esc(info)+'" aria-label="'+esc(info)+'" aria-pressed="false"></button>';
+    }
+  }
+  return '<div class="cal-m">'+months+'</div><div class="cal">'+cells+'</div>'+
+    '<div class="cal-l"><span>C</span><i class="c rC"></i><i class="c rB"></i><i class="c rA"></i><i class="c rS"></i><span>S</span></div>'+
+    '<div class="rec-info"></div>';
 }
 
 /* 図鑑：別々の日に2回、制限時間内に正解した語だけが載る。品詞ごとに何語埋まったかを出す */
@@ -2287,12 +2430,13 @@ function checkVoices(){
   spdLabel();
 }
 function say(text,lang){
+  if(!PREFS.tv) return;     // 読み上げの音量が 0 のときはしゃべらない
   if(!window.speechSynthesis){alert('この端末は読み上げに対応していません。');return;}
   try{speechSynthesis.cancel();}catch(_){}
   // Chrome は cancel 直後の speak を落とすことがあるので少し待つ
   setTimeout(()=>{
     const u=new SpeechSynthesisUtterance(text);
-    u.lang=lang; u.rate=SPK.rate;
+    u.lang=lang; u.rate=SPK.rate; u.volume=Math.min(1,PREFS.tv/10);
     const v=voiceFor(lang);
     if(v) u.voice=v;
     u.onerror=()=>{SPK.ok=false;spdLabel();};
