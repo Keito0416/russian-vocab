@@ -45,6 +45,9 @@
   /* 下へ引っぱっても再読み込みしない（ブラウザらしい動きを消す） */
   html,body{margin:0;padding:0;overscroll-behavior-y:none}
   html{touch-action:manipulation}
+  /* 文字をタップしても選択しない（Chrome の「タップして検索」が開いて Google の結果が出るのを防ぐ）。入力欄と書き出しの欄だけは選べる */
+  body{-webkit-user-select:none;user-select:none}
+  input,textarea{-webkit-user-select:text;user-select:text}
   body{
     background:var(--paper);color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic","Segoe UI",sans-serif;
@@ -1343,12 +1346,12 @@ function sayTerm(s){
 function tipFor(ru,pos){ return TIPS[(pos||'')+'|'+ru]||TIPS[ru]; }
 /* 補足の中のロシア語の太字は、タップで読み上げられるようにする */
 function tipHtml(t){
-  return t.replace(/<b>([^<]*[а-яё][^<]*)<\/b>/gi,(m,s)=>'<b data-say="'+esc(s.replace(/…/g,','))+'">'+s+'</b>');
+  return t.replace(/<b>([^<]*[а-яё][^<]*)<\/b>/gi,(m,s)=>'<b role="button" data-say="'+esc(s.replace(/…/g,','))+'">'+s+'</b>');
 }
 function rowHtml(w,q,pos){
   const k=(pos||'')+'|'+w[0], tip=tipFor(w[0],pos);
   const st=stOf(k);
-  return '<li class="'+(SEL.has(k)?'sel':'')+'" data-k="'+esc(k)+'"'+(st?' data-st="'+st+'"':'')+'><div class="hd"><span class="ru" data-say="'+esc(sayTerm(w[0]))+'" data-ini="'+esc(w[0][0])+'" data-mask="'+bars(w[0])+'">'+ruHtml(w[0],q)+
+  return '<li class="'+(SEL.has(k)?'sel':'')+'" data-k="'+esc(k)+'"'+(st?' data-st="'+st+'"':'')+'><div class="hd"><span class="ru" role="button" data-say="'+esc(sayTerm(w[0]))+'" data-ini="'+esc(w[0][0])+'" data-mask="'+bars(w[0])+'">'+ruHtml(w[0],q)+
     '</span></div>'+
     '<span class="ja" data-ini="'+esc(w[1][0])+'" data-mask="'+bars(w[1])+'">'+hl(w[1],q)+'</span>'+
     '<a class="vid" href="https://youglish.com/pronounce/'+encodeURIComponent(ylTerm(w[0]))+'/russian" target="_blank" rel="noopener" aria-label="動画（YouGlish）" title="動画（YouGlish）">▶</a>'+
@@ -2357,8 +2360,8 @@ function renderQuestion(){
     '<div class="q-card">'+
       (it.x2?'<div class="q-x2">★ 得点2倍</div>':'')+
       (z.shown?'<div class="q-cat">'+esc(it.cat)+'</div>':'')+
-      '<div class="q-prompt'+(ru2ja?'':' ja-side')+'"'+(ru2ja?' data-say="'+esc(sayTerm(it.ru))+'"':'')+'>'+promptTxt+'</div>'+
-      (z.shown?'<div class="q-ans'+(ru2ja?'':' ru-side')+'"'+(ru2ja?'':' data-say="'+esc(sayTerm(it.ru))+'"')+'>'+ansTxt+'</div>':'')+
+      '<div class="q-prompt'+(ru2ja?'':' ja-side')+'"'+(ru2ja?' role="button" data-say="'+esc(sayTerm(it.ru))+'"':'')+'>'+promptTxt+'</div>'+
+      (z.shown?'<div class="q-ans'+(ru2ja?'':' ru-side')+'"'+(ru2ja?'':' role="button" data-say="'+esc(sayTerm(it.ru))+'"')+'>'+ansTxt+'</div>':'')+
       (tip?'<div class="tip" style="text-align:left;margin:6px 0 0">'+tipHtml(tip)+'</div>':'')+
     '</div>'+
     // 時間切れで開いたときは自動で「あやふや」扱いにし、「次へ」だけを出す
