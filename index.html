@@ -5,26 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ロシア語語彙</title>
 <!-- アプリ化（ホーム画面に置く・電波なしで開く）のための指定。中身は manifest.webmanifest と sw.js -->
-<meta name="theme-color" content="#F5F4EF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141417" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="tc" content="#FFFFFF">
+<!-- 配色の設定（明るさ・色）を、画面を描く前に当てる。ちらつき防止 -->
+<script>try{var p=JSON.parse(localStorage.getItem('rv-prefs-v1'))||{},r=document.documentElement;if(p.look==='light'||p.look==='dark')r.dataset.theme=p.look;if(p.accent&&p.accent!=='mono')r.dataset.accent=p.accent;}catch(_){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script>if('serviceWorker' in navigator) addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});</script>
 <style>
+  /* 色。背景は白、文字は黒に近い無彩色（色みを付けない）。
+     --accent＝選択中・主ボタンの色（設定の「カラー」で変わる。初期は文字と同じ黒）、--on-accent＝その上に載せる文字の色。
+     赤（--red, --mask）は「隠す・答え」だけに使う。目印は灰色（--dim） */
   :root{
-    --paper:#F5F4EF; --card:#FFFEFA; --ink:#191A1D; --ink2:#4C525A;
-    --dim:#8A8F97; --rule:#E2E0D8; --hair:#EDEBE3;
-    --red:#AF2219; --mask:#B0231C; --ok:#2C7A55; --hl:#F2E08C;
+    --paper:#FFFFFF; --card:#FFFFFF; --ink:#111315; --ink2:#4A4F57;
+    --dim:#8B9099; --rule:#E1E4E8; --hair:#EEF0F2;
+    --red:#D92D20; --mask:#E03131; --ok:#1E8E5A; --hl:#FFE680;
+    --accent:var(--acc-l,var(--ink)); --on-accent:#FFFFFF;
     --serif:Georgia,"Times New Roman",serif;
   }
+  /* 暗い配色：端末が暗い設定のとき（「ライト」を選んでいなければ）と、「ダーク」を選んだとき */
   @media (prefers-color-scheme:dark){
-    :root{
-      --paper:#141417; --card:#1C1D21; --ink:#EBE9E2; --ink2:#A5AAB2;
-      --dim:#6E737B; --rule:#2C2E34; --hair:#232529;
-      --red:#E36258; --mask:#8C2822; --ok:#4FAE81; --hl:#5A5020;
+    :root:not([data-theme="light"]){
+      --paper:#111214; --card:#1A1B1E; --ink:#F1F2F4; --ink2:#B3B8BF; --dim:#7C818A; --rule:#2C2E33; --hair:#222428;
+      --red:#FF6B62; --mask:#C9362F; --ok:#4CC38A; --hl:#6B5A00;
+      --accent:var(--acc-d,var(--ink)); --on-accent:#111214;
     }
   }
-  /* 色の約束：赤（--red, --mask）は「隠す・答え」だけに使う。選択中・強調は墨色（--ink）、目印は灰色（--dim） */
+  :root[data-theme="dark"]{
+      --paper:#111214; --card:#1A1B1E; --ink:#F1F2F4; --ink2:#B3B8BF; --dim:#7C818A; --rule:#2C2E33; --hair:#222428;
+      --red:#FF6B62; --mask:#C9362F; --ok:#4CC38A; --hl:#6B5A00;
+      --accent:var(--acc-d,var(--ink)); --on-accent:#111214;
+  }
+  /* 色の選択肢。明るい配色用（--acc-l）と暗い配色用（--acc-d）の組。見本の丸（.sw）にも同じ組を持たせる */
+  .sw[data-acc="mono"]{--acc-l:var(--ink);--acc-d:var(--ink)}
+  :root[data-accent="blue"],.sw[data-acc="blue"]{--acc-l:#1D6FE8;--acc-d:#7FB0FF}
+  :root[data-accent="green"],.sw[data-acc="green"]{--acc-l:#12875A;--acc-d:#52C794}
+  :root[data-accent="purple"],.sw[data-acc="purple"]{--acc-l:#6E48D8;--acc-d:#A996FF}
+  :root[data-accent="orange"],.sw[data-acc="orange"]{--acc-l:#C2540A;--acc-d:#FF9F57}
   *{box-sizing:border-box;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
   /* 下へ引っぱっても再読み込みしない（ブラウザらしい動きを消す） */
   html,body{margin:0;padding:0;overscroll-behavior-y:none}
@@ -64,7 +80,7 @@
   }
   /* 三本線：真ん中の線に、上下の線を影で足す */
   .toolsbtn span{display:block;width:18px;height:2px;border-radius:1px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor;pointer-events:none}
-  .toolsbtn[aria-expanded="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .toolsbtn[aria-expanded="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
   .chips::-webkit-scrollbar{display:none}
   .chip{
@@ -73,7 +89,7 @@
     padding:0 14px;border-radius:999px;font-size:13px;font-family:inherit;cursor:pointer;
     transition:background .12s,color .12s,border-color .12s;
   }
-  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   .chip .c{font-variant-numeric:tabular-nums;opacity:.55;margin-left:5px;font-size:13px}
   /* メニューの中は絵のボタン。オンのものは墨色で塗る。赤シートの「隠す面」「隠し方」は、絵そのものが今の状態を表す */
   .subbar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;padding-bottom:8px}
@@ -86,7 +102,7 @@
   .tool span{font-size:13px;line-height:1.2;white-space:nowrap}
   .tool .tv{font-family:var(--serif);font-weight:400;font-size:15px;line-height:22px}
   .tool:active{background:var(--rule)}
-  .tool[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .tool[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   .tool .badge{position:absolute;top:4px;right:6px;font-style:normal;font-family:var(--serif);font-size:13px;line-height:1}
   .tool .badge:empty{display:none}
   #sndbtn[aria-pressed="true"] .off,#sndbtn[aria-pressed="false"] .on{display:none}
@@ -99,6 +115,13 @@
   .vol .slide{flex:1;min-width:0}
   .name{flex:1;min-width:0;min-height:44px;padding:8px 12px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);color:var(--ink);font-family:inherit;font-size:16px;outline:none}
   .name:focus{border-color:var(--ink2)}
+  /* カラーの設定：色の見本は丸。選んでいる色は太い輪で囲む */
+  .swrow{display:flex;gap:10px;margin-top:12px}
+  .sw{width:44px;height:44px;padding:0;border-radius:50%;border:1px solid var(--rule);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .sw i{display:block;width:26px;height:26px;border-radius:50%;background:var(--acc-l,var(--ink))}
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .sw i{background:var(--acc-d,var(--ink))} }
+  :root[data-theme="dark"] .sw i{background:var(--acc-d,var(--ink))}
+  .sw[aria-pressed="true"]{border:2px solid var(--ink)}
   #sheetbar{grid-template-columns:repeat(7,minmax(0,1fr))}
   .toolrow .tool{flex:1;min-width:0;max-width:88px}
   .tool.th .tv{font-size:24px;line-height:1}
@@ -124,7 +147,7 @@
   }
   .mode:first-child{border-left-width:1px;border-radius:3px 0 0 3px}
   .mode:last-child{border-radius:0 3px 3px 0}
-  .mode[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .mode[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 
   /* ---------- sections ---------- */
   .pos-title{
@@ -213,20 +236,20 @@
   }
   .expfmt{display:flex;gap:6px;margin-bottom:8px}
   .expfmt .mini{flex:1}
-  .expfmt .mini[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .expfmt .mini[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   .exphint{margin:9px 0 0;font-size:13px;line-height:1.7;color:var(--dim)}
   .exphint b{color:var(--ink)}
   .expbtns{display:flex;gap:6px;margin-top:8px}
   .expbtns .mini{flex:1}
 
   /* ---------- 選択 ---------- */
-  ul.list li.sel{box-shadow:inset 3px 0 0 var(--ink);background:var(--card)}
+  ul.list li.sel{box-shadow:inset 3px 0 0 var(--accent);background:var(--card)}
   body.selecting ul.list li{cursor:pointer;position:relative}
   body.selecting ul.list li::after{
     content:"";position:absolute;right:12px;top:20px;transform:translateY(-50%);
     width:15px;height:15px;border:1px solid var(--dim);border-radius:2px;
   }
-  body.selecting ul.list li.sel::after{background:var(--ink);border-color:var(--ink)}
+  body.selecting ul.list li.sel::after{background:var(--accent);border-color:var(--accent)}
   body.sheet.selecting ul.list li{padding-right:40px}
   body.sheet.selecting ul.list li::after{top:50%}
   .gsel{display:none}
@@ -237,7 +260,7 @@
     padding:0 14px;border-radius:999px;font-size:13px;font-family:inherit;
     white-space:nowrap;cursor:pointer;
   }
-  body.selecting details.grp>summary .gsel:active{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  body.selecting details.grp>summary .gsel:active{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 
   /* ---------- 読み上げと動画リンク ---------- */
   [data-say]{cursor:pointer}
@@ -293,25 +316,25 @@
     flex:1;min-height:44px;border:1px solid var(--rule);background:var(--paper);color:var(--ink2);
     padding:6px 3px;border-radius:3px;font-size:13.5px;line-height:1.3;font-family:inherit;cursor:pointer;transition:background .12s,color .12s;
   }
-  .opt[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   /* 制限時間・問題数の横バー */
   .q-label b{font-family:var(--serif);font-weight:400;font-size:15px;letter-spacing:0;color:var(--ink);margin-left:8px}
   .slide{-webkit-appearance:none;appearance:none;display:block;width:100%;height:40px;margin:0;background:transparent;cursor:pointer}
   .slide::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--rule)}
   .slide::-moz-range-track{height:4px;border-radius:2px;background:var(--rule)}
-  .slide::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;margin-top:-11px;border-radius:50%;background:var(--ink);border:2px solid var(--card)}
-  .slide::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--ink);border:2px solid var(--card)}
+  .slide::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;margin-top:-11px;border-radius:50%;background:var(--accent);border:2px solid var(--card)}
+  .slide::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:2px solid var(--card)}
   .sliderow{display:flex;align-items:center;gap:10px}
   .sliderow .slide{flex:1;min-width:0}
   .sliderow .opt{flex:0 0 auto;padding:6px 16px}
-  .go{width:100%;margin-top:18px;border:0;background:var(--ink);color:var(--paper);padding:13px;border-radius:3px;font-size:15px;font-family:inherit;cursor:pointer}
+  .go{width:100%;margin-top:18px;border:0;background:var(--accent);color:var(--on-accent);padding:13px;border-radius:3px;font-size:15px;font-family:inherit;cursor:pointer}
   .go:disabled{background:var(--rule);color:var(--dim);cursor:default}
   .go.sub{background:none;border:1px solid var(--rule);color:var(--ink2);margin-top:8px}
   .q-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:20px 0 7px;font-size:13px;color:var(--dim)}
   .q-top b{font-family:var(--serif);font-weight:400;color:var(--ink);font-variant-numeric:tabular-nums}
   .q-prog{height:2px;background:var(--rule);margin-bottom:18px}
   .q-prog.t{margin-bottom:6px}
-  .q-prog i{display:block;height:100%;background:var(--ink);transition:width .22s ease}
+  .q-prog i{display:block;height:100%;background:var(--accent);transition:width .22s ease}
   .q-card{
     background:var(--card);border:1px solid var(--rule);border-radius:4px;
     padding:38px 20px;text-align:center;min-height:200px;
@@ -326,7 +349,7 @@
   .q-btns button{flex:1;border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:14px;border-radius:3px;font-size:15px;font-family:inherit;cursor:pointer}
   .q-btns .ok{border-color:var(--ok);color:var(--ok)}
   .q-btns .ng{border-color:var(--red);color:var(--red)}
-  .q-btns .reveal{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .q-btns .reveal{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   .q-hint{text-align:center;font-size:13px;color:var(--dim);margin-top:10px}
   .score{font-family:var(--serif);font-size:46px;text-align:center;margin:24px 0 2px;font-variant-numeric:tabular-nums}
   .score small{font-size:16px;color:var(--dim)}
@@ -334,7 +357,7 @@
   .wrong-h{font-size:13px;letter-spacing:.08em;color:var(--red);border-bottom:1px solid var(--rule);padding-bottom:6px;margin-top:22px}
   .again{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}
   .again button{flex:1 1 40%;min-height:44px;border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:10px 5px;border-radius:3px;font-size:13.5px;font-family:inherit;cursor:pointer}
-  .again .primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .again .primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 
   /* ---------- テストの中だけの演出：制限時間・得点・判定・記録・図鑑 ---------- */
   /* 出題中はテストだけを見せる（検索・品詞・下の切り替えを隠して、押し間違いで画面が変わらないようにする） */
@@ -343,7 +366,7 @@
   body.testing .q-top{margin-top:12px}
   .q-bar{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
   .q-bar button{min-height:40px;padding:0 18px;border:1px solid var(--rule);background:var(--card);color:var(--ink2);border-radius:3px;font-size:13px;font-family:inherit;cursor:pointer}
-  .q-bar button.arm,.mini.arm{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .q-bar button.arm,.mini.arm{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
   /* 記録の初期化：左に中身、右に消すボタン */
   .rs{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--hair);font-size:13px}
   .rs span{flex:1;min-width:0}
@@ -366,7 +389,7 @@
   .cal{grid-template-rows:repeat(7,auto);grid-auto-flow:column;margin-top:2px}
   .c{display:block;aspect-ratio:1;border:0;padding:0;border-radius:3px;background:var(--rule)}
   .c.f{background:none}
-  .c.rS,.c.rA,.c.rB,.c.rC{background:var(--ink)}
+  .c.rS,.c.rA,.c.rB,.c.rC{background:var(--accent)}
   .c.rA{opacity:.7}
   .c.rB{opacity:.44}
   .c.rC{opacity:.24}
@@ -382,7 +405,7 @@
 
   /* ---------- footer ---------- */
   .bar{height:3px;background:var(--rule);border-radius:2px;margin-top:4px}
-  .bar i{display:block;height:100%;background:var(--ink2);border-radius:2px}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:2px}
   .empty{padding:44px 0;text-align:center;color:var(--dim);font-size:13.5px}
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important}
@@ -1580,12 +1603,27 @@ const WEAK=store.get(WKEY,{});    // 苦手な語　　 {品詞id|ロシア語: 
 const MISS=store.get(MKEY,{});    // 間違えた回数 {品詞id|ロシア語: 「あやふや」を押した回数の合計}
 const ZUKAN=store.get(ZKEY,{});   // 図鑑　　　　 {品詞id|ロシア語: [最後に決めた日, 決めた日数]}
 const DAILY=store.get(DKEY,{});   // 日ごとの判定 {日付: {r:判定, raw:点, ok:正解数, n:問題数, t:平均秒}}
-const PREFS=Object.assign({limit:0,sv:5,tv:10,theme:1,name:''},store.get(PKEY,{}));   // limit＝制限時間（秒。0 はなし）、sv＝効果音の音量（0〜10。5 が標準）、tv＝読み上げの音量（0〜10）、theme＝効果音の種類（1〜3）、name＝名前
+const PREFS=Object.assign({limit:0,sv:5,tv:10,theme:1,name:'',look:'auto',accent:'mono'},store.get(PKEY,{}));   // limit＝制限時間（秒。0 はなし）、sv＝効果音の音量（0〜10。5 が標準）、tv＝読み上げの音量（0〜10）、theme＝効果音の種類（1〜3）、name＝名前、look＝明るさ（'auto' 端末に合わせる・'light'・'dark'）、accent＝選択中や主ボタンの色
 if(PREFS.sound===false) PREFS.sv=0;     // 古い保存の形（効果音オフ）は音量 0 に直す
 delete PREFS.sound;
 /* 名前を見出しの右に出す（付けていなければ何も出さない） */
 function whoLabel(){ document.getElementById('who').textContent=PREFS.name||''; }
 whoLabel();
+/* 配色を当てる（html に印を付けると CSS が切り替わる）。画面の上の帯の色も背景に合わせる */
+function applyLook(){
+  const r=document.documentElement;
+  if(PREFS.look==='light'||PREFS.look==='dark') r.dataset.theme=PREFS.look; else delete r.dataset.theme;
+  if(PREFS.accent&&PREFS.accent!=='mono') r.dataset.accent=PREFS.accent; else delete r.dataset.accent;
+  document.getElementById('tc').content=getComputedStyle(r).getPropertyValue('--paper').trim()||'#FFFFFF';
+}
+applyLook();
+try{ matchMedia('(prefers-color-scheme:dark)').addEventListener('change',applyLook); }catch(_){}
+const LOOKS=[
+  ['auto','自動','<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg>'],
+  ['light','ライト','<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>'],
+  ['dark','ダーク','<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>']
+];
+const ACCENTS=['mono','blue','green','purple','orange'];
 const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>dkey(new Date());
 
@@ -1615,7 +1653,7 @@ function twice(b,msg){
   return false;
 }
 
-/* 設定の画面：アカウント（名前）、サウンド（音量・効果音の種類・読み上げの速さ）、記録、図鑑、初期化（「消す」は2回押すと実行）。
+/* 設定の画面：アカウント（名前）、サウンド（音量・効果音の種類・読み上げの速さ）、カラー（明るさ・色）、記録、図鑑、初期化（「消す」は2回押すと実行）。
    画面には説明を書かない */
 function renderSettings(){
   out.innerHTML=
@@ -1631,6 +1669,14 @@ function renderSettings(){
         '<button class="tool" id="spd" aria-label="読み上げの速さ"><b class="tv"></b><span>速さ</span></button>'+
       '</div>'+
     '</div>'+
+    '<div class="q-setup"><h3>カラー</h3>'+
+      '<div class="toolrow" id="lookrow">'+
+        LOOKS.map(x=>'<button class="tool lk" data-look="'+x[0]+'" aria-label="'+x[1]+'" aria-pressed="'+(PREFS.look===x[0])+'">'+x[2]+'<span>'+x[1]+'</span></button>').join('')+
+      '</div>'+
+      '<div class="swrow" id="accrow">'+
+        ACCENTS.map(k=>'<button class="sw" data-acc="'+k+'" aria-label="色 '+k+'" aria-pressed="'+(PREFS.accent===k)+'"><i></i></button>').join('')+
+      '</div>'+
+    '</div>'+
     '<div class="q-setup"><h3>記録</h3>'+recordHtml()+'</div>'+
     '<div class="q-setup"><h3>図鑑</h3>'+zukanHtml()+'</div>'+
     '<div class="q-setup" id="resetbox"><h3>初期化</h3>'+
@@ -1644,6 +1690,19 @@ function renderSettings(){
   const un=document.getElementById('uname');
   un.oninput=()=>{ PREFS.name=un.value.trim(); whoLabel(); };
   un.onchange=()=>store.set(PKEY,PREFS);
+  // カラー：明るさと色。選んだらすぐ当てて、端末に覚えておく
+  document.getElementById('lookrow').addEventListener('click',e=>{
+    const b=e.target.closest('.lk'); if(!b) return;
+    PREFS.look=b.dataset.look; store.set(PKEY,PREFS); applyLook();
+    document.querySelectorAll('#lookrow .lk').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    sfx('on');
+  });
+  document.getElementById('accrow').addEventListener('click',e=>{
+    const b=e.target.closest('.sw'); if(!b) return;
+    PREFS.accent=b.dataset.acc; store.set(PKEY,PREFS); applyLook();
+    document.querySelectorAll('#accrow .sw').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    sfx('on');
+  });
   const sv=document.getElementById('sv'), tv=document.getElementById('tv');
   sv.value=PREFS.sv; tv.value=PREFS.tv;
   // 音量の横バー：効果音は動かすたびにその大きさで1音鳴らす。読み上げは指を離したときに一言しゃべらせる
@@ -1667,7 +1726,7 @@ function renderSettings(){
     if(all||r==='weak'){ wipe(WEAK); wipe(MISS); store.set(WKEY,WEAK); store.set(MKEY,MISS); }
     if(all||r==='zukan'){ wipe(ZUKAN); store.set(ZKEY,ZUKAN); }
     if(all||r==='daily'){ wipe(DAILY); store.set(DKEY,DAILY); }
-    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sv=5; PREFS.tv=10; PREFS.theme=1; PREFS.name=''; store.set(PKEY,PREFS); if(MASTER) MASTER.gain.value=1; whoLabel(); }
+    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sv=5; PREFS.tv=10; PREFS.theme=1; PREFS.name=''; PREFS.look='auto'; PREFS.accent='mono'; store.set(PKEY,PREFS); if(MASTER) MASTER.gain.value=1; whoLabel(); applyLook(); }
     renderSettings();
   };
 }
