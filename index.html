@@ -1561,7 +1561,7 @@ const WEAK=store.get(WKEY,{});    // 苦手な語　　 {品詞id|ロシア語: 
 const MISS=store.get(MKEY,{});    // 間違えた回数 {品詞id|ロシア語: 「あやふや」を押した回数の合計}
 const ZUKAN=store.get(ZKEY,{});   // 図鑑　　　　 {品詞id|ロシア語: [最後に決めた日, 決めた日数]}
 const DAILY=store.get(DKEY,{});   // 日ごとの判定 {日付: {r:判定, raw:点, ok:正解数, n:問題数, t:平均秒}}
-const PREFS=Object.assign({limit:0,sound:true},store.get(PKEY,{}));   // limit＝テストの制限時間（秒。0 はなし）
+const PREFS=Object.assign({limit:0,sound:true,theme:'ru'},store.get(PKEY,{}));   // limit＝テストの制限時間（秒。0 はなし）、theme＝音色（'ru' ロシア風／'std' ふつう）
 const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>dkey(new Date());
 
@@ -1593,12 +1593,14 @@ function twice(b,msg){
 
 /* 設定の画面：音まわりと、記録の初期化（「消す」は2回押すと実行） */
 const ICON_SND='<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2l4.8 4v-13l-4.8 4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+const ICON_NOTE='<svg viewBox="0 0 24 24"><path d="M9 18V6.5l10-2V16"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>';
 function sndLabel(){ const b=document.getElementById('sndbtn'); if(b) b.setAttribute('aria-pressed',PREFS.sound); }
 function renderSettings(msg){
   const half=Object.keys(ZUKAN).filter(k=>!inZukan(k)).length, got=Object.keys(ZUKAN).length-half;
   out.innerHTML=
     '<div class="q-setup"><h3>音</h3><div class="toolrow">'+
       '<button class="tool" id="sndbtn" aria-label="効果音">'+ICON_SND+'<span>効果音</span></button>'+
+      '<button class="tool" id="thm" aria-label="ロシア風の音色">'+ICON_NOTE+'<span>ロシア風</span></button>'+
       '<button class="tool" id="spd" aria-label="読み上げの速さ"><b class="tv"></b><span>速さ</span></button>'+
     '</div></div>'+
     '<div class="q-setup" id="resetbox"><h3>記録の初期化</h3>'+
@@ -1608,8 +1610,11 @@ function renderSettings(msg){
       '<div class="rs"><span>判定と連続日数（'+Object.keys(DAILY).length+'日ぶん）</span><button class="mini" data-r="daily">消す</button></div>'+
       '<div class="rs"><span>すべて（上の3つ・途中のテスト・設定）</span><button class="mini" data-r="all">すべて消す</button></div>'+
     '</div>';
-  sndLabel(); spdLabel();
+  const thm=document.getElementById('thm');
+  sndLabel(); spdLabel(); thm.setAttribute('aria-pressed',RU());
   document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.set(PKEY,PREFS); sndLabel(); sfx('on'); };
+  // 音色を切り替えたら、その音色の「テスト開始」の音を鳴らして聞かせる
+  thm.onclick=()=>{ PREFS.theme=RU()?'std':'ru'; store.set(PKEY,PREFS); thm.setAttribute('aria-pressed',RU()); sfx('start'); };
   document.getElementById('spd').onclick=()=>{ SPK.rate=SPK.rate===1?0.65:1; spdLabel(); sfx(SPK.rate===1?'off':'on'); };
   const wipe=o=>Object.keys(o).forEach(k=>delete o[k]);
   document.getElementById('resetbox').onclick=e=>{
@@ -1619,17 +1624,18 @@ function renderSettings(msg){
     if(all||r==='weak'){ wipe(WEAK); wipe(MISS); store.set(WKEY,WEAK); store.set(MKEY,MISS); }
     if(all||r==='zukan'){ wipe(ZUKAN); store.set(ZKEY,ZUKAN); }
     if(all||r==='daily'){ wipe(DAILY); store.set(DKEY,DAILY); }
-    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sound=true; store.set(PKEY,PREFS); }
+    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sound=true; PREFS.theme='ru'; store.set(PKEY,PREFS); }
     renderSettings(all?'すべて消しました':'消しました');
   };
 }
 
 /* 効果音：音は端末の中で作る（音声ファイルは読み込まない）。
-   1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 音色]。並べた順に鳴らす。
-   音色：なし＝素直な音（高さを滑らせると「ぽん」になる）、'mar'＝木琴のような短く芯のある音、
-   'bell'＝澄んだ鐘のような余韻のある音、'noise'＝紙がこすれるような息の音、'triangle'＝少しざらついた音 */
+   1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 音色, 次の音までの間(秒)]。並べた順に鳴らす。
+   間を省くと長さの8割。0 にすると次の音と同時に鳴る（和音）。
+   音色：なし＝素直な音（高さを滑らせると「ぽん」になる）、'mar'＝木琴、'bell'＝澄んだ鐘、'noise'＝紙がこすれる音、'triangle'＝少しざらついた音、
+   'bal'＝バラライカ（弦をはじく）、'trem'＝バラライカのトレモロ（同じ音を細かくはじき続ける）、'bay'＝バヤン（ロシアのアコーディオン）、'kol'＝教会の鐘 */
 const SFX={
-  // 触ったときの音は木琴の音色で、低めの高さにする（高い電子音は安っぽく聞こえるので使わない）
+  // ---- ふつうの音色：触ったときは木琴、ごほうびは鐘 ----
   tick:[[330,330,.05,.3,'mar']],                                   // ふつうのボタン
   on:[[392,392,.05,.3,'mar'],[587,587,.08,.3,'mar']],              // 入れる
   off:[[587,587,.05,.26,'mar'],[392,392,.08,.26,'mar']],           // 切る
@@ -1640,7 +1646,6 @@ const SFX={
   reveal:[[440,440,.05,.26,'mar'],[659,659,.09,.26,'mar']],        // 答えを見る
   late:[[392,392,.09,.22],[277,277,.16,.22]],                      // 時間切れ
   wrong:[[247,165,.2,.3,'triangle']],                              // あやふや
-  // ごほうびの音は鐘の音色
   start:[[523,523,.08,.3,'bell'],[659,659,.08,.3,'bell'],[784,784,.2,.3,'bell']],   // テスト開始
   x2:[[988,988,.07,.32,'bell'],[1319,1319,.3,.32,'bell']],         // 得点2倍の問題：コインの音
   done:[[659,659,.1,.28,'bell'],[880,880,.28,.28,'bell']],         // テスト終了・時間切れ後の正解
@@ -1649,11 +1654,50 @@ const SFX={
   rankB:[[523,523,.12,.28,'bell'],[659,659,.3,.28,'bell']],
   rankC:[[440,440,.3,.26,'bell']]
 };
+/* ---- ロシア風の音色：イ短調。触ったときはバラライカ、沈む場面はバヤン。ここにない音（めくる・戻す）は上の音を使う ----
+   判定Sだけは民謡「コロベイニキ」（19世紀の民謡）の出だしを借りている */
+const SFX_RU={
+  tick:[[220,220,.03,.17,'bal']],
+  on:[[330,330,.05,.18,'bal'],[440,440,.09,.18,'bal']],
+  off:[[440,440,.05,.16,'bal'],[330,330,.09,.16,'bal']],
+  open:[[523,523,.05,.17,'bal'],[659,659,.08,.17,'bal']],
+  close:[[659,659,.05,.15,'bal'],[523,523,.08,.15,'bal']],
+  shuf:[[440,440,.36,.15,'trem']],
+  reveal:[[330,330,.05,.16,'bal',.03],[440,440,.1,.17,'bal']],
+  late:[[330,330,.14,.13,'bay'],[262,262,.22,.13,'bay']],
+  wrong:[[262,262,.12,.14,'bay'],[220,220,.24,.14,'bay']],
+  start:[[330,330,.05,.18,'bal',.035],[330,330,.05,.18,'bal',.035],[440,440,.34,.17,'trem']],          // バラライカの開放弦（ミ・ミ・ラ）をかき鳴らす
+  x2:[[659,659,.05,.18,'bal',.06],[880,880,.05,.18,'bal',.06],[1319,1319,.22,.16,'trem']],
+  done:[[220,220,.34,.09,'bay',0],[262,262,.34,.09,'bay',0],[330,330,.34,.09,'bay']],               // イ短調の和音
+  rankS:[[659,659,.16,.19,'bal',.22],[494,494,.08,.19,'bal',.11],[523,523,.08,.19,'bal',.11],[587,587,.16,.19,'bal',.22],[523,523,.08,.19,'bal',.11],[494,494,.08,.19,'bal',.11],[220,220,1.4,.2,'kol',0],[440,440,.6,.17,'trem']],
+  rankA:[[440,440,.08,.19,'bal',.11],[523,523,.08,.19,'bal',.11],[659,659,.08,.19,'bal',.11],[880,880,.45,.17,'trem']],
+  rankB:[[659,659,.1,.18,'bal',.13],[523,523,.1,.18,'bal',.13],[440,440,.3,.18,'bal']],
+  rankC:[[220,220,.36,.12,'bay']]
+};
 const CHIPNOTE=[262,294,330,392,440,523,587,659];        // 品詞のボタン：左から順に音が上がる
-const MODENOTE={list:392,sheet:494,quiz:587,set:330};    // 下の切り替え：行き先ごとに決まった音
+const CHIP_RU=[220,247,262,294,330,349,392,440];         // ロシア風はイ短調の音階
+const MODENOTE={list:[392,490],sheet:[494,618],quiz:[587,734],set:[330,413]};     // 下のタブ：行き先ごとに決まった2音
+const MODE_RU={list:[330,440],sheet:[440,523],quiz:[523,659],set:[220,330]};
+const RU=()=>PREFS.theme!=='std';
 let AC=null, OUT=null, NOISE=null;
 // 画面を一度でも触ったあとでないと、ブラウザは音も振動も出させない
 const touched=()=>!navigator.userActivation||navigator.userActivation.hasBeenActive;
+/* バラライカの1はじき。少しだけ高さの違う2本を重ね（複弦）、はじいた直後だけ明るくして、すぐ丸い音にする */
+function pluck(f,t,v,len){
+  const lp=AC.createBiquadFilter(), g=AC.createGain();
+  lp.type='lowpass'; lp.Q.value=1;
+  lp.frequency.setValueAtTime(Math.min(f*9,9000),t);
+  lp.frequency.exponentialRampToValueAtTime(Math.max(f*1.6,500),t+len*0.5);
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(v,t+0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+len);
+  [-5,5].forEach(c=>{
+    const o=AC.createOscillator();
+    o.type='sawtooth'; o.frequency.setValueAtTime(f,t); o.detune.setValueAtTime(c,t);
+    o.connect(lp); o.start(t); o.stop(t+len+0.02);
+  });
+  lp.connect(g); g.connect(OUT);
+}
 /* seq（1音の並び）を、今から順に鳴らす */
 function play(seq){
   if(!PREFS.sound||!seq||!touched()) return;
@@ -1667,25 +1711,59 @@ function play(seq){
     }
     if(AC.state==='suspended') AC.resume();
     let t=AC.currentTime+0.005;
-    seq.forEach(([f0,f1,d,v,w])=>{
+    seq.forEach(([f0,f1,d,v,w,gap])=>{
+      const t0=t;
+      t+=gap===undefined?d*0.8:gap;
+      if(w==='bal'){ pluck(f0,t0,v,Math.max(.2,d+.16)); return; }
+      if(w==='trem'){ for(let x=0;x<d;x+=0.068) pluck(f0,t0+x,x?v*0.8:v,0.12); return; }
       const g=AC.createGain();
       g.connect(OUT);
+      if(w==='bay'){
+        // バヤン：少しずらした2つの音を重ねてうなりを作り、高い成分を削ってリードらしくする
+        const lp=AC.createBiquadFilter();
+        lp.type='lowpass'; lp.frequency.value=2400;
+        g.gain.setValueAtTime(0.0001,t0);
+        g.gain.linearRampToValueAtTime(v,t0+0.03);
+        g.gain.setValueAtTime(v,t0+d);
+        g.gain.linearRampToValueAtTime(0.0001,t0+d+0.09);
+        [[1,-8,'sawtooth',1],[1,8,'sawtooth',1],[2,0,'square',.22]].forEach(([m,c,ty,a])=>{
+          const o=AC.createOscillator(), pg=AC.createGain();
+          o.type=ty; o.frequency.setValueAtTime(f0*m,t0); o.detune.setValueAtTime(c,t0);
+          pg.gain.value=a; o.connect(pg); pg.connect(lp);
+          o.start(t0); o.stop(t0+d+0.12);
+        });
+        lp.connect(g);
+        return;
+      }
+      if(w==='kol'){
+        // 教会の鐘：倍音が不ぞろいで（短3度が混じる）、低い音ほど長く残る
+        g.gain.value=v;
+        [[.5,.5,1],[1,1,.85],[1.2,.5,.65],[1.5,.3,.5],[2,.45,.45],[2.6,.2,.28],[3,.15,.2]].forEach(([m,a,k])=>{
+          const o=AC.createOscillator(), pg=AC.createGain();
+          o.frequency.setValueAtTime(f0*m,t0);
+          pg.gain.setValueAtTime(0.0001,t0);
+          pg.gain.exponentialRampToValueAtTime(a,t0+0.004);
+          pg.gain.exponentialRampToValueAtTime(0.0001,t0+d*k);
+          o.connect(pg); pg.connect(g);
+          o.start(t0); o.stop(t0+d*k+0.05);
+        });
+        return;
+      }
       if(w==='bell'||w==='mar'){
         // 鐘：元の高さに2倍・3倍の高さを薄く重ね、余韻を長めに残す
         // 木琴：元の高さに4倍の高さを一瞬だけ重ね、すぐ消す
         const bell=w==='bell', ring=bell?d+0.34:d+0.13;
-        g.gain.setValueAtTime(0.0001,t);
-        g.gain.exponentialRampToValueAtTime(v,t+(bell?0.006:0.003));
-        g.gain.exponentialRampToValueAtTime(0.0001,t+ring);
+        g.gain.setValueAtTime(0.0001,t0);
+        g.gain.exponentialRampToValueAtTime(v,t0+(bell?0.006:0.003));
+        g.gain.exponentialRampToValueAtTime(0.0001,t0+ring);
         (bell?[[1,1,ring],[2,.3,ring],[3,.1,ring]]:[[1,1,ring],[4,.25,d*0.5+0.04]]).forEach(([m,a,len])=>{
           const o=AC.createOscillator(), pg=AC.createGain();
-          o.frequency.setValueAtTime(f0*m,t);
-          pg.gain.setValueAtTime(a,t);
-          if(!bell) pg.gain.exponentialRampToValueAtTime(0.001,t+len);
+          o.frequency.setValueAtTime(f0*m,t0);
+          pg.gain.setValueAtTime(a,t0);
+          if(!bell) pg.gain.exponentialRampToValueAtTime(0.001,t0+len);
           o.connect(pg); pg.connect(g);
-          o.start(t); o.stop(t+ring+0.04);
+          o.start(t0); o.stop(t0+ring+0.04);
         });
-        t+=d*0.8;
         return;
       }
       let s;
@@ -1699,47 +1777,56 @@ function play(seq){
         s=AC.createBufferSource(); s.buffer=NOISE;
         const bp=AC.createBiquadFilter();
         bp.type='bandpass'; bp.Q.value=0.8;
-        bp.frequency.setValueAtTime(f0,t);
-        bp.frequency.exponentialRampToValueAtTime(f1,t+d);
+        bp.frequency.setValueAtTime(f0,t0);
+        bp.frequency.exponentialRampToValueAtTime(f1,t0+d);
         s.connect(bp); bp.connect(g);
-        g.gain.setValueAtTime(0.0001,t);
-        g.gain.exponentialRampToValueAtTime(v,t+d*0.3);
-        g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+        g.gain.setValueAtTime(0.0001,t0);
+        g.gain.exponentialRampToValueAtTime(v,t0+d*0.3);
+        g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
       }else{
         s=AC.createOscillator(); s.type=w||'sine';
-        s.frequency.setValueAtTime(f0,t);
-        if(f1!==f0) s.frequency.exponentialRampToValueAtTime(f1,t+d);
+        s.frequency.setValueAtTime(f0,t0);
+        if(f1!==f0) s.frequency.exponentialRampToValueAtTime(f1,t0+d);
         s.connect(g);
-        g.gain.setValueAtTime(0.0001,t);
-        g.gain.exponentialRampToValueAtTime(v,t+0.008);
-        g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.03);
+        g.gain.setValueAtTime(0.0001,t0);
+        g.gain.exponentialRampToValueAtTime(v,t0+0.008);
+        g.gain.exponentialRampToValueAtTime(0.0001,t0+d+0.03);
       }
-      s.start(t); s.stop(t+d+0.05);
-      t+=d*0.8;
+      s.start(t0); s.stop(t0+d+0.05);
     });
   }catch(_){}
 }
-function sfx(name){ play(SFX[name]); }
-/* 高さ f（Hz）の木琴の音を1つ。横バーの目盛りや、品詞のボタンに使う */
-function note(f){ play([[f,f,.07,.3,'mar']]); }
+/* 名前で鳴らす。ロシア風のときは SFX_RU を先に探し、なければふつうの音を使う */
+function sfx(name){ play((RU()&&SFX_RU[name])||SFX[name]); }
+/* 高さ f（Hz）の音を1つ。横バーの目盛りに使う */
+function note(f){ play([RU()?[f,f,.07,.18,'bal']:[f,f,.07,.3,'mar']]); }
 /* 軽い振動（Android のみ）。効果音と同じ切り替えに従う */
 function buzz(p){ try{ if(PREFS.sound&&navigator.vibrate&&touched()) navigator.vibrate(p); }catch(_){} }
 /* 正解の音：続けて正解するほど、音が1段ずつ上がっていく（8連続で頭打ち。それ以上は耳に刺さるので上げない）。
-   3・5連続と、10連続からの5回ごとには、きらっとした音を足す */
+   3・5連続と、10連続からの5回ごとには、飾りの音を足す */
 const STEP=[523,587,659,784,880,1047,1175,1319];
+const STEP_RU=[440,494,523,587,659,698,831,880];     // イ短調（7番目だけ半音上げた、ロシア民謡らしい音階）
 function cheer(combo){
-  const f=STEP[Math.max(0,Math.min(combo,STEP.length)-1)];
-  const seq=[[f,f,.07,.32,'bell'],[f*1.5,f*1.5,.16,.32,'bell']];     // 鳴らすのは2音：その段の音と、5度上
-  if(combo===3||combo===5||(combo>=10&&combo%5===0)) seq.push([1568,1568,.06,.2,'bell'],[2093,2093,.06,.2,'bell'],[2637,2637,.3,.22,'bell']);
+  const i=Math.max(0,Math.min(combo,STEP.length)-1), deco=combo===3||combo===5||(combo>=10&&combo%5===0);
+  let seq;
+  if(RU()){
+    const f=STEP_RU[i];
+    seq=[[f/2,f/2,.05,.15,'bal',.03],[f,f,.14,.2,'bal']];           // 1オクターブ下とほぼ同時にはじく
+    if(deco) seq.push([659,659,.05,.17,'bal',.07],[880,880,.3,.16,'trem']);
+  }else{
+    const f=STEP[i];
+    seq=[[f,f,.07,.32,'bell'],[f*1.5,f*1.5,.16,.32,'bell']];        // その段の音と、5度上
+    if(deco) seq.push([1568,1568,.06,.2,'bell'],[2093,2093,.06,.2,'bell'],[2637,2637,.3,.22,'bell']);
+  }
   play(seq);
   buzz(combo>=3?[12,40,12]:12);
 }
 /* 触ったときの音。押した場所の種類で鳴らし分ける
    （オン・オフの切り替え、混ぜる、めくる、答え合わせ、開始、結果は、それぞれの処理の中で鳴らす。語のタップは読み上げが鳴るので足さない） */
 document.addEventListener('click',e=>{
-  const t=e.target, c=t.closest('.chip'), m=t.closest('.mode');
-  if(c) note(CHIPNOTE[[...chips.children].indexOf(c)%CHIPNOTE.length]);
-  else if(m){ const f=MODENOTE[m.dataset.m]||392; play([[f,f,.05,.3,'mar'],[f*1.25,f*1.25,.09,.3,'mar']]); }
+  const t=e.target, c=t.closest('.chip'), m=t.closest('.mode'), ru=RU(), w=ru?'bal':'mar', v=ru?.18:.3;
+  if(c){ const a=ru?CHIP_RU:CHIPNOTE, f=a[[...chips.children].indexOf(c)%a.length]; play([[f,f,.07,v,w]]); }
+  else if(m){ const p=(ru?MODE_RU:MODENOTE)[m.dataset.m]||[392,490]; play([[p[0],p[0],.05,v,w],[p[1],p[1],.09,v,w]]); }
   else if(t.closest('details.grp>summary')&&!t.closest('.gsel')) sfx(t.closest('details').open?'close':'open');
   else if(t.closest('.toolsbtn,.mini,.opt,.gsel,.clear,.again button,.rec button,.q-bar button,.tool:not([aria-pressed])')) sfx('tick');
 },true);
