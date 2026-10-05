@@ -48,12 +48,12 @@
   .searchrow{display:flex;gap:6px;margin-bottom:8px}
   .search{position:relative;flex:1;min-width:0}
   .search input{
-    width:100%;min-height:44px;padding:10px 42px 10px 12px;
+    width:100%;min-height:44px;padding:10px 42px 10px 38px;
     border:1px solid var(--rule);border-radius:3px;background:var(--card);color:var(--ink);
     font-family:var(--serif);font-size:16px;outline:none;transition:border-color .12s;
   }
   .search input:focus{border-color:var(--ink2)}
-  .search input::placeholder{font-family:inherit;color:var(--dim);font-size:13.5px}
+  .sicon{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:19px;height:19px;fill:none;stroke:var(--dim);stroke-width:1.8;stroke-linecap:round;pointer-events:none}
   .clear{position:absolute;right:2px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--dim);font-size:20px;width:40px;height:40px;cursor:pointer;line-height:1;display:none}
   .toolsbtn{
     flex:0 0 auto;width:48px;min-height:44px;padding:0;display:flex;align-items:center;justify-content:center;
@@ -89,6 +89,12 @@
   .tool .badge{position:absolute;top:4px;right:6px;font-style:normal;font-family:var(--serif);font-size:13px;line-height:1}
   .tool .badge:empty{display:none}
   #sndbtn[aria-pressed="true"] .off,#sndbtn[aria-pressed="false"] .on{display:none}
+  /* 設定の画面：検索と品詞は使わないので隠す */
+  body.setting .searchrow,body.setting #tools,body.setting .chips{display:none}
+  body.setting .masthead{padding-bottom:13px}
+  .toolrow{display:flex;gap:8px;margin-top:10px}
+  .toolrow .tool{width:88px}
+  .q-setup .done{color:var(--ink);font-weight:600}
   #side[data-side="ru"] .l,#side[data-side="ja"] .r,#mask .mk{fill:var(--mask);stroke:var(--mask)}
   #mask .m-initial,#mask .m-count{display:none;stroke:#fff}
   #mask .m-count{stroke-width:2.4}
@@ -359,10 +365,6 @@
   .zk .num{font-family:var(--serif);font-variant-numeric:tabular-nums;text-align:right;color:var(--ink2)}
 
   /* ---------- footer ---------- */
-  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 18px}
-  th,td{padding:8px 4px;text-align:left;border-bottom:1px solid var(--hair)}
-  th{font-size:13px;letter-spacing:.06em;color:var(--dim);font-weight:600}
-  td.num{font-family:var(--serif);font-variant-numeric:tabular-nums;text-align:right}
   .bar{height:3px;background:var(--rule);border-radius:2px;margin-top:4px}
   .bar i{display:block;height:100%;background:var(--ink2);border-radius:2px}
   .empty{padding:44px 0;text-align:center;color:var(--dim);font-size:13.5px}
@@ -381,19 +383,17 @@
     </div>
     <div class="searchrow">
       <div class="search">
-        <input id="q" type="search" placeholder="ロシア語・日本語どちらでも検索" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <svg class="sicon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>
+        <input id="q" type="search" aria-label="検索" autocomplete="off" autocapitalize="off" spellcheck="false">
         <button class="clear" id="clr" aria-label="検索を消す">×</button>
       </div>
       <button class="toolsbtn" id="toolsbtn" aria-expanded="false" aria-label="メニュー"><span></span></button>
     </div>
     <div id="tools" class="hidden">
-    <div class="subbar" id="spdbar">
-      <button class="tool" id="spd" aria-label="読み上げの速さ" aria-pressed="false"><b class="tv">1×</b><span>速さ</span></button>
-      <button class="tool" id="sndbtn" aria-label="効果音" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2l4.8 4v-13l-4.8 4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>効果音</span></button>
+    <div class="subbar" id="listbar">
       <button class="tool" id="tipq" aria-label="補足も検索" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 9.3h5M8 11.8h3.2"/></svg><span>補足</span></button>
       <button class="tool" id="selbtn" aria-label="選択" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><path d="M8 12.2l2.8 2.8 5.4-5.5"/></svg><i class="badge"></i><span>選択</span></button>
       <button class="tool" id="expbtn" aria-label="書き出し"><svg viewBox="0 0 24 24"><path d="M12 15V4.5M8 8.5l4-4 4 4M5 13v6h14v-6"/></svg><span>出力</span></button>
-      <button class="tool" id="resetbtn" aria-label="記録の初期化"><svg viewBox="0 0 24 24"><path d="M5 7h14M9.5 7V4.8h5V7M7 7l.8 12.2h8.4L17 7M10.3 10.5v5.5M13.7 10.5v5.5"/></svg><span>初期化</span></button>
     </div>
     <div class="subbar hidden" id="sheetbar">
       <button class="tool" id="side" aria-label="隠す面" data-side="ja"><svg viewBox="0 0 24 24"><rect class="l" x="3" y="7" width="8" height="10" rx="1.5"/><rect class="r" x="13" y="7" width="8" height="10" rx="1.5"/></svg><span>隠す面</span></button>
@@ -410,18 +410,11 @@
 
 <main class="wrap" id="out"></main>
 
-<section class="wrap" id="status">
-  <div class="pos-title">現在地</div>
-  <table>
-    <thead><tr><th>品詞</th><th>済</th><th>B2目安</th><th style="width:70px">到達</th></tr></thead>
-    <tbody id="progress"></tbody>
-  </table>
-</section>
-
 <nav class="modes" id="modes" aria-label="表示の切り替え">
   <button class="mode" data-m="list" aria-pressed="true">一覧</button>
   <button class="mode" data-m="sheet" aria-pressed="false">赤シート</button>
   <button class="mode" data-m="quiz" aria-pressed="false">テスト</button>
+  <button class="mode" data-m="set" aria-pressed="false">設定</button>
 </nav>
 
 <script>
@@ -1264,19 +1257,6 @@ const count=p=>p.groups.reduce((n,g)=>n+g[1].length,0);
 const TOTAL=D.reduce((n,p)=>n+count(p),0);
 document.title='ロシア語語彙 '+TOTAL.toLocaleString('ja-JP');
 
-/* 「現在地」の表：語数は D から数える（1行＝1語）。b2＝B2目安の語数の幅で、到達％は幅の真ん中に対する割合。
-   note と bar は、目安がない品詞の一言とバーの長さ(%) */
-const GOAL={
-  adj:{b2:[750,1000]}, verb:{b2:[1000,1200]}, noun:{b2:[2000,2500],name:'名詞（汎用）'},
-  conj:{note:'ほぼ完了',bar:95}, jp:{note:'初版',bar:30}, biz:{note:'面接用',bar:30}, cmd:{note:'命令形',bar:30}
-};
-document.getElementById('progress').innerHTML=D.map(p=>{
-  const g=GOAL[p.id]||{}, n=count(p), b=g.b2;
-  const pct=b?Math.min(100,Math.round(n/((b[0]+b[1])/2)*100)):(g.bar||0);
-  return '<tr><td>'+esc(g.name||p.name)+'</td><td class="num">'+n+'</td><td class="num">'+(b?b[0]+'–'+b[1]:'—')+'</td>'+
-    '<td>'+(b?pct+'%':esc(g.note||''))+'<div class="bar"><i style="width:'+pct+'%"></i></div></td></tr>';
-}).join('');
-
 // chips
 const mk=(id,label,n)=>{
   const b=document.createElement('button');
@@ -1411,12 +1391,14 @@ clr.onclick=()=>{clearTimeout(qTimer);qEl.value='';query='';clr.style.display='n
 
 /* ================= mode switching ================= */
 const modes=document.getElementById('modes');
-const sheetbar=document.getElementById('sheetbar');
+const sheetbar=document.getElementById('sheetbar'), listbar=document.getElementById('listbar');
 modes.addEventListener('click',e=>{
   const b=e.target.closest('.mode'); if(!b) return;
   mode=b.dataset.m;
   [...modes.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.m===mode));
   if(mode!=='quiz') quiz=null;
+  // 選択は一覧でする操作なので、ほかの画面へ移ったら選択中をやめる（選んだ語は残す）
+  if(mode!=='list'&&selMode){ selMode=false; document.body.classList.remove('selecting'); selLabel(); }
   render();
   window.scrollTo({top:0});
 });
@@ -1487,12 +1469,11 @@ document.getElementById('expbtn').onclick=()=>showExport();
 document.getElementById('selbtn').onclick=()=>{
   selMode=!selMode;
   document.body.classList.toggle('selecting',selMode);
-  selLabel();
+  selLabel(); sfx(selMode?'on':'off');
 };
-document.getElementById('spd').onclick=()=>{SPK.rate=SPK.rate===1?0.65:1;spdLabel();};
 document.getElementById('tipq').onclick=e=>{
   tipSearch=!tipSearch;
-  e.currentTarget.setAttribute('aria-pressed',tipSearch);
+  e.currentTarget.setAttribute('aria-pressed',tipSearch); sfx(tipSearch?'on':'off');
   if(mode!=='quiz'||!quiz) render();     // 出題中のテストは止めない
 };
 document.getElementById('side').onclick=e=>{
@@ -1510,8 +1491,8 @@ document.getElementById('mask').onclick=e=>{
   applySheet();
   out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
 };
-document.getElementById('shuf').onclick=()=>{shuf=true;shufAll=false;render();window.scrollTo({top:0});};
-document.getElementById('shufall').onclick=()=>{shufAll=true;render();window.scrollTo({top:0});};
+document.getElementById('shuf').onclick=()=>{shuf=true;shufAll=false;sfx('shuf');render();window.scrollTo({top:0});};
+document.getElementById('shufall').onclick=()=>{shufAll=true;sfx('shuf');render();window.scrollTo({top:0});};
 document.getElementById('revall').onclick=()=>out.querySelectorAll('ul.list li').forEach(li=>li.classList.add('rev'));
 document.getElementById('hideall').onclick=()=>out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
 out.addEventListener('click',e=>{
@@ -1558,7 +1539,13 @@ function applySheet(){
   document.body.classList.toggle('hide-ja',mode==='sheet'&&hideSide==='ja');
   document.body.classList.toggle('hide-ru',mode==='sheet'&&hideSide==='ru');
   MASKS.forEach(m=>document.body.classList.toggle('mask-'+m[0],mode==='sheet'&&maskMode===m[0]));
+  document.body.classList.toggle('setting',mode==='set');
+  // メニューは画面ごとの操作だけを出す。テストと設定には出すものがないので、ボタンごと隠す
+  listbar.classList.toggle('hidden',mode!=='list');
   sheetbar.classList.toggle('hidden',mode!=='sheet');
+  const menu=mode==='list'||mode==='sheet';
+  document.getElementById('toolsbtn').classList.toggle('hidden',!menu);
+  document.getElementById('tools').classList.toggle('hidden',!menu||!toolsOpen);
   if(mode!=='sheet'){ shuf=false; shufAll=false; }
   document.getElementById('shuf').setAttribute('aria-pressed',shuf&&!shufAll);
   document.getElementById('shufall').setAttribute('aria-pressed',shufAll);
@@ -1604,86 +1591,99 @@ function twice(b,msg){
   return false;
 }
 
-/* 記録の初期化：消すものを選び、ボタンを2回押すと実行する */
-function showReset(msg){
-  const old=document.getElementById('resetbox'); if(old) old.remove();
+/* 設定の画面：音まわりと、記録の初期化（「消す」は2回押すと実行） */
+const ICON_SND='<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2l4.8 4v-13l-4.8 4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+function sndLabel(){ const b=document.getElementById('sndbtn'); if(b) b.setAttribute('aria-pressed',PREFS.sound); }
+function renderSettings(msg){
   const half=Object.keys(ZUKAN).filter(k=>!inZukan(k)).length, got=Object.keys(ZUKAN).length-half;
-  const box=document.createElement('div');
-  box.className='note'; box.id='resetbox';
-  box.innerHTML='<h4>記録の初期化</h4><div class="body">'+
-    '<p>'+(msg?'<b>'+msg+'</b>　':'')+'消したものは元に戻せません。「消す」は2回押すと実行します。</p>'+
-    '<div class="rs"><span>苦手と間違えた回数（'+Object.keys(WEAK).length+'語）</span><button class="mini" data-r="weak">消す</button></div>'+
-    '<div class="rs"><span>図鑑（'+got+'語・あと1回 '+half+'語）</span><button class="mini" data-r="zukan">消す</button></div>'+
-    '<div class="rs"><span>判定と連続日数（'+Object.keys(DAILY).length+'日ぶん）</span><button class="mini" data-r="daily">消す</button></div>'+
-    '<div class="rs"><span>すべて（上の3つ・途中のテスト・設定）</span><button class="mini" data-r="all">すべて消す</button></div>'+
-    '<div class="expbtns"><button class="mini" id="closereset">閉じる</button></div></div>';
-  out.prepend(box);
+  out.innerHTML=
+    '<div class="q-setup"><h3>音</h3><div class="toolrow">'+
+      '<button class="tool" id="sndbtn" aria-label="効果音">'+ICON_SND+'<span>効果音</span></button>'+
+      '<button class="tool" id="spd" aria-label="読み上げの速さ"><b class="tv"></b><span>速さ</span></button>'+
+    '</div></div>'+
+    '<div class="q-setup" id="resetbox"><h3>記録の初期化</h3>'+
+      '<p>'+(msg?'<span class="done">'+msg+'</span>　':'')+'「消す」は2回押すと実行。元には戻せません。</p>'+
+      '<div class="rs"><span>苦手と間違えた回数（'+Object.keys(WEAK).length+'語）</span><button class="mini" data-r="weak">消す</button></div>'+
+      '<div class="rs"><span>図鑑（'+got+'語・あと1回 '+half+'語）</span><button class="mini" data-r="zukan">消す</button></div>'+
+      '<div class="rs"><span>判定と連続日数（'+Object.keys(DAILY).length+'日ぶん）</span><button class="mini" data-r="daily">消す</button></div>'+
+      '<div class="rs"><span>すべて（上の3つ・途中のテスト・設定）</span><button class="mini" data-r="all">すべて消す</button></div>'+
+    '</div>';
+  sndLabel(); spdLabel();
+  document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.set(PKEY,PREFS); sndLabel(); sfx('on'); };
+  document.getElementById('spd').onclick=()=>{ SPK.rate=SPK.rate===1?0.65:1; spdLabel(); sfx(SPK.rate===1?'off':'on'); };
   const wipe=o=>Object.keys(o).forEach(k=>delete o[k]);
-  box.onclick=e=>{
-    const b=e.target.closest('button'); if(!b) return;
-    if(b.id==='closereset'){ box.remove(); return; }
+  document.getElementById('resetbox').onclick=e=>{
+    const b=e.target.closest('button[data-r]'); if(!b) return;
     if(!twice(b,'もう一度押すと消す')) return;
     const r=b.dataset.r, all=r==='all';
     if(all||r==='weak'){ wipe(WEAK); wipe(MISS); store.set(WKEY,WEAK); store.set(MKEY,MISS); }
     if(all||r==='zukan'){ wipe(ZUKAN); store.set(ZKEY,ZUKAN); }
     if(all||r==='daily'){ wipe(DAILY); store.set(DKEY,DAILY); }
-    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sound=true; store.set(PKEY,PREFS); sndLabel(); }
-    render();     // 印や図鑑の表示を今の記録に合わせてから、結果を出し直す
-    showReset(all?'すべて消しました。':'消しました。');
+    if(all){ qclear(); quiz=null; PREFS.limit=0; PREFS.sound=true; store.set(PKEY,PREFS); }
+    renderSettings(all?'すべて消しました':'消しました');
   };
-  window.scrollTo({top:0});
 }
-document.getElementById('resetbtn').onclick=()=>showReset();
-
-function sndLabel(){ document.getElementById('sndbtn').setAttribute('aria-pressed',PREFS.sound); }
-document.getElementById('sndbtn').onclick=()=>{ PREFS.sound=!PREFS.sound; store.set(PKEY,PREFS); sndLabel(); };
-sndLabel();
 
 /* 効果音：音は端末の中で作る（音声ファイルは読み込まない）。
-   1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 波形]。並べた順に鳴らす。
-   波形が 'noise' のときは、サッという息のような音を、高さの帯を動かしながら鳴らす（紙をめくる音に使う） */
+   1音＝[始まりの高さ(Hz), 終わりの高さ, 長さ(秒), 音量, 音色]。並べた順に鳴らす。
+   音色：なし＝素直な音（高さを滑らせると「ぽん」になる）、'mar'＝木琴のような短く芯のある音、
+   'bell'＝澄んだ鐘のような余韻のある音、'noise'＝紙がこすれるような息の音、'triangle'＝少しざらついた音 */
 const SFX={
-  // 触ったときの音は小さく短く。ごほうびの音（正解・2倍・判定）が引き立つようにする
-  tick:[[1046,1046,.02,.028]],                                    // メニューや設定のボタン
-  chip:[[587,740,.05,.04]],                                       // 品詞を切り替える
-  mode:[[440,440,.04,.04],[660,660,.06,.04]],                     // 一覧／赤シート／テスト
-  open:[[494,659,.06,.04]], close:[[659,494,.06,.035]],           // 分類を開く・閉じる
-  flip:[[1500,5200,.09,.3,'noise'],[240,170,.03,.06]],            // 赤シートをめくる：紙がこすれる音のあと、軽く当たる音
-  unflip:[[4600,1400,.08,.24,'noise']],                           // 戻す
-  reveal:[[523,523,.04,.045],[784,784,.07,.045]],                 // 答えを見る
-  late:[[392,392,.09,.06],[277,277,.16,.06]],                     // 時間切れ
-  wrong:[[247,165,.2,.09,'triangle']],                            // あやふや
-  start:[[523,523,.08,.09,'bell'],[659,659,.08,.09,'bell'],[784,784,.2,.09,'bell']],   // テスト開始
-  x2:[[988,988,.07,.1,'bell'],[1319,1319,.3,.1,'bell']],          // 得点2倍の問題：コインの音
-  done:[[659,659,.1,.08,'bell'],[880,880,.28,.08,'bell']],        // テスト終了・時間切れ後の正解
-  rankS:[[523,523,.1,.1,'bell'],[659,659,.1,.1,'bell'],[784,784,.1,.1,'bell'],[1047,1047,.12,.1,'bell'],[1319,1319,.5,.11,'bell']],
-  rankA:[[523,523,.1,.09,'bell'],[659,659,.1,.09,'bell'],[784,784,.4,.09,'bell']],
-  rankB:[[523,523,.12,.08,'bell'],[659,659,.3,.08,'bell']],
-  rankC:[[440,440,.3,.07,'bell']]
+  // 触ったときの音は木琴の音色で、低めの高さにする（高い電子音は安っぽく聞こえるので使わない）
+  tick:[[330,330,.05,.3,'mar']],                                   // ふつうのボタン
+  on:[[392,392,.05,.3,'mar'],[587,587,.08,.3,'mar']],              // 入れる
+  off:[[587,587,.05,.26,'mar'],[392,392,.08,.26,'mar']],           // 切る
+  open:[[250,600,.06,.32]], close:[[540,230,.06,.28]],             // 分類を開く・閉じる：ぽん
+  shuf:[[392,392,.04,.24,'mar'],[523,523,.04,.24,'mar'],[440,440,.04,.24,'mar'],[659,659,.08,.26,'mar']],   // 混ぜる
+  flip:[[1500,5200,.09,.55,'noise'],[240,170,.03,.16]],            // 赤シートをめくる：紙がこすれる音のあと、軽く当たる音
+  unflip:[[4600,1400,.08,.45,'noise']],                            // 戻す
+  reveal:[[440,440,.05,.26,'mar'],[659,659,.09,.26,'mar']],        // 答えを見る
+  late:[[392,392,.09,.22],[277,277,.16,.22]],                      // 時間切れ
+  wrong:[[247,165,.2,.3,'triangle']],                              // あやふや
+  // ごほうびの音は鐘の音色
+  start:[[523,523,.08,.3,'bell'],[659,659,.08,.3,'bell'],[784,784,.2,.3,'bell']],   // テスト開始
+  x2:[[988,988,.07,.32,'bell'],[1319,1319,.3,.32,'bell']],         // 得点2倍の問題：コインの音
+  done:[[659,659,.1,.28,'bell'],[880,880,.28,.28,'bell']],         // テスト終了・時間切れ後の正解
+  rankS:[[523,523,.1,.32,'bell'],[659,659,.1,.32,'bell'],[784,784,.1,.32,'bell'],[1047,1047,.12,.32,'bell'],[1319,1319,.5,.34,'bell']],
+  rankA:[[523,523,.1,.3,'bell'],[659,659,.1,.3,'bell'],[784,784,.4,.3,'bell']],
+  rankB:[[523,523,.12,.28,'bell'],[659,659,.3,.28,'bell']],
+  rankC:[[440,440,.3,.26,'bell']]
 };
-let AC=null, NOISE=null;
+const CHIPNOTE=[262,294,330,392,440,523,587,659];        // 品詞のボタン：左から順に音が上がる
+const MODENOTE={list:392,sheet:494,quiz:587,set:330};    // 下の切り替え：行き先ごとに決まった音
+let AC=null, OUT=null, NOISE=null;
 // 画面を一度でも触ったあとでないと、ブラウザは音も振動も出させない
 const touched=()=>!navigator.userActivation||navigator.userActivation.hasBeenActive;
 /* seq（1音の並び）を、今から順に鳴らす */
 function play(seq){
   if(!PREFS.sound||!seq||!touched()) return;
   try{
-    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(!AC){
+      AC=new (window.AudioContext||window.webkitAudioContext)();
+      // 音が重なっても割れないよう、出口で大きすぎる音を抑える
+      OUT=AC.createDynamicsCompressor();
+      OUT.threshold.value=-12; OUT.ratio.value=6;
+      OUT.connect(AC.destination);
+    }
     if(AC.state==='suspended') AC.resume();
     let t=AC.currentTime+0.005;
     seq.forEach(([f0,f1,d,v,w])=>{
       const g=AC.createGain();
-      g.connect(AC.destination);
-      if(w==='bell'){
-        // 澄んだ鐘のような音：元の高さに2倍・3倍の高さを薄く重ね、余韻を長めに残す
+      g.connect(OUT);
+      if(w==='bell'||w==='mar'){
+        // 鐘：元の高さに2倍・3倍の高さを薄く重ね、余韻を長めに残す
+        // 木琴：元の高さに4倍の高さを一瞬だけ重ね、すぐ消す
+        const bell=w==='bell', ring=bell?d+0.34:d+0.13;
         g.gain.setValueAtTime(0.0001,t);
-        g.gain.exponentialRampToValueAtTime(v,t+0.006);
-        g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.34);
-        [[1,1],[2,.3],[3,.1]].forEach(([m,a])=>{
+        g.gain.exponentialRampToValueAtTime(v,t+(bell?0.006:0.003));
+        g.gain.exponentialRampToValueAtTime(0.0001,t+ring);
+        (bell?[[1,1,ring],[2,.3,ring],[3,.1,ring]]:[[1,1,ring],[4,.25,d*0.5+0.04]]).forEach(([m,a,len])=>{
           const o=AC.createOscillator(), pg=AC.createGain();
-          o.frequency.setValueAtTime(f0*m,t); pg.gain.value=a;
+          o.frequency.setValueAtTime(f0*m,t);
+          pg.gain.setValueAtTime(a,t);
+          if(!bell) pg.gain.exponentialRampToValueAtTime(0.001,t+len);
           o.connect(pg); pg.connect(g);
-          o.start(t); o.stop(t+d+0.38);
+          o.start(t); o.stop(t+ring+0.04);
         });
         t+=d*0.8;
         return;
@@ -1720,8 +1720,8 @@ function play(seq){
   }catch(_){}
 }
 function sfx(name){ play(SFX[name]); }
-/* 横バー用：高さ f（Hz）の短い音。目盛りが上がるほど高い音にする */
-function note(f){ play([[f,f,.03,.045]]); }
+/* 高さ f（Hz）の木琴の音を1つ。横バーの目盛りや、品詞のボタンに使う */
+function note(f){ play([[f,f,.07,.3,'mar']]); }
 /* 軽い振動（Android のみ）。効果音と同じ切り替えに従う */
 function buzz(p){ try{ if(PREFS.sound&&navigator.vibrate&&touched()) navigator.vibrate(p); }catch(_){} }
 /* 正解の音：続けて正解するほど、音が1段ずつ上がっていく（8連続で頭打ち。それ以上は耳に刺さるので上げない）。
@@ -1729,19 +1729,19 @@ function buzz(p){ try{ if(PREFS.sound&&navigator.vibrate&&touched()) navigator.v
 const STEP=[523,587,659,784,880,1047,1175,1319];
 function cheer(combo){
   const f=STEP[Math.max(0,Math.min(combo,STEP.length)-1)];
-  const seq=[[f,f,.07,.11,'bell'],[f*1.5,f*1.5,.16,.11,'bell']];     // 鳴らすのは2音：その段の音と、5度上
-  if(combo===3||combo===5||(combo>=10&&combo%5===0)) seq.push([1568,1568,.06,.07,'bell'],[2093,2093,.06,.07,'bell'],[2637,2637,.3,.08,'bell']);
+  const seq=[[f,f,.07,.32,'bell'],[f*1.5,f*1.5,.16,.32,'bell']];     // 鳴らすのは2音：その段の音と、5度上
+  if(combo===3||combo===5||(combo>=10&&combo%5===0)) seq.push([1568,1568,.06,.2,'bell'],[2093,2093,.06,.2,'bell'],[2637,2637,.3,.22,'bell']);
   play(seq);
   buzz(combo>=3?[12,40,12]:12);
 }
-/* 触ったときの小さな音。押した場所の種類で鳴らし分ける
-   （めくる・答え合わせ・開始・結果は、それぞれの処理の中で鳴らす。語のタップは読み上げが鳴るので足さない） */
+/* 触ったときの音。押した場所の種類で鳴らし分ける
+   （オン・オフの切り替え、混ぜる、めくる、答え合わせ、開始、結果は、それぞれの処理の中で鳴らす。語のタップは読み上げが鳴るので足さない） */
 document.addEventListener('click',e=>{
-  const t=e.target;
-  if(t.closest('.chip')) sfx('chip');
-  else if(t.closest('.mode')) sfx('mode');
+  const t=e.target, c=t.closest('.chip'), m=t.closest('.mode');
+  if(c) note(CHIPNOTE[[...chips.children].indexOf(c)%CHIPNOTE.length]);
+  else if(m){ const f=MODENOTE[m.dataset.m]||392; play([[f,f,.05,.3,'mar'],[f*1.25,f*1.25,.09,.3,'mar']]); }
   else if(t.closest('details.grp>summary')&&!t.closest('.gsel')) sfx(t.closest('details').open?'close':'open');
-  else if(t.closest('.toolsbtn,.tool,.mini,.opt,.gsel,.clear,.again button,.rec button,.q-bar button')) sfx('tick');
+  else if(t.closest('.toolsbtn,.mini,.opt,.gsel,.clear,.again button,.rec button,.q-bar button,.tool:not([aria-pressed])')) sfx('tick');
 },true);
 
 /* 連続日数：1日1セットで1日ぶん伸びる。1日だけ空いた日は、月2回までの「休み」で埋まって途切れない */
@@ -2203,9 +2203,8 @@ addEventListener('scroll',()=>{
 function render(){
   clearTimeout(qTimerId);
   applySheet();
-  // 「現在地」の表は、一覧の「すべて」のときだけ出す
-  document.getElementById('status').classList.toggle('hidden',!(mode==='list'&&filter==='all'));
-  if(mode==='quiz'){
+  if(mode==='set') renderSettings();
+  else if(mode==='quiz'){
     if(quiz&&quiz.i>=quiz.items.length) quiz=null;     // 終わったテストは描き直さない
     quiz?renderQuestion():renderSetup();
   }
