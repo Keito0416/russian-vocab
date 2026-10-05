@@ -45,9 +45,6 @@
   /* 下へ引っぱっても再読み込みしない（ブラウザらしい動きを消す） */
   html,body{margin:0;padding:0;overscroll-behavior-y:none}
   html{touch-action:manipulation}
-  /* 文字をタップしても選択しない（Chrome の「タップして検索」が開いて Google の結果が出るのを防ぐ）。入力欄と書き出しの欄だけは選べる */
-  body{-webkit-user-select:none;user-select:none}
-  input,textarea{-webkit-user-select:text;user-select:text}
   body{
     background:var(--paper);color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic","Segoe UI",sans-serif;
