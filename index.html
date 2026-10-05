@@ -1869,13 +1869,14 @@ function startDaily(){ startQuiz(dailyItems(),{dir:'ja2ru',limit:PREFS.limit||5,
 /* 保存してあった途中のテストを、続きから出せる形に戻す */
 function restoreQuiz(o){
   const z=Object.assign({dir:o.dir||'ru2ja',limit:0,kind:'free',raw:0,pts:0,combo:0,best:0,tsum:0,tcnt:0},o.q);
-  z.shown=false; z.late=false; z.wait=1;     // wait＝1問目だけ、少し間を置いてから計り始める
+  if(!(z.shown&&z.late)){ z.shown=false; z.late=false; }     // 時間切れで答えが開いていた問題は、そのまま「次へ」から再開する
+  z.wait=1;     // wait＝1問目だけ、少し間を置いてから計り始める
   return z;
 }
 /* 中断：途中経過は保存してあるので、テストの画面へ戻るだけ。「続きから」で再開できる */
 function pauseQuiz(){
   clearTimeout(qTimerId);
-  if(quiz){ quiz.shown=false; quiz.late=false; qsave(); }
+  if(quiz){ if(!quiz.late) quiz.shown=false; qsave(); }
   quiz=null; render(); window.scrollTo({top:0});
 }
 /* 終了：ここまで答えたぶんで結果を出す。押し間違えないよう、2回押して確定する */
@@ -1883,6 +1884,13 @@ function endQuiz(e){
   if(!twice(e.currentTarget,'もう一度押すと終了')) return;
   clearTimeout(qTimerId);
   const z=quiz;
+  // 時間切れで答えが開いている問題は「あやふや」として数えてから終える
+  if(z.shown&&z.late){
+    const it=z.items[z.i], k=keyOf(it);
+    z.wrong.push(it); z.combo=0; z.i++;
+    WEAK[k]=0; store.set(WKEY,WEAK);
+    MISS[k]=(MISS[k]||0)+1; store.set(MKEY,MISS);
+  }
   if(!z.i){ qclear(); quiz=null; render(); window.scrollTo({top:0}); return; }   // 1問も答えていなければ、テストの画面へ戻るだけ
   z.items=z.items.slice(0,z.i); z.cut=true; z.shown=false;     // 答えていない問題は数えない
   renderResult(); window.scrollTo({top:0});
@@ -1990,11 +1998,13 @@ function renderQuestion(){
       (z.shown?'<div class="q-ans'+(ru2ja?'':' ru-side')+'"'+(ru2ja?'':' data-say="'+esc(sayTerm(it.ru))+'"')+'>'+ansTxt+'</div>':'')+
       (tip?'<div class="tip" style="text-align:left;margin:6px 0 0">'+tipHtml(tip)+'</div>':'')+
     '</div>'+
-    '<div class="q-btns">'+(z.shown
-      ? '<button class="ng" id="ng">✕ あやふや</button><button class="ok" id="ok">○ わかった</button>'
-      : '<button class="reveal" id="rev">答えを見る</button>')+
-    '</div>'+
-    (z.shown&&z.late?'<div class="q-hint">時間切れ。合っていても「あやふや」を押す</div>':'');
+    // 時間切れで開いたときは自動で「あやふや」扱いにし、「次へ」だけを出す
+    '<div class="q-btns">'+(!z.shown
+      ? '<button class="reveal" id="rev">答えを見る</button>'
+      : z.late
+        ? '<button class="reveal" id="next">次へ</button>'
+        : '<button class="ng" id="ng">✕ あやふや</button><button class="ok" id="ok">○ わかった</button>')+
+    '</div>';
   if(it.x2&&!z.shown) setTimeout(()=>sfx('x2'),380);     // 前の問題の音と重ならないよう、少し遅らせる
   // ロシア語が画面に出た瞬間に一度だけ読み上げる
   const key=z.i+'|'+(z.shown?'a':'q');
@@ -2002,11 +2012,11 @@ function renderQuestion(){
   if(visible && lastSaid!==key){ lastSaid=key; say(sayTerm(it.ru),'ru-RU'); }
   document.getElementById('qpause').onclick=pauseQuiz;
   document.getElementById('qend').onclick=endQuiz;
-  if(z.shown){
+  if(!z.shown) document.getElementById('rev').onclick=()=>reveal(false);
+  else if(z.late) document.getElementById('next').onclick=()=>mark(false,true);
+  else{
     document.getElementById('ok').onclick=()=>mark(true);
     document.getElementById('ng').onclick=()=>mark(false);
-  }else{
-    document.getElementById('rev').onclick=()=>reveal(false);
   }
   if(timed&&!z.shown){
     const i=z.i;
@@ -2034,6 +2044,7 @@ function reveal(auto){
   if(z.limit>0){
     z.late=!!auto;
     z.t=auto?z.limit:(qT0?Math.min(z.limit,(performance.now()-qT0)/1000):0);
+    if(auto) qsave();     // 時間切れは保存しておく。開き直しても同じ問題をやり直せないようにする
   }
   renderQuestion();
 }
@@ -2041,7 +2052,8 @@ function reveal(auto){
 /* 速さの点：問題が出てから答えを開くまでが短いほど高い（0.5秒以内で100点、1秒ごとに20点ずつ下がり、最低10点） */
 const speedPts=t=>Math.max(10,Math.min(100,Math.round(100-20*(t-0.5))));
 
-function mark(good){
+/* 答え合わせを記録して次へ進む。quiet＝時間切れのあとの「次へ」（時間切れの音はもう鳴っているので、間違いの音は重ねない） */
+function mark(good,quiet){
   const z=quiz, it=z.items[z.i], k=keyOf(it), timed=z.limit>0;
   const inTime=good&&!(timed&&z.late);     // 正解で、制限時間つきなら時間内に自分で開いたとき
   z.gain=0;
@@ -2053,7 +2065,7 @@ function mark(good){
     z.wrong.push(it);
     WEAK[k]=0; store.set(WKEY,WEAK);
     MISS[k]=(MISS[k]||0)+1; store.set(MKEY,MISS);     // 間違えた回数は、苦手から外れても残す
-    sfx('wrong'); buzz(25);
+    if(quiet) sfx('tick'); else{ sfx('wrong'); buzz(25); }
   }
   if(inTime){
     z.combo++; if(z.combo>z.best) z.best=z.combo;
@@ -2133,6 +2145,7 @@ document.addEventListener('keydown',e=>{
   // 結果画面（quiz.i が最後まで進んだ状態）ではキーを受け付けない
   if(mode!=='quiz'||!quiz||quiz.i>=quiz.items.length||document.activeElement===qEl) return;
   if(!quiz.shown&&(e.key===' '||e.key==='Enter')){e.preventDefault();reveal(false);}
+  else if(quiz.shown&&quiz.late){ if(e.key===' '||e.key==='Enter'||e.key==='1'||e.key==='2'){e.preventDefault();mark(false,true);} }
   else if(quiz.shown&&e.key==='1'){mark(false);}
   else if(quiz.shown&&e.key==='2'){mark(true);}
 });
