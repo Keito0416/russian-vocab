@@ -387,17 +387,17 @@
   .cal-m{margin-top:10px;height:20px;font-size:13px;color:var(--dim)}
   .cal-m span{white-space:nowrap}
   .cal{grid-template-rows:repeat(7,auto);grid-auto-flow:column;margin-top:2px}
-  .c{display:block;aspect-ratio:1;border:0;padding:0;border-radius:3px;background:var(--rule)}
-  .c.f{background:none}
-  .c.rS,.c.rA,.c.rB,.c.rC{background:var(--accent)}
-  .c.rA{opacity:.7}
-  .c.rB{opacity:.44}
-  .c.rC{opacity:.24}
-  .cal button.c{cursor:pointer}
-  .cal .c.t{outline:1.5px solid var(--ink2);outline-offset:1px}
-  .cal .c[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px}
+  .day{display:block;aspect-ratio:1;border:0;padding:0;border-radius:3px;background:var(--rule)}
+  .day.f{background:none}
+  .day.rS,.day.rA,.day.rB,.day.rC{background:var(--accent)}
+  .day.rA{opacity:.7}
+  .day.rB{opacity:.44}
+  .day.rC{opacity:.24}
+  .cal button.day{cursor:pointer}
+  .cal .day.t{outline:1.5px solid var(--ink2);outline-offset:1px}
+  .cal .day[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px}
   .cal-l{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:8px;font-size:13px;color:var(--dim)}
-  .cal-l .c{width:12px;height:12px}
+  .cal-l .day{width:12px;height:12px}
   .rec-info{min-height:21px;font-size:13px;color:var(--ink2);margin-top:6px}
   .zk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 10px;align-items:center;font-size:13px}
   .zk .bar{margin:0}
@@ -1539,10 +1539,10 @@ document.getElementById('revall').onclick=()=>out.querySelectorAll('ul.list li')
 document.getElementById('hideall').onclick=()=>out.querySelectorAll('li.rev').forEach(li=>li.classList.remove('rev'));
 out.addEventListener('click',e=>{
   if(e.target.closest('a')) return;
-  const rb=e.target.closest('.cal .c[data-info]');
+  const rb=e.target.closest('.cal .day[data-info]');
   if(rb){
     // 記録のマスを押したら、その日の内訳を下に出す
-    out.querySelectorAll('.cal .c[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
+    out.querySelectorAll('.cal .day[aria-pressed="true"]').forEach(x=>x.setAttribute('aria-pressed','false'));
     rb.setAttribute('aria-pressed','true');
     const box=rb.closest('.cal').parentNode.querySelector('.rec-info');
     if(box) box.textContent=rb.dataset.info;
@@ -2116,15 +2116,15 @@ function recordHtml(){
     const x=new Date(start); x.setDate(start.getDate()+w*7+d);
     const k=dkey(x), r=DAILY[k], t=k===dkey(now)?' t':'';
     if(d===0){ months+='<span>'+(x.getMonth()!==lastM?(x.getMonth()+1)+'月':'')+'</span>'; lastM=x.getMonth(); }
-    if(x>now) cells+='<i class="c f"></i>';
-    else if(!r) cells+='<i class="c'+t+'"></i>';
+    if(x>now) cells+='<i class="day f"></i>';
+    else if(!r) cells+='<i class="day'+t+'"></i>';
     else{
       const info=(x.getMonth()+1)+'/'+x.getDate()+'　'+r.r+'　'+r.raw+'点　正答率 '+Math.round(r.ok/r.n*100)+'%'+(r.t?'　平均 '+r.t+'秒':'');
-      cells+='<button class="c r'+esc(r.r)+t+'" data-info="'+esc(info)+'" aria-label="'+esc(info)+'" aria-pressed="false"></button>';
+      cells+='<button class="day r'+esc(r.r)+t+'" data-info="'+esc(info)+'" aria-label="'+esc(info)+'" aria-pressed="false"></button>';
     }
   }
   return '<div class="cal-m">'+months+'</div><div class="cal">'+cells+'</div>'+
-    '<div class="cal-l"><span>C</span><i class="c rC"></i><i class="c rB"></i><i class="c rA"></i><i class="c rS"></i><span>S</span></div>'+
+    '<div class="cal-l"><span>C</span><i class="day rC"></i><i class="day rB"></i><i class="day rA"></i><i class="day rS"></i><span>S</span></div>'+
     '<div class="rec-info"></div>';
 }
 
